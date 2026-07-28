@@ -1,0 +1,51 @@
+/* Scoped styles for the /quran-video feature.
+
+   The studio now uses ELQOR4N's shadcn components and semantic tokens
+   directly, so no color-class remapping is needed any more. What remains here
+   is only what the design system doesn't cover: the Arabic/Latin font stacks
+   and the two small animations the canvas preview relies on. */
+
+@theme {
+  --font-cairo: "Cairo", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --font-amiri: "Amiri", serif;
+  --font-quran: "Amiri Quran", serif;
+}
+
+.quran-video-root {
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.quran-video-root input,
+.quran-video-root textarea,
+.quran-video-root [contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+.quran-video-root[dir="ltr"] { font-family: "Inter", ui-sans-serif, system-ui, sans-serif; }
+.quran-video-root[dir="rtl"] { font-family: "Cairo", ui-sans-serif, system-ui, sans-serif; }
+
+@keyframes qv-fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.quran-video-root .animate-fade-in-up {
+  animation: qv-fadeInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Native color inputs can't be themed by Tailwind — align them with the
+   surrounding input styling. */
+.quran-video-root input[type="color"] {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+.quran-video-root input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+.quran-video-root input[type="color"]::-webkit-color-swatch {
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+}

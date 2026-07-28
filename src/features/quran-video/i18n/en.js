@@ -1,0 +1,85 @@
+export const en = {
+  
+  app_name: "Tarteel Studio",
+  app_subtitle: "Quran Video Producer",
+  app_desc: "Customize your Quran clip",
+  preview: "Video Preview",
+  settings: "Settings",
+
+  surah: "Surah",
+  loading_text: "Loading...",
+
+  ayah_range: "Ayah Range",
+  from_ayah: "From Ayah",
+  to_ayah: "To Ayah",
+  auto_shorts: "Set for Shorts/Reels (under 60s)",
+
+  video_size: "Video Size",
+  "size_16:9": "16:9 (Landscape — YouTube)",
+  "size_9:16": "9:16 (Portrait — Reels)",
+  "size_1:1": "1:1 (Square — Instagram)",
+  "size_4:3": "4:3 (Classic)",
+
+  reciter: "Reciter",
+
+  background: "Video Background",
+  upload_bg: "Upload Image or Video",
+  search_photos: "Search photos (English or Arabic)...",
+  search_videos: "Search videos (English or Arabic)...",
+  search: "Search",
+  searching: "Searching...",
+  choose_pixabay: "Choose a background from Pixabay",
+  search_placeholder: "Search (mosque, nature, sky...)...",
+  select_check: "Select",
+  pixabay_free: "Pixabay.com — Free images",
+  pixabay_free_videos: "Pixabay.com — Free videos",
+  pixabay_images: "Images",
+  pixabay_videos: "Videos",
+  pixabay_video: "Video",
+  cancel: "Cancel",
+  search_hint: "Search for images or videos to use as background",
+
+  effects: "Background & Text Effects",
+  bg_scale: "Background Scale",
+  bg_dim: "Background Dim",
+  bg_blur: "Background Blur",
+  text_scale: "Text Scale",
+
+  colors: "Customize Colors",
+  text_color: "Text Color",
+  translation_color: "Translation/Tafsir",
+
+  translation_section: "Translation / Tafsir",
+  show_helper_text: "Show helper text",
+  translation: "Translation",
+  tafsir: "Tafsir",
+
+  watermark: "Watermark (Optional)",
+  watermark_placeholder: "e.g. @username",
+
+  reverb: "Professional Reverb",
+  add_reverb: "Add reverb to audio",
+  reverb_hint: "Professional reverb will be added when exporting",
+
+  download_audio: "Download Audio Only",
+  export_video: "Export Video",
+  exporting: "Exporting...",
+  reels_60s: "Reels 60s",
+  export_keep_open: "Keep the app open & screen on — don't switch apps during export",
+  login_to_download: "Sign in to Download",
+  login_required: "Google sign-in required",
+  login: "Sign in",
+  login_google: "Sign in with Google",
+  logout: "Sign out",
+  ayah_word: "ayah",
+
+  contact_us: "Contact Us",
+  safe_zones: "Safe Zones",
+  status_bar: "Status Bar",
+  description_buttons: "Description + Interaction Buttons",
+  video_description: "Video Description",
+  safe_area: "Safe Area",
+
+  language: "English",
+  switch_language: "العربية",
+};

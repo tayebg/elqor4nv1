@@ -1,0 +1,240 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+@import "./features/quran-video/quran-video.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Local Warsh font kept as a fallback; primary face is now a Naskh
+   Mushaf-style font where ف has a dot above and ق has two dots above —
+   matching the typography most readers are accustomed to. */
+@font-face {
+  font-family: "Amiri Quran";
+  src: url("/fonts/amiri-quran.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Scheherazade New";
+  font-weight: 400;
+  src: url("/fonts/scheherazade-new-regular.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Scheherazade New";
+  font-weight: 700;
+  src: url("/fonts/scheherazade-new-bold.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "WarshLocal";
+  src: url("/fonts/warsh.woff2") format("woff2"),
+       url("/fonts/warsh.ttf") format("truetype");
+  font-display: swap;
+}
+
+/* Application UI font.
+   Primary choice is the licensed "Mobtakar-Fat" typeface: if the user has it
+   installed locally (or a self-hosted .otf is added later), it wins. Otherwise
+   the app falls back to Cairo (loaded from Google Fonts in __root.tsx), a
+   free bold geometric Arabic display face very close in feel to Mobtakar-Fat.
+   Generated slide/canvas content keeps its Naskh/Warsh Mushaf fonts. */
+@font-face {
+  font-family: "Mobtakar-Fat";
+  src: local("Mobtakar Fat"), local("Mobtakar-Fat"), local("MobtakarFat");
+  font-display: swap;
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ivory: var(--ivory);
+  --color-ink: var(--ink);
+  --color-emerald: var(--emerald);
+  --color-gold: var(--gold);
+  --font-warsh: "Warsh", serif;
+}
+
+:root {
+  --radius: 0.5rem;
+  --ivory: oklch(0.985 0.008 95);
+  --ink: oklch(0.18 0.01 250);
+  --emerald: oklch(0.48 0.09 165);
+  --gold: oklch(0.78 0.09 80);
+
+  --background: oklch(0.985 0.008 95);
+  --foreground: oklch(0.18 0.01 250);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.01 250);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.01 250);
+  --primary: oklch(0.48 0.09 165);
+  --primary-foreground: oklch(0.985 0.008 95);
+  --secondary: oklch(0.95 0.012 90);
+  --secondary-foreground: oklch(0.18 0.01 250);
+  --muted: oklch(0.95 0.012 90);
+  --muted-foreground: oklch(0.45 0.015 250);
+  --accent: oklch(0.78 0.09 80);
+  --accent-foreground: oklch(0.18 0.01 250);
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: oklch(0.985 0.008 95);
+  --border: oklch(0.9 0.01 90);
+  --input: oklch(0.9 0.01 90);
+  --ring: oklch(0.48 0.09 165);
+}
+
+.dark {
+  --background: oklch(0.15 0.01 250);
+  --foreground: oklch(0.95 0.008 95);
+  --card: oklch(0.2 0.01 250);
+  --card-foreground: oklch(0.95 0.008 95);
+  --popover: oklch(0.2 0.01 250);
+  --popover-foreground: oklch(0.95 0.008 95);
+  --primary: oklch(0.6 0.1 165);
+  --primary-foreground: oklch(0.15 0.01 250);
+  --secondary: oklch(0.25 0.01 250);
+  --secondary-foreground: oklch(0.95 0.008 95);
+  --muted: oklch(0.25 0.01 250);
+  --muted-foreground: oklch(0.7 0.015 250);
+  --accent: oklch(0.78 0.09 80);
+  --accent-foreground: oklch(0.15 0.01 250);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.6 0.1 165);
+}
+
+html, body {
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  /* Allow both vertical and horizontal scrolling with native gestures;
+     `pan-y` used to break scroll on some mobile browsers when combined
+     with body-level user-select rules. */
+  touch-action: manipulation;
+}
+
+/* Desktop scaling.
+   The app is designed mobile-first and previously felt like a stretched
+   mobile view on desktop. Raising the root font-size on wider viewports
+   scales every rem-based value — typography, spacing, control sizes,
+   card paddings — proportionally, without touching component code or
+   affecting the mobile layout. */
+@media (min-width: 1024px) { html { font-size: 17px; } }
+@media (min-width: 1280px) { html { font-size: 18px; } }
+@media (min-width: 1536px) { html { font-size: 19px; } }
+@media (min-width: 1920px) { html { font-size: 20px; } }
+body {
+  min-height: 100vh;
+  /* App-wide: disable accidental text selection on interface chrome.
+     Editable fields and generated slide content opt back in below. */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Re-enable text selection inside the generated post/carousel content so
+   users can still copy or download the Quran text. Inputs/textareas also
+   need selection to remain functional. */
+.slide-canvas, .slide-canvas *,
+input, textarea, [contenteditable="true"], .selectable, .selectable * {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Prevent iOS double-tap zoom lag on interactive controls (notably the
+   "Download ZIP" button, where the zoom gesture was racing the click). */
+button, a, [role="button"], select, input, label {
+  touch-action: manipulation;
+}
+
+/* Native-app feel for nav / brand elements: no long-press URL preview,
+   no text selection, no tap highlight. */
+.no-callout, .no-callout * {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Opt-in for slide previews so the user can still pinch-zoom into a slide. */
+.pinchable { touch-action: pinch-zoom; }
+
+@media (max-width: 767px) {
+  button, a, [role="button"], select, input, textarea {
+    font-size: 16px;
+  }
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: "Mobtakar-Fat", "Cairo", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  /* Do NOT let the UI font leak into generated post/reel/tweet content. */
+  .slide-canvas, .slide-canvas *, .warsh-text {
+    font-family: revert;
+  }
+}
+
+
+
+/* Carousel slide canvas — fixed 1080x1080 then scaled */
+.slide-canvas {
+  width: 1080px;
+  height: 1080px;
+  position: relative;
+  overflow: hidden;
+  background: var(--ivory);
+  color: var(--ink);
+}
+
+/* Quran text — the Warsh riwāyah is preserved entirely in the dataset
+   (special marks, alif khanjariyya, dotted letters, etc.). The font is a
+   readable Naskh face well-suited to Mushaf typography. Amiri Quran ships
+   with broad Quranic mark coverage; Scheherazade New is a high-fidelity
+   fallback; the project-supplied WarshLocal is the last resort. */
+/* Override face: Scheherazade New is used ONLY for the small-high waqf marks
+   (U+06D6–U+06ED) and the rub-el-hizb (U+06DE), restoring the simpler
+   traditional pause-symbol glyphs. Everything else falls through to Amiri
+   Quran (the new, more readable Mushaf face). */
+@font-face {
+  font-family: "WaqfMarks";
+  src: url("/fonts/scheherazade-new-regular.ttf") format("truetype");
+  unicode-range: U+06D6-06ED;
+  font-display: swap;
+}
+
+.warsh-text {
+  font-family: "WaqfMarks", "Amiri Quran", "Scheherazade New", "WarshLocal", serif;
+  direction: rtl;
+  unicode-bidi: plaintext;
+  text-align: justify;
+  text-align-last: center;
+  line-height: 2.15;
+  font-feature-settings: "calt", "liga", "rlig";
+}

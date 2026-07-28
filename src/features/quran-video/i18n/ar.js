@@ -1,0 +1,85 @@
+export const ar = {
+  
+  app_name: "استوديو ترتيل",
+  app_subtitle: "إنتاج فيديوهات قرآنية",
+  app_desc: "تخصيص المقطع القرآني",
+  preview: "معاينة الفيديو",
+  settings: "الإعدادات",
+
+  surah: "السورة",
+  loading_text: "جارٍ التحميل...",
+
+  ayah_range: "نطاق الآيات",
+  from_ayah: "من آية",
+  to_ayah: "إلى آية",
+  auto_shorts: "ملائم للمقاطع القصيرة والريلز (أقل من 60 ثانية)",
+
+  video_size: "مقاس الفيديو",
+  "size_16:9": "16:9 (أفقي — يوتيوب)",
+  "size_9:16": "9:16 (عمودي — ريلز)",
+  "size_1:1": "1:1 (مربع — إنستغرام)",
+  "size_4:3": "4:3 (كلاسيكي)",
+
+  reciter: "القارئ",
+
+  background: "خلفية الفيديو",
+  upload_bg: "رفع صورة أو فيديو",
+  search_photos: "بحث صور (عربي أو إنجليزي)...",
+  search_videos: "بحث فيديوهات (عربي أو إنجليزي)...",
+  search: "بحث",
+  searching: "جارٍ البحث...",
+  choose_pixabay: "اختر خلفية من Pixabay",
+  search_placeholder: "ابحث (مسجد، طبيعة، سماء...)...",
+  select_check: "اختيار",
+  pixabay_free: "Pixabay.com — صور مجانية",
+  pixabay_free_videos: "Pixabay.com — فيديوهات مجانية",
+  pixabay_images: "صور",
+  pixabay_videos: "فيديوهات",
+  pixabay_video: "فيديو",
+  cancel: "إلغاء",
+  search_hint: "ابحث عن صور أو فيديوهات لاستخدامها كخلفية",
+
+  effects: "تأثيرات الخلفية والنص",
+  bg_scale: "تحجيم الخلفية",
+  bg_dim: "تعتيم الخلفية",
+  bg_blur: "تغبيش الخلفية",
+  text_scale: "حجم النص",
+
+  colors: "تخصيص الألوان",
+  text_color: "لون النص",
+  translation_color: "الترجمة/التفسير",
+
+  translation_section: "الترجمة / التفسير",
+  show_helper_text: "عرض النص المساعد",
+  translation: "ترجمة",
+  tafsir: "تفسير",
+
+  watermark: "علامة مائية (اختياري)",
+  watermark_placeholder: "مثال: @المعرّف",
+
+  reverb: "صدى احترافي (Reverb)",
+  add_reverb: "إضافة صدى للصوت",
+  reverb_hint: "سيضاف صدى احترافي عند تصدير الفيديو",
+
+  download_audio: "تحميل الصوت فقط",
+  export_video: "تصدير فيديو",
+  exporting: "جارٍ التصدير...",
+  reels_60s: "ريلز 60 ثانية",
+  export_keep_open: "⚠️ ابقِ التطبيق مفتوحاً والشاشة مضاءة — لا تنتقل لتطبيق آخر أثناء التصدير",
+  login_to_download: "سجّل الدخول للتحميل",
+  login_required: "يجب تسجيل الدخول بحساب Google",
+  login: "دخول",
+  login_google: "تسجيل الدخول بـ Google",
+  logout: "تسجيل الخروج",
+  ayah_word: "آية",
+
+  contact_us: "اتصل بنا",
+  safe_zones: "مناطق آمنة",
+  status_bar: "شريط الحالة",
+  description_buttons: "وصف + أزرار التفاعل",
+  video_description: "وصف الفيديو",
+  safe_area: "✅ المنطقة الآمنة",
+
+  language: "العربية",
+  switch_language: "English",
+};
