@@ -2,7 +2,7 @@
 
 > A modern, non-profit, RTL-first web app for creating high-quality Islamic content — Quran posts, Hadith carousels, Hisn Al-Muslim slides, tweet cards, reels, reel covers, and Quran videos — with consistent branding and a shared collaboration mode.
 
-Made with ❤️ by [@tayebg](https://github.com/tayebg). Live: [`elqor4n.com`](https://elqor4n.com).
+Made with ❤️ by [@tayebg](https://github.com/tayebg). Live: [`elqor4n.com`](https://elqor4n.vercel.app/).
 
 ---
 
