@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useSettings, useResolvedBranding, formatHandle } from "@/lib/settings";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -153,32 +153,16 @@ function ReelCoverPage() {
 
 
         <section className="w-full min-w-0">
-          <div className="mx-auto" style={{ maxWidth: 360 }}>
-            <div style={{ width: "100%", aspectRatio: "9 / 16", position: "relative" }}>
-              <div
-                style={{
-                  width: W,
-                  height: H,
-                  transform: `scale(${360 / W})`,
-                  transformOrigin: "top left",
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                }}
-              >
-                <ReelCover
-                  id="reel-cover-preview"
-                  title={title}
-                  subtitle={subtitle}
-                  settings={s.reelCover}
-                  logoUrl={rb.logoUrl}
-                  username={rb.username}
-                  secondary={rb.collaboration ? { logoUrl: rb.secondaryLogoUrl, username: rb.secondaryUsername } : null}
-                />
-              </div>
-            </div>
-          </div>
+          <ReelCoverPreview
+            title={title}
+            subtitle={subtitle}
+            settings={s.reelCover}
+            logoUrl={rb.logoUrl}
+            username={rb.username}
+            secondary={rb.collaboration ? { logoUrl: rb.secondaryLogoUrl, username: rb.secondaryUsername } : null}
+          />
         </section>
+
         </div>
       </main>
 
@@ -197,6 +181,77 @@ function ReelCoverPage() {
     </div>
   );
 }
+
+type ReelCoverSettings = {
+  template: "minimal" | "gradient" | "quran";
+  accent: string;
+  showAccentBars: boolean;
+  backgroundUrl: string | null;
+  backgroundDim: number;
+};
+
+function ReelCoverPreview(props: {
+  title: string;
+  subtitle: string;
+  settings: ReelCoverSettings;
+  logoUrl: string;
+  username: string;
+  secondary: { logoUrl: string; username: string } | null;
+}) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0);
+
+  useLayoutEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const measure = () => {
+      const w = el.clientWidth;
+      if (w > 0) setScale(w / W);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={wrapRef}
+      className="mx-auto w-full rounded-xl overflow-hidden bg-black border border-border relative"
+      style={{ maxWidth: 360, aspectRatio: "9 / 16" }}
+    >
+      {scale > 0 && (
+        <div
+          style={{
+            width: W,
+            height: H,
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+            position: "absolute",
+            top: 0,
+            left: 0,
+          }}
+        >
+          <ReelCover
+            id="reel-cover-preview"
+            title={props.title}
+            subtitle={props.subtitle}
+            settings={props.settings}
+            logoUrl={props.logoUrl}
+            username={props.username}
+            secondary={props.secondary}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 
 function ReelCover({
   id, title, subtitle, settings, logoUrl, username, secondary,
