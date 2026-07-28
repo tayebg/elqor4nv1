@@ -177,21 +177,23 @@ function Home() {
         </section>
 
         {/* Thanks — icon and username on a single horizontal line */}
-        <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
-          <li className="font-semibold text-foreground">شكر خاص</li>
+        <ul className="flex flex-nowrap items-center justify-center gap-x-3 overflow-hidden whitespace-nowrap text-[11px] text-muted-foreground">
+          <li className="shrink-0 font-semibold text-foreground">شكر خاص</li>
+
           {[
             { handle: "@med_bentouati", href: "https://instagram.com/med_bentouati" },
             { handle: "@yacine_san8", href: "https://instagram.com/yacine_san8" },
           ].map(({ handle: h, href }) => (
-            <li key={h} dir="ltr">
+            <li key={h} dir="ltr" className="min-w-0 shrink">
               <a
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline"
+                className="inline-flex min-w-0 items-center gap-1 font-medium text-primary hover:underline"
               >
                 <InstagramIcon className="h-3.5 w-3.5 shrink-0" />
-                <span>{h}</span>
+                <span className="truncate">{h}</span>
+
               </a>
             </li>
           ))}
