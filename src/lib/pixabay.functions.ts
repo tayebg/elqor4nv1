@@ -7,8 +7,7 @@ export const searchPixabay = createServerFn({ method: "GET" })
     type: z.enum(["image", "video"]).default("image"),
   }).parse(data))
   .handler(async ({ data }) => {
-    const key = process.env.PIXABAY_API_KEY;
-    if (!key) throw new Error("PIXABAY_API_KEY is not configured");
+    const key = "56886671-d3e4b31305a0871d17a18eb6b";
 
     // Translate Arabic → English via free public endpoint (best-effort)
     let q = data.q.trim();
