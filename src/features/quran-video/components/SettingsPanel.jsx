@@ -88,6 +88,24 @@ export default function SettingsPanel({
   const { results: pixabayResults, loading: pixLoading, error: pixError, searchImages, searchVideos } = usePixabay();
   const [pixQuery, setPixQuery] = useState("");
   const [pixMode, setPixMode] = useState("image");
+  // Track which export button initiated the current export so only that
+  // button shows the loading state.
+  const [activeExport, setActiveExport] = useState(null); // "video" | "reels" | null
+  if (!isExporting && activeExport) {
+    // Reset once the parent's isExporting flips back to false.
+    setActiveExport(null);
+  }
+  const handleExportVideo = () => {
+    setActiveExport("video");
+    onExportVideo?.();
+  };
+  const handleExportReels = () => {
+    setActiveExport("reels");
+    onExportReels?.();
+  };
+  const isExportingVideo = isExporting && activeExport === "video";
+  const isExportingReels = isExporting && activeExport === "reels";
+
   const [showPixModal, setShowPixModal] = useState(false);
 
   const selectedChapter = useMemo(
@@ -442,22 +460,23 @@ export default function SettingsPanel({
         {FEATURE_FLAGS.videoExport && (
           <div className="grid gap-2">
             <SafeTapButton
-              onClick={onExportVideo}
+              onClick={handleExportVideo}
               disabled={!audioReady || isExporting}
             >
-              {isExporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Film className="h-4 w-4" />}
-              {isExporting ? t("exporting") : t("export_video")}
+              {isExportingVideo ? <Loader2 className="h-4 w-4 animate-spin" /> : <Film className="h-4 w-4" />}
+              {isExportingVideo ? t("exporting") : t("export_video")}
             </SafeTapButton>
             <SafeTapButton
               variant="secondary"
-              onClick={onExportReels}
+              onClick={handleExportReels}
               disabled={!audioReady || isExporting}
             >
-              <Smartphone className="h-4 w-4" />
-              {t("reels_60s")}
+              {isExportingReels ? <Loader2 className="h-4 w-4 animate-spin" /> : <Smartphone className="h-4 w-4" />}
+              {isExportingReels ? t("exporting") : t("reels_60s")}
             </SafeTapButton>
           </div>
         )}
+
       </div>
 
       <Dialog open={showPixModal} onOpenChange={setShowPixModal}>
