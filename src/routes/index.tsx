@@ -82,8 +82,7 @@ function Home() {
             <Link
               to="/posts"
               className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-primary px-3 py-2 text-xs font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 sm:text-sm"
-
->
+            >
               <Sparkles className="h-4 w-4" />
               ابدأ الإنشاء
             </Link>
@@ -102,7 +101,7 @@ function Home() {
             <span className="shrink-0 text-xs font-semibold text-foreground">تابعنا</span>
             <ul className="flex items-center justify-end gap-2" dir="ltr">
               {SOCIALS.map(({ Icon, handle: h, href, badge }) => (
-                <li key={${href}-${h}}>
+                <li key={`${href}-${h}`}>
                   <a
                     href={href}
                     target="_blank"
@@ -177,7 +176,7 @@ function Home() {
           </div>
         </section>
 
-{/* Thanks */}
+        {/* Thanks */}
         <footer className="w-full min-w-0 text-muted-foreground" dir="rtl">
           <div className="grid w-full min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-2 text-[10px] sm:flex sm:flex-wrap sm:justify-center sm:gap-x-5 sm:text-[11px]">
             <span className="min-w-0 truncate font-semibold text-foreground">شكر خاص</span>
