@@ -360,16 +360,44 @@ export default function SettingsPanel({
 
         <Section icon={Languages} title={t("translation_section")} />
         <Panel className="space-y-3">
-          <div className="flex items-center justify-between gap-3">
-            <Label htmlFor="qv-show-translation" className="text-sm">
-              {t("show_helper_text")}
-            </Label>
+          <label
+            htmlFor="qv-show-translation"
+            className={cn(
+              "flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg border p-3 text-start transition-colors",
+              showTranslation
+                ? "border-primary/50 bg-primary/5"
+                : "border-border bg-background hover:border-primary/40 hover:bg-muted/40",
+            )}
+          >
+            <span className="flex min-w-0 items-center gap-3">
+              <span
+                className={cn(
+                  "grid h-9 w-9 shrink-0 place-items-center rounded-md border transition-colors",
+                  showTranslation
+                    ? "border-primary/40 bg-primary/10 text-primary"
+                    : "border-border bg-muted/60 text-muted-foreground",
+                )}
+              >
+                <Languages className="h-4 w-4" />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-sm font-medium text-foreground">
+                  {t("show_helper_text")}
+                </span>
+                <span className="mt-0.5 block text-[11px] leading-snug text-muted-foreground">
+                  {t("translation")} / {t("tafsir")}
+                </span>
+              </span>
+            </span>
             <Switch
               id="qv-show-translation"
               checked={showTranslation}
               onCheckedChange={onShowTranslationChange}
+              aria-label={t("show_helper_text")}
             />
-          </div>
+          </label>
+
+
 
           {showTranslation && (
             <>
