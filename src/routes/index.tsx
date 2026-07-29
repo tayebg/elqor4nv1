@@ -82,7 +82,8 @@ function Home() {
             <Link
               to="/posts"
               className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-primary px-3 py-2 text-xs font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 sm:text-sm"
-            >
+
+>
               <Sparkles className="h-4 w-4" />
               ابدأ الإنشاء
             </Link>
@@ -95,36 +96,31 @@ function Home() {
           </div>
         </section>
 
-        {/* Follow Us — matches the supplied dark horizontal reference */}
-        <section className="space-y-2 rounded-xl border border-border bg-card/70 p-3 shadow-sm">
-          <div className="flex items-center justify-between gap-3" dir="ltr">
-            <span className="truncate text-xs font-semibold text-foreground">@elqor4n</span>
-            <span className="shrink-0 text-xs font-semibold text-foreground" dir="rtl">تابعنا</span>
-          </div>
-          <ul className="grid grid-cols-4 items-center gap-1.5" dir="ltr">
-            {SOCIALS.map(({ Icon, handle: h, href, badge }) => (
-              <li key={`${href}-${h}`} className="min-w-0">
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer external"
-                  dir="ltr"
-                  aria-label={h}
-                  className="flex h-9 w-full min-w-0 items-center justify-center gap-1.5 rounded-lg border border-border bg-background/70 px-1.5 text-[10px] font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
-                >
-                  <span className="relative grid h-5 w-5 shrink-0 place-items-center">
-                    <Icon className="h-4 w-4 text-muted-foreground" />
+        {/* Follow Us — icon-only horizontal row */}
+        <section className="rounded-xl border border-border bg-card/70 p-3 shadow-sm">
+          <div className="flex items-center justify-between gap-3" dir="rtl">
+            <span className="shrink-0 text-xs font-semibold text-foreground">تابعنا</span>
+            <ul className="flex items-center justify-end gap-2" dir="ltr">
+              {SOCIALS.map(({ Icon, handle: h, href, badge }) => (
+                <li key={${href}-${h}}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer external"
+                    aria-label={h}
+                    className="relative grid h-9 w-9 place-items-center rounded-lg border border-border bg-background/70 text-foreground transition-colors hover:border-primary hover:text-primary"
+                  >
+                    <Icon className="h-5 w-5 text-muted-foreground" />
                     {badge && (
-                      <span className="absolute -end-1.5 -top-1.5 grid h-3.5 w-3.5 place-items-center rounded-full border border-background bg-primary text-[8px] leading-none text-primary-foreground">
+                      <span className="absolute -end-1.5 -top-1 grid h-4 w-4 place-items-center rounded-full border border-background bg-primary text-[9px] leading-none text-primary-foreground">
                         {badge}
                       </span>
                     )}
-                  </span>
-                  <span className="min-w-0 truncate">{h}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </section>
 
         {/* Compact combined info card */}
@@ -181,26 +177,33 @@ function Home() {
           </div>
         </section>
 
-        {/* Thanks — single inline line so the page stays one screen tall */}
-        <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
-          <li className="font-semibold text-foreground">شكر خاص</li>
-          {[
-            { handle: "@med_bentouati", href: "https://instagram.com/med_bentouati" },
-            { handle: "@yacine_san8", href: "https://instagram.com/yacine_san8" },
-          ].map(({ handle: h, href }) => (
-            <li key={h} dir="ltr" className="flex items-center gap-1.5">
-              <InstagramIcon className="h-3 w-3 shrink-0" />
-              <a
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-primary hover:underline"
-              >
-                {h}
-              </a>
-            </li>
-          ))}
-        </ul>
+{/* Thanks */}
+        <footer className="w-full min-w-0 text-muted-foreground" dir="rtl">
+          <div className="grid w-full min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-2 text-[10px] sm:flex sm:flex-wrap sm:justify-center sm:gap-x-5 sm:text-[11px]">
+            <span className="min-w-0 truncate font-semibold text-foreground">شكر خاص</span>
+            <span dir="ltr" className="shrink-0 font-mono text-[10px] text-muted-foreground/70">
+              © 2026
+            </span>
+            <ul className="col-span-2 flex min-w-0 flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:contents">
+              {[
+                { handle: "@med_bentouati", href: "https://instagram.com/med_bentouati" },
+                { handle: "@yacine_san8", href: "https://instagram.com/yacine_san8" },
+              ].map(({ handle: h, href }) => (
+                <li key={h} dir="ltr" className="min-w-0 shrink">
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex max-w-full min-w-0 items-center gap-1 font-medium text-primary hover:underline sm:gap-1.5"
+                  >
+                    <InstagramIcon className="h-3 w-3 shrink-0 sm:h-3.5 sm:w-3.5" />
+                    <span className="truncate">{h}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </footer>
       </main>
     </div>
   );
