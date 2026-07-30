@@ -178,29 +178,27 @@ function Home() {
 
         {/* Thanks */}
         <footer className="w-full min-w-0 text-muted-foreground" dir="rtl">
-          <div className="grid w-full min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-2 text-[10px] sm:flex sm:flex-wrap sm:justify-center sm:gap-x-5 sm:text-[11px]">
-            <span className="min-w-0 truncate font-semibold text-foreground">شكر خاص</span>
+          <div className="flex w-full min-w-0 flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[10px] sm:gap-x-5 sm:text-[11px]">
+            <span className="min-w-0 shrink-0 font-semibold text-foreground">شكر خاص</span>
+            {[
+              { handle: "@med_bentouati", href: "https://instagram.com/med_bentouati" },
+              { handle: "@yacine_san8", href: "https://instagram.com/yacine_san8" },
+            ].map(({ handle: h, href }) => (
+              <a
+                key={h}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                dir="ltr"
+                className="inline-flex min-w-0 shrink-0 items-center gap-1 font-medium text-primary hover:underline sm:gap-1.5"
+              >
+                <InstagramIcon className="h-3 w-3 shrink-0 sm:h-3.5 sm:w-3.5" />
+                <span className="truncate">{h}</span>
+              </a>
+            ))}
             <span dir="ltr" className="shrink-0 font-mono text-[10px] text-muted-foreground/70">
               © 2026
             </span>
-            <ul className="col-span-2 flex min-w-0 flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:contents">
-              {[
-                { handle: "@med_bentouati", href: "https://instagram.com/med_bentouati" },
-                { handle: "@yacine_san8", href: "https://instagram.com/yacine_san8" },
-              ].map(({ handle: h, href }) => (
-                <li key={h} dir="ltr" className="min-w-0 shrink">
-                  <a
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex max-w-full min-w-0 items-center gap-1 font-medium text-primary hover:underline sm:gap-1.5"
-                  >
-                    <InstagramIcon className="h-3 w-3 shrink-0 sm:h-3.5 sm:w-3.5" />
-                    <span className="truncate">{h}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
           </div>
         </footer>
       </main>
