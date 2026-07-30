@@ -177,9 +177,9 @@ function Home() {
         </section>
 
         {/* Thanks */}
-        <footer className="w-full min-w-0 text-muted-foreground" dir="rtl">
-          <div className="flex w-full min-w-0 flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[10px] sm:gap-x-5 sm:text-[11px]">
-            <span className="min-w-0 shrink-0 font-semibold text-foreground">شكر خاص</span>
+        <footer className="w-full min-w-0 space-y-1 text-center text-muted-foreground" dir="rtl">
+          <div className="flex w-full min-w-0 flex-nowrap items-center justify-center gap-x-2 text-[10px] sm:gap-x-4 sm:text-[11px]">
+            <span className="shrink-0 font-semibold text-foreground">شكر خاص</span>
             {[
               { handle: "@med_bentouati", href: "https://instagram.com/med_bentouati" },
               { handle: "@yacine_san8", href: "https://instagram.com/yacine_san8" },
@@ -190,15 +190,15 @@ function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
                 dir="ltr"
-                className="inline-flex min-w-0 shrink-0 items-center gap-1 font-medium text-primary hover:underline sm:gap-1.5"
+                className="inline-flex shrink-0 items-center gap-1 font-medium text-primary hover:underline sm:gap-1.5"
               >
                 <InstagramIcon className="h-3 w-3 shrink-0 sm:h-3.5 sm:w-3.5" />
-                <span className="truncate">{h}</span>
+                <span>{h}</span>
               </a>
             ))}
-            <span dir="ltr" className="shrink-0 font-mono text-[10px] text-muted-foreground/70">
-              © 2026
-            </span>
+          </div>
+          <div dir="ltr" className="font-mono text-[10px] text-muted-foreground/70">
+            © 2026
           </div>
         </footer>
       </main>
