@@ -18,22 +18,22 @@ function App() {
   const { exportVideo, isExporting, progress, statusText } = useVideoExport();
 
   const { pageState, setPageState } = useSettings();
-  const videoState = pageState.videoState;
+  const videoState = pageState.videoState || {};
 
   const [settings, setSettings] = useState({
-    surahId: videoState.surahId,
-    fromAyah: videoState.fromAyah,
-    toAyah: videoState.toAyah,
-    videoSize: videoState.videoSize,
-    reciterId: videoState.reciterId,
+    surahId: videoState.surahId ?? 1,
+    fromAyah: videoState.fromAyah ?? 1,
+    toAyah: videoState.toAyah ?? 7,
+    videoSize: videoState.videoSize ?? "16:9",
+    reciterId: videoState.reciterId ?? "7",
   });
 
-  const [bgImage, setBgImage] = useState(videoState.bgImage);
-  const [customBgUrl, setCustomBgUrl] = useState(videoState.customBgUrl);
-  const [textColor, setTextColor] = useState(videoState.textColor);
-  const [translationColor, setTranslationColor] = useState(videoState.translationColor);
-  const [showTranslation, setShowTranslation] = useState(videoState.showTranslation);
-  const [translationId, setTranslationId] = useState(videoState.translationId);
+  const [bgImage, setBgImage] = useState(videoState.bgImage ?? "/quran-video-assets/quran-bg.png");
+  const [customBgUrl, setCustomBgUrl] = useState(videoState.customBgUrl ?? "");
+  const [textColor, setTextColor] = useState(videoState.textColor ?? defaultColors.textColor);
+  const [translationColor, setTranslationColor] = useState(videoState.translationColor ?? "#B0C4DE");
+  const [showTranslation, setShowTranslation] = useState(videoState.showTranslation ?? true);
+  const [translationId, setTranslationId] = useState(videoState.translationId ?? 20);
   // Watermark is derived from the global ELQOR4N branding (Settings → Branding).
   // Users configure it in one place; every generator — including this video tool — reads from there.
   const resolvedBrand = useResolvedBranding();
@@ -44,16 +44,16 @@ function App() {
   const appSecondaryUsername = resolvedBrand.secondaryUsername;
   const watermarkText = appUsername || "";
   const setWatermarkText = () => {}; // no-op — kept for SettingsPanel compatibility
-  const [enableReverb, setEnableReverb] = useState(videoState.enableReverb);
+  const [enableReverb, setEnableReverb] = useState(videoState.enableReverb ?? false);
 
-  const [bgScale, setBgScale] = useState(videoState.bgScale);
-  const [bgDim, setBgDim] = useState(videoState.bgDim);
-  const [bgBlur, setBgBlur] = useState(videoState.bgBlur);
-  const [textScale, setTextScale] = useState(videoState.textScale);
-  const [bgIsVideo, setBgIsVideo] = useState(videoState.bgIsVideo);
+  const [bgScale, setBgScale] = useState(videoState.bgScale ?? 100);
+  const [bgDim, setBgDim] = useState(videoState.bgDim ?? 30);
+  const [bgBlur, setBgBlur] = useState(videoState.bgBlur ?? 0);
+  const [textScale, setTextScale] = useState(videoState.textScale ?? 100);
+  const [bgIsVideo, setBgIsVideo] = useState(videoState.bgIsVideo ?? false);
 
-  const [contentMode, setContentMode] = useState(videoState.contentMode);
-  const [tafsirId, setTafsirId] = useState(videoState.tafsirId); 
+  const [contentMode, setContentMode] = useState(videoState.contentMode ?? "translation");
+  const [tafsirId, setTafsirId] = useState(videoState.tafsirId ?? 16); 
 
   useEffect(() => {
     setPageState('videoState', {
