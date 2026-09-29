@@ -17,7 +17,7 @@ function formatTime(ms) {
 export default function PreviewPanel({
   settings, chapters, verses, versesLoading,
   timedVerses = [], currentTimeMs = 0, isPlaying = false,
-  onPlayPause, timedLoading = false, audioUrl = "",
+  onPlayPause, timedLoading = false, audioLoading = false, audioProgress = 0, audioUrl = "",
   bgImage = "/quran-video-assets/quran-bg.png",
   bgIsVideo = false,
   textColor = "#FFFFFF",
@@ -234,7 +234,12 @@ export default function PreviewPanel({
             <Ruler className="mr-1.5 h-3.5 w-3.5" />
             {t("safe_zones")}
           </Toggle>
-          {(versesLoading || timedLoading) && (
+          {audioLoading ? (
+            <Badge variant="secondary" className="font-mono text-[10px] gap-1 flex items-center">
+              <Loader2 className="h-3 w-3 animate-spin" />
+              جارٍ التحميل... {audioProgress}%
+            </Badge>
+          ) : (versesLoading || timedLoading) && (
             <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
           )}
           {isPlaying && (

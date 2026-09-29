@@ -1,16 +1,5 @@
 import { useRef, useState, useMemo } from "react";
 
-const PRESET_COLORS = [
-  { value: "#FFFFFF", name: "أبيض" },
-  { value: "#000000", name: "أسود" },
-  { value: "#FDE68A", name: "ذهبي" },
-  { value: "#B0C4DE", name: "فضي" },
-  { value: "#93C5FD", name: "أزرق فاتح" },
-  { value: "#86EFAC", name: "أخضر فاتح" },
-  { value: "#FCA5A5", name: "أحمر فاتح" },
-  { value: "#F4F4F5", name: "رمادي فاتح" },
-  { value: "#3F3F46", name: "رمادي داكن" },
-];
 
 /**
  * Feature flags for the video studio.
@@ -353,24 +342,16 @@ export default function SettingsPanel({
             ].map((c) => (
               <div key={c.label} className="space-y-1.5">
                 <Label className="text-xs text-muted-foreground">{c.label}</Label>
-                <Select value={c.value} onValueChange={c.onChange}>
-                  <SelectTrigger className="w-full">
-                    <div className="flex items-center gap-2">
-                      <div className="h-4 w-4 rounded-full border shadow-inner shrink-0" style={{backgroundColor: c.value}} />
-                      <span className="truncate">{PRESET_COLORS.find(pc => pc.value.toUpperCase() === c.value.toUpperCase())?.name || c.value}</span>
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PRESET_COLORS.map(pc => (
-                      <SelectItem key={pc.value} value={pc.value}>
-                        <div className="flex items-center gap-2">
-                          <div className="h-4 w-4 rounded-full border shadow-inner shrink-0" style={{backgroundColor: pc.value}} />
-                          <span>{pc.name}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="relative h-10 w-full overflow-hidden rounded-md border border-input shadow-sm flex items-center bg-background px-3">
+                  <input
+                    type="color"
+                    value={c.value}
+                    onChange={(e) => c.onChange(e.target.value)}
+                    className="absolute opacity-0 inset-0 w-full h-full cursor-pointer"
+                  />
+                  <div className="h-5 w-5 rounded-full border shadow-sm shrink-0" style={{ backgroundColor: c.value }} />
+                  <span className="ms-3 text-sm font-mono text-muted-foreground" dir="ltr">{c.value}</span>
+                </div>
               </div>
             ))}
           </div>

@@ -107,7 +107,7 @@ function App() {
   const timedVersesRef = useRef(timedVerses);
   useEffect(() => { timedVersesRef.current = timedVerses; }, [timedVerses]);
 
-  const { blobUrl: audioBlobUrl, audioBlob, loading: audioBlobLoading, error: audioBlobError } =
+  const { blobUrl: audioBlobUrl, audioBlob, loading: audioBlobLoading, progress: audioBlobProgress, error: audioBlobError } =
     useAudioBlob(audioUrl);
 
   const lastValidAudioRef = useRef('');
@@ -300,7 +300,7 @@ function App() {
         throw new Error("فشل تصدير الفيديو أو حجمه صغير جداً.");
       }
     });
-  }, [settings, chapters, buildBgSrc, audioBlobUrl, audioBlob, exportVideo, textColor, translationColor, watermarkText, enableReverb, displayTexts, contentMode, bgIsVideo, bgScale, bgDim, bgBlur, textScale, showTranslation, appLogoUrl, appCollab, appSecondaryLogoUrl, appSecondaryUsername]);
+  }, [settings, chapters, buildBgSrc, audioBlobUrl, audioBlob, exportVideo, textColor, translationColor, watermarkText, enableReverb, displayTexts, contentMode, bgIsVideo, bgScale, bgDim, bgBlur, textScale, showTranslation, appLogoUrl, appCollab, appSecondaryLogoUrl, appSecondaryUsername, selectedReciterName]);
 
   const handleExportReels = useCallback(async (opts = {}) => {
     console.log("🚀 [Reels] بدء تصدير الريلز...");
@@ -375,7 +375,7 @@ function App() {
       if (opts.share) throw err;
       alert(`❌ فشل تصدير الريلز:\n${err.message}`);
     }
-  }, [chapters, settings, buildBgSrc, audioBlobUrl, audioBlob, exportVideo, textColor, translationColor, watermarkText, enableReverb, displayTexts, bgIsVideo, bgScale, bgDim, bgBlur, textScale, showTranslation, contentMode, appLogoUrl, appCollab, appSecondaryLogoUrl, appSecondaryUsername]);
+  }, [chapters, settings, buildBgSrc, audioBlobUrl, audioBlob, exportVideo, textColor, translationColor, watermarkText, enableReverb, displayTexts, bgIsVideo, bgScale, bgDim, bgBlur, textScale, showTranslation, contentMode, appLogoUrl, appCollab, appSecondaryLogoUrl, appSecondaryUsername, selectedReciterName]);
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen w-full lg:h-[calc(100dvh-8rem)] lg:overflow-hidden bg-background" dir="rtl">
@@ -399,6 +399,8 @@ function App() {
           isPlaying={isPlaying}
           onPlayPause={handlePlayPause}
           timedLoading={timedLoading || audioBlobLoading}
+          audioLoading={audioBlobLoading}
+          audioProgress={audioBlobProgress}
           audioUrl={audioBlobUrl || lastValidAudioRef.current}
           bgImage={effectiveBg}
           bgIsVideo={bgIsVideo}

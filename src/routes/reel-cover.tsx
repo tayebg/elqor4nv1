@@ -11,18 +11,7 @@ import { captureNodeToBlob, triggerDownloadBlob } from "@/lib/export";
 import { ShareMenu } from "@/components/ShareMenu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const PRESET_COLORS = [
-  { value: "#c9a24a", name: "ذهبي أصلي" },
-  { value: "#FFFFFF", name: "أبيض" },
-  { value: "#000000", name: "أسود" },
-  { value: "#FDE68A", name: "ذهبي" },
-  { value: "#B0C4DE", name: "فضي" },
-  { value: "#93C5FD", name: "أزرق فاتح" },
-  { value: "#86EFAC", name: "أخضر فاتح" },
-  { value: "#FCA5A5", name: "أحمر فاتح" },
-  { value: "#F4F4F5", name: "رمادي فاتح" },
-  { value: "#3F3F46", name: "رمادي داكن" },
-];
+
 
 const W = 1080;
 const H = 1920;
@@ -106,29 +95,16 @@ function ReelCoverPage() {
             </div>
             <div className="space-y-2">
               <Label className="text-xs">لون التمييز</Label>
-              <Select
-                value={s.reelCover.accent}
-                onValueChange={(v) => s.setReelCover("accent", v)}
-              >
-                <SelectTrigger className="w-full bg-background" dir="rtl">
-                  <div className="flex items-center gap-2">
-                    <div className="h-4 w-4 rounded-full border shadow-inner shrink-0" style={{backgroundColor: s.reelCover.accent}} />
-                    <span className="truncate text-sm">
-                      {PRESET_COLORS.find(pc => pc.value.toUpperCase() === s.reelCover.accent.toUpperCase())?.name || s.reelCover.accent}
-                    </span>
-                  </div>
-                </SelectTrigger>
-                <SelectContent className="max-h-72">
-                  {PRESET_COLORS.map((pc) => (
-                    <SelectItem key={pc.value} value={pc.value} dir="rtl">
-                      <div className="flex items-center gap-2">
-                        <div className="h-4 w-4 rounded-full border shadow-inner shrink-0" style={{backgroundColor: pc.value}} />
-                        <span>{pc.name}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="relative h-10 w-full overflow-hidden rounded-md border border-input shadow-sm flex items-center bg-background px-3">
+                <input
+                  type="color"
+                  value={s.reelCover.accent}
+                  onChange={(e) => s.setReelCover("accent", e.target.value)}
+                  className="absolute opacity-0 inset-0 w-full h-full cursor-pointer"
+                />
+                <div className="h-5 w-5 rounded-full border shadow-sm shrink-0" style={{ backgroundColor: s.reelCover.accent }} />
+                <span className="ms-3 text-sm font-mono text-muted-foreground" dir="ltr">{s.reelCover.accent}</span>
+              </div>
             </div>
             <label className="flex items-center gap-2 text-xs">
               <input
