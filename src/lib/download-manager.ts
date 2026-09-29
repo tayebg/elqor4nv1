@@ -32,7 +32,7 @@ export function startDownload(opts: {
         abort.abort();
         toast.dismiss(toastId);
         activeDownloads.delete(opts.id);
-        toast.info('تم إلغاء التنزيل');
+        toast.info(`${opts.label} — تم إلغاء التحميل بنجاح`);
       },
     },
   });
@@ -56,7 +56,10 @@ export function startDownload(opts: {
     toast.success(`${opts.label} — تم بنجاح`, { id: toastId, duration: 4000 });
   }).catch((err) => {
     activeDownloads.delete(opts.id);
-    if (err?.name === 'AbortError') return;
+    if (err?.name === 'AbortError' || err?.message === 'Aborted') {
+      toast.info(`${opts.label} — تم إلغاء التحميل بنجاح`, { id: toastId, duration: 4000 });
+      return;
+    }
     toast.error(`${opts.label} — فشل: ${err?.message || 'خطأ'}`, { id: toastId, duration: 6000 });
   });
 

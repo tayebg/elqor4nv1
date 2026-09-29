@@ -93,6 +93,29 @@ export interface PageState {
   tweetText: string;
   reelCoverTitle: string;
   reelCoverSubtitle: string;
+  videoState: {
+    surahId: number;
+    fromAyah: number;
+    toAyah: number;
+    videoSize: string;
+    reciterId: string;
+    bgImage: string;
+    customBgUrl: string;
+    textColor: string;
+    translationColor: string;
+    showTranslation: boolean;
+    translationId: number;
+    contentMode: string;
+    tafsirId: number;
+    bgScale: number;
+    bgDim: number;
+    bgBlur: number;
+    textScale: number;
+    bgIsVideo: boolean;
+    enableReverb: boolean;
+  };
+  tweetZoom: number;
+  tweetImage: string | null;
 }
 
 interface Shared {
@@ -160,6 +183,29 @@ const DEFAULT_PAGE_STATE: PageState = {
   tweetText: "قَالَ رَسُولُ اللَّهِ ﷺ:\n«إِنَّ اللَّهَ لَا يَنْظُرُ إِلَى صُوَرِكُمْ وَأَمْوَالِكُمْ، وَلَكِنْ يَنْظُرُ إِلَى قُلُوبِكُمْ وَأَعْمَالِكُمْ»",
   reelCoverTitle: "مِنْ أَحَبِّ الْأَعْمَالِ إِلَى اللَّهِ",
   reelCoverSubtitle: "",
+  videoState: {
+    surahId: 1,
+    fromAyah: 1,
+    toAyah: 7,
+    videoSize: "16:9",
+    reciterId: "7",
+    bgImage: "/quran-video-assets/quran-bg.png",
+    customBgUrl: "",
+    textColor: "#FFFFFF",
+    translationColor: "#B0C4DE",
+    showTranslation: true,
+    translationId: 20,
+    contentMode: "translation",
+    tafsirId: 16,
+    bgScale: 100,
+    bgDim: 30,
+    bgBlur: 0,
+    textScale: 100,
+    bgIsVideo: false,
+    enableReverb: false,
+  },
+  tweetZoom: 100,
+  tweetImage: null,
 };
 
 const DEFAULT_BRANDING: BrandingProfile = {
@@ -269,7 +315,7 @@ export const useSettings = create<Store>()(
     }),
     {
       name: "elqor4n-settings",
-      version: 9,
+      version: 10,
       migrate: (persisted: unknown, version) => {
         if (!persisted || typeof persisted !== "object") return persisted as never;
         const p = persisted as Record<string, unknown>;
@@ -284,7 +330,7 @@ export const useSettings = create<Store>()(
           if (o.secondaryDisplay !== "logo" && o.secondaryDisplay !== "name") o.secondaryDisplay = "both";
         };
         withDisplay(p);
-        if (version >= 5 && version < 9) {
+        if (version >= 5 && version < 10) {
           if (isStale(p.logoUrl)) p.logoUrl = defaultLogo.url;
           if (isStale(p.secondaryLogoUrl)) p.secondaryLogoUrl = fajrLogo.url;
           const profiles = p.profiles as Record<string, Record<string, unknown>> | undefined;
@@ -296,7 +342,7 @@ export const useSettings = create<Store>()(
               withDisplay(prof);
             }
           }
-          if (version < 9) {
+          if (version < 10) {
             p.pageState = { ...DEFAULT_PAGE_STATE, ...(p.pageState as Partial<PageState> || {}) };
           }
           return p as never;

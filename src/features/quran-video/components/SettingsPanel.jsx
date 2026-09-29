@@ -1,5 +1,17 @@
 import { useRef, useState, useMemo } from "react";
 
+const PRESET_COLORS = [
+  { value: "#FFFFFF", name: "أبيض" },
+  { value: "#000000", name: "أسود" },
+  { value: "#FDE68A", name: "ذهبي" },
+  { value: "#B0C4DE", name: "فضي" },
+  { value: "#93C5FD", name: "أزرق فاتح" },
+  { value: "#86EFAC", name: "أخضر فاتح" },
+  { value: "#FCA5A5", name: "أحمر فاتح" },
+  { value: "#F4F4F5", name: "رمادي فاتح" },
+  { value: "#3F3F46", name: "رمادي داكن" },
+];
+
 /**
  * Feature flags for the video studio.
  *
@@ -334,23 +346,31 @@ export default function SettingsPanel({
 
         <Section icon={Palette} title={t("colors")} />
         <Panel>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3">
             {[
               { label: t("text_color"), value: textColor, onChange: onTextColorChange },
               { label: t("translation_color"), value: translationColor, onChange: onTranslationColorChange },
             ].map((c) => (
               <div key={c.label} className="space-y-1.5">
                 <Label className="text-xs text-muted-foreground">{c.label}</Label>
-                <div className="relative flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={c.value}
-                    onChange={(e) => c.onChange(e.target.value)}
-                    className="h-9 w-14 cursor-pointer appearance-none rounded-md border border-border bg-background p-1 focus:outline-none focus:ring-2 focus:ring-ring"
-                    aria-label={c.label}
-                  />
-                  <span className="text-sm font-mono text-muted-foreground uppercase">{c.value}</span>
-                </div>
+                <Select value={c.value} onValueChange={c.onChange}>
+                  <SelectTrigger className="w-full">
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 w-4 rounded-full border shadow-inner shrink-0" style={{backgroundColor: c.value}} />
+                      <span className="truncate">{PRESET_COLORS.find(pc => pc.value.toUpperCase() === c.value.toUpperCase())?.name || c.value}</span>
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PRESET_COLORS.map(pc => (
+                      <SelectItem key={pc.value} value={pc.value}>
+                        <div className="flex items-center gap-2">
+                          <div className="h-4 w-4 rounded-full border shadow-inner shrink-0" style={{backgroundColor: pc.value}} />
+                          <span>{pc.name}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             ))}
           </div>

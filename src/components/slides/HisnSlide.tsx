@@ -114,12 +114,7 @@ export function HisnItemSlide({ chapter, itemIndex, slideId }: ItemProps) {
         >
           {itemIndex + 1} / {chapter.items.length}
         </span>
-        <span
-          className="warsh-text text-[40px]"
-          style={{ color: "#eaf0ff" }}
-        >
-          {chapter.title}
-        </span>
+        <HijriBadge color="rgba(234,240,255,0.85)" accent="#e6c878" fontSize={26} />
       </header>
 
       {item.count && (
@@ -133,7 +128,7 @@ export function HisnItemSlide({ chapter, itemIndex, slideId }: ItemProps) {
 
       <div
         className="absolute left-0 right-0 flex flex-col justify-center"
-        style={{ top: item.count ? 200 : 160, bottom: item.footnote ? 160 : 100, paddingLeft: 120, paddingRight: 120 }}
+        style={{ top: item.count ? 200 : 160, bottom: 100, paddingLeft: 120, paddingRight: 120 }}
       >
         <AutoFitText
           min={32}
@@ -141,27 +136,34 @@ export function HisnItemSlide({ chapter, itemIndex, slideId }: ItemProps) {
           deps={`${chapter.index}-${itemIndex}-${item.text.length}`}
         >
           <div
+            className="flex flex-col justify-center"
             style={{ 
-              fontFamily: '"mobtakar", sans-serif', 
               color: "#eaf0ff", 
               lineHeight: 2, 
               direction: 'rtl', 
               textAlign: 'center' 
             }}
           >
-            {item.text}
+            <div
+              className="warsh-text text-center mb-8"
+              style={{ color: "#e6c878" }}
+            >
+              — {
+                chapter.items.length === 1 
+                  ? `ذِكْرٌ وَارِدٌ فِي ${chapter.title}`
+                  : chapter.items.length === 2 
+                      ? `ذِكْرَانِ وَارِدَانِ فِي ${chapter.title}`
+                      : chapter.items.length <= 10 
+                          ? `${chapter.items.length} أذْكَارٍ وَارِدَةٍ فِي ${chapter.title}`
+                          : `${chapter.items.length} ذِكْرًا وَارِدًا فِي ${chapter.title}`
+              } —
+            </div>
+            <div className="warsh-text">
+              {item.text.replace(/[*_-]/g, '').trim()}
+            </div>
           </div>
         </AutoFitText>
       </div>
-
-      {item.footnote && (
-        <div
-          className="absolute left-0 right-0 text-center"
-          style={{ bottom: 60, paddingLeft: 120, paddingRight: 120, color: "rgba(230,200,120,0.7)", fontSize: 20, fontFamily: '"mobtakar", sans-serif', direction: 'rtl', lineHeight: 1.6 }}
-        >
-          {item.footnote}
-        </div>
-      )}
 
       <footer
         className="absolute bottom-8 left-0 right-0 text-center text-[18px] tracking-[0.2em]"

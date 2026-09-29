@@ -30,8 +30,7 @@ export const Route = createFileRoute("/")({
 const SOCIALS = [
   { Icon: TikTokIcon, handle: "@elqor4n", href: "https://www.tiktok.com/@elqor4n" },
   { Icon: FacebookIcon, handle: "@elqor4n", href: "https://www.facebook.com/elqor4n" },
-  { Icon: InstagramIcon, handle: "@elqor4n", href: "https://www.instagram.com/elqor4n/", badge: 1 },
-  { Icon: InstagramIcon, handle: "@fajr_al_tilawa", href: "https://www.instagram.com/fajr_al_tilawa/", badge: 2 },
+  { Icon: InstagramIcon, handle: "@elqor4n", href: "https://www.instagram.com/elqor4n/" },
 ];
 
 function Home() {
@@ -100,7 +99,7 @@ function Home() {
           <div className="flex items-center justify-between gap-3" dir="rtl">
             <span className="shrink-0 text-xs font-semibold text-foreground">تابعنا</span>
             <ul className="flex items-center justify-end gap-2" dir="ltr">
-              {SOCIALS.map(({ Icon, handle: h, href, badge }) => (
+              {SOCIALS.map(({ Icon, handle: h, href }) => (
                 <li key={`${href}-${h}`}>
                   <a
                     href={href}
@@ -110,11 +109,6 @@ function Home() {
                     className="relative grid h-9 w-9 place-items-center rounded-lg border border-border bg-background/70 text-foreground transition-colors hover:border-primary hover:text-primary"
                   >
                     <Icon className="h-5 w-5 text-muted-foreground" />
-                    {badge && (
-                      <span className="absolute -end-1.5 -top-1 grid h-4 w-4 place-items-center rounded-full border border-background bg-primary text-[9px] leading-none text-primary-foreground">
-                        {badge}
-                      </span>
-                    )}
                   </a>
                 </li>
               ))}

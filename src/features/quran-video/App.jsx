@@ -8,7 +8,7 @@ import { videoSizes } from "./data/quranData";
 import { defaultColors } from "./data/backgrounds";
 import SettingsPanel from "./components/SettingsPanel";
 import PreviewPanel from "./components/PreviewPanel";
-import { useResolvedBranding } from "@/lib/settings";
+import { useSettings, useResolvedBranding } from "@/lib/settings";
 import { ShareMenu } from "@/components/ShareMenu";
 import { startDownload } from "@/lib/download-manager";
 
@@ -17,20 +17,23 @@ function App() {
   const audioRef = useRef(null);
   const { exportVideo, isExporting, progress, statusText } = useVideoExport();
 
+  const { pageState, setPageState } = useSettings();
+  const videoState = pageState.videoState;
+
   const [settings, setSettings] = useState({
-    surahId: 1,
-    fromAyah: 1,
-    toAyah: 7,
-    videoSize: "16:9",
-    reciterId: "7",
+    surahId: videoState.surahId,
+    fromAyah: videoState.fromAyah,
+    toAyah: videoState.toAyah,
+    videoSize: videoState.videoSize,
+    reciterId: videoState.reciterId,
   });
 
-  const [bgImage, setBgImage] = useState("/quran-video-assets/quran-bg.png");
-  const [customBgUrl, setCustomBgUrl] = useState("");
-  const [textColor, setTextColor] = useState(defaultColors.textColor);
-  const [translationColor, setTranslationColor] = useState("#B0C4DE");
-  const [showTranslation, setShowTranslation] = useState(true);
-  const [translationId, setTranslationId] = useState(20);
+  const [bgImage, setBgImage] = useState(videoState.bgImage);
+  const [customBgUrl, setCustomBgUrl] = useState(videoState.customBgUrl);
+  const [textColor, setTextColor] = useState(videoState.textColor);
+  const [translationColor, setTranslationColor] = useState(videoState.translationColor);
+  const [showTranslation, setShowTranslation] = useState(videoState.showTranslation);
+  const [translationId, setTranslationId] = useState(videoState.translationId);
   // Watermark is derived from the global ELQOR4N branding (Settings → Branding).
   // Users configure it in one place; every generator — including this video tool — reads from there.
   const resolvedBrand = useResolvedBranding();
@@ -41,16 +44,40 @@ function App() {
   const appSecondaryUsername = resolvedBrand.secondaryUsername;
   const watermarkText = appUsername || "";
   const setWatermarkText = () => {}; // no-op — kept for SettingsPanel compatibility
-  const [enableReverb, setEnableReverb] = useState(false);
+  const [enableReverb, setEnableReverb] = useState(videoState.enableReverb);
 
-  const [bgScale, setBgScale] = useState(100);
-  const [bgDim, setBgDim] = useState(30);
-  const [bgBlur, setBgBlur] = useState(0);
-  const [textScale, setTextScale] = useState(100);
-  const [bgIsVideo, setBgIsVideo] = useState(false);
+  const [bgScale, setBgScale] = useState(videoState.bgScale);
+  const [bgDim, setBgDim] = useState(videoState.bgDim);
+  const [bgBlur, setBgBlur] = useState(videoState.bgBlur);
+  const [textScale, setTextScale] = useState(videoState.textScale);
+  const [bgIsVideo, setBgIsVideo] = useState(videoState.bgIsVideo);
 
-  const [contentMode, setContentMode] = useState("translation");
-  const [tafsirId, setTafsirId] = useState(16); 
+  const [contentMode, setContentMode] = useState(videoState.contentMode);
+  const [tafsirId, setTafsirId] = useState(videoState.tafsirId); 
+
+  useEffect(() => {
+    setPageState('videoState', {
+      surahId: settings.surahId,
+      fromAyah: settings.fromAyah,
+      toAyah: settings.toAyah,
+      videoSize: settings.videoSize,
+      reciterId: settings.reciterId,
+      bgImage,
+      customBgUrl,
+      textColor,
+      translationColor,
+      showTranslation,
+      translationId,
+      contentMode,
+      tafsirId,
+      bgScale,
+      bgDim,
+      bgBlur,
+      textScale,
+      bgIsVideo,
+      enableReverb,
+    });
+  }, [settings, bgImage, customBgUrl, textColor, translationColor, showTranslation, translationId, contentMode, tafsirId, bgScale, bgDim, bgBlur, textScale, bgIsVideo, enableReverb, setPageState]);
 
   // Last successfully rendered video, kept so it can be shared without re-export.
   const [lastVideo, setLastVideo] = useState(null); // { blob, name }
@@ -263,6 +290,7 @@ function App() {
             collaboration: appCollab,
             secondaryLogoUrl: appSecondaryLogoUrl,
             secondaryUsername: appSecondaryUsername,
+            reciterName: selectedReciterName,
             onProgress, signal }
         );
         if (outBlob && outBlob.size > 1000) {
@@ -322,6 +350,7 @@ function App() {
             collaboration: appCollab,
             secondaryLogoUrl: appSecondaryLogoUrl,
             secondaryUsername: appSecondaryUsername,
+            reciterName: selectedReciterName,
             onProgress, signal }
         );
         if (blob && blob.size > 1000) {

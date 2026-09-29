@@ -111,6 +111,7 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
     collaboration = false,
     secondaryLogoImage = null,
     secondaryUsername = "",
+    reciterName = "",
   } = options;
 
   const isPortrait = height > width;
@@ -300,7 +301,7 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
     ctx.restore();
   }
 
-  const badgeText = `سورة ${chapterName}`;
+  const badgeText = reciterName ? `سورة ${chapterName} • ${reciterName}` : `سورة ${chapterName}`;
   ctx.direction = "rtl";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";

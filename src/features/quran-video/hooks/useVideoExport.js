@@ -57,6 +57,7 @@ export function useVideoExport() {
         collaboration = false,
         secondaryLogoUrl = "",
         secondaryUsername = "",
+        reciterName = "",
         onProgress,
         signal,
       } = exportOptions;
@@ -282,6 +283,7 @@ export function useVideoExport() {
             collaboration,
             secondaryLogoImage,
             secondaryUsername,
+            reciterName,
           });
 
           const videoFrame = new VideoFrame(exportCanvas, {
@@ -397,6 +399,12 @@ export function useVideoExport() {
         return blob;
 
       } catch (err) {
+        if (err.name === 'AbortError' || err.message === 'Aborted') {
+          console.log("🛑 [Export] تم الإلغاء بواسطة المستخدم");
+          setStatusText("تم إلغاء التحميل بنجاح");
+          setProgress(0);
+          return null;
+        }
         console.error("❌ [Export] خطأ:", err);
         setStatusText("❌ فشل التصدير");
         setProgress(0);

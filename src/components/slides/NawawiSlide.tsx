@@ -84,11 +84,11 @@ export function NawawiContentSlide({
                 — {hadithTitleAr(hadith.index)} —
               </div>
             )}
-            <div style={{ fontFamily: '"mobtakar", sans-serif' }}>{pageText}</div>
+            <div className="warsh-text">{pageText}</div>
             {pageNumber === totalPages && hadith.narrator && (
               <div
-                className="text-center mt-8"
-                style={{ color: "#d6b463", fontSize: "0.78em", fontFamily: '"mobtakar", sans-serif' }}
+                className="warsh-text text-center mt-8"
+                style={{ color: "#d6b463", fontSize: "0.78em" }}
               >
                 {hadith.narrator}
               </div>

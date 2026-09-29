@@ -33,12 +33,20 @@ function TweetPage() {
   const [text, setTextState] = useState(s.pageState.tweetText);
   const [saving, setSaving] = useState(false);
   const [collabBrand, setCollabBrand] = useState<"primary" | "secondary">("primary");
-  const [textZoom, setTextZoom] = useState(100);
-  const [tweetImage, setTweetImage] = useState<string | null>(null);
+  const [textZoom, setTextZoomState] = useState(s.pageState.tweetZoom ?? 100);
+  const [tweetImage, setTweetImageState] = useState<string | null>(s.pageState.tweetImage ?? null);
 
   const setText = (v: string) => {
     setTextState(v);
     s.setPageState("tweetText", v);
+  };
+  const setTextZoom = (v: number) => {
+    setTextZoomState(v);
+    s.setPageState("tweetZoom", v);
+  };
+  const setTweetImage = (v: string | null) => {
+    setTweetImageState(v);
+    s.setPageState("tweetImage", v);
   };
 
   // Which brand's identity fills the header when Collaboration is on.
