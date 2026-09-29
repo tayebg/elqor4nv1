@@ -4,12 +4,13 @@ import { useSettings, formatHandle } from "@/lib/settings";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Download, Loader2 } from "lucide-react";
+import { Download, Loader2, Upload, RotateCcw } from "lucide-react";
 import { ClientOnly } from "@/components/ClientOnly";
 import { captureNodeToBlob, triggerDownloadBlob } from "@/lib/export";
 import { ShareMenu } from "@/components/ShareMenu";
 import { TweetCard, TWEET_SIZE } from "@/components/tweet/TweetCard";
 import { ScaledSlide } from "@/components/ScaledSlide";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export const Route = createFileRoute("/tweet")({
   head: () => ({
@@ -29,11 +30,16 @@ const NODE_ID = "tweet-export";
 
 function TweetPage() {
   const s = useSettings();
-  const [text, setText] = useState(
-    "قَالَ رَسُولُ اللَّهِ ﷺ:\n«إِنَّ اللَّهَ لَا يَنْظُرُ إِلَى صُوَرِكُمْ وَأَمْوَالِكُمْ، وَلَكِنْ يَنْظُرُ إِلَى قُلُوبِكُمْ وَأَعْمَالِكُمْ»",
-  );
+  const [text, setTextState] = useState(s.pageState.tweetText);
   const [saving, setSaving] = useState(false);
   const [collabBrand, setCollabBrand] = useState<"primary" | "secondary">("primary");
+  const [textZoom, setTextZoom] = useState(100);
+  const [tweetImage, setTweetImage] = useState<string | null>(null);
+
+  const setText = (v: string) => {
+    setTextState(v);
+    s.setPageState("tweetText", v);
+  };
 
   // Which brand's identity fills the header when Collaboration is on.
   const primaryHandle = formatHandle(s.username, "@elqor4n");
@@ -76,19 +82,68 @@ function TweetPage() {
               السمة والتاريخ/الوقت في الإعدادات ← التغريدة.
             </p>
           </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">حجم النص: {textZoom}%</Label>
+            <input
+              type="range"
+              min={60}
+              max={140}
+              step={5}
+              value={textZoom}
+              onChange={(e) => setTextZoom(Number(e.target.value))}
+              className="w-full"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">صورة التغريدة</Label>
+            <div className="flex items-center gap-3">
+              <div className="h-16 w-16 rounded-md border border-border bg-card overflow-hidden grid place-items-center text-[10px] text-muted-foreground shrink-0">
+                {tweetImage ? (
+                  <img src={tweetImage} alt="" className="w-full h-full object-cover" />
+                ) : "لا توجد"}
+              </div>
+              <div className="flex flex-col gap-1">
+                <input
+                  id="tweet-img"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (!f) return;
+                    const reader = new FileReader();
+                    reader.onload = () => setTweetImage(String(reader.result));
+                    reader.readAsDataURL(f);
+                  }}
+                />
+                <Button size="sm" variant="outline" onClick={() => document.getElementById('tweet-img')?.click()}>
+                  <Upload className="h-3.5 w-3.5 mr-2" />رفع
+                </Button>
+                {tweetImage && (
+                  <Button size="sm" variant="ghost" onClick={() => setTweetImage(null)}>
+                    <RotateCcw className="h-3.5 w-3.5 mr-2" />إزالة
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
           <div className="rounded-lg border border-border bg-card/40 p-4 space-y-3">
             <p className="text-xs font-medium text-foreground">نمط التغريدة</p>
             <div className="space-y-1.5">
               <Label className="text-xs">السمة</Label>
-              <select
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={s.tweet.theme}
-                onChange={(e) => s.setTweet("theme", e.target.value as "light" | "dim" | "dark")}
+              <Select
+                value={String(s.tweet.theme)}
+                onValueChange={(v) => s.setTweet("theme", v as "light" | "dim" | "dark")}
               >
-                <option value="light">فاتح (كلاسيكي)</option>
-                <option value="dim">مُعتِم</option>
-                <option value="dark">داكن</option>
-              </select>
+                <SelectTrigger className="w-full bg-background" dir="rtl">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="max-h-72">
+                  <SelectItem value="light" dir="rtl">فاتح (كلاسيكي)</SelectItem>
+                  <SelectItem value="dim" dir="rtl">مُعتِم</SelectItem>
+                  <SelectItem value="dark" dir="rtl">داكن</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <label className="flex items-center gap-2 text-xs">
               <input
@@ -163,6 +218,8 @@ function TweetPage() {
                     showTimestamp={s.tweet.showTimestamp}
                     avatarUrl={s.logoUrl}
                     collabBrand={collabBrand}
+                    textZoom={textZoom}
+                    imageUrl={tweetImage}
                   />
                 </div>
               </div>
@@ -182,6 +239,8 @@ function TweetPage() {
           showTimestamp={s.tweet.showTimestamp}
           avatarUrl={s.logoUrl}
           collabBrand={collabBrand}
+          textZoom={textZoom}
+          imageUrl={tweetImage}
         />
       </div>
     </div>

@@ -10,6 +10,7 @@ import SettingsPanel from "./components/SettingsPanel";
 import PreviewPanel from "./components/PreviewPanel";
 import { useResolvedBranding } from "@/lib/settings";
 import { ShareMenu } from "@/components/ShareMenu";
+import { startDownload } from "@/lib/download-manager";
 
 function App() {
   const { chapters, reciters, loading, error } = useQuranData();
@@ -67,6 +68,11 @@ function App() {
     [settings.reciterId, reciters]
   );
 
+  const selectedReciterName = useMemo(() => {
+    const r = reciters.find(r => String(r.id) === effectiveReciterId);
+    return r?.translated_name?.name || r?.reciter_name || '';
+  }, [reciters, effectiveReciterId]);
+
   const { timedVerses, audioUrl, loading: timedLoading, error: timedError } = useTimedVerses(
     effectiveReciterId, settings.surahId, settings.fromAyah, settings.toAyah
   );
@@ -76,6 +82,11 @@ function App() {
 
   const { blobUrl: audioBlobUrl, audioBlob, loading: audioBlobLoading, error: audioBlobError } =
     useAudioBlob(audioUrl);
+
+  const lastValidAudioRef = useRef('');
+  useEffect(() => {
+    if (audioBlobUrl) lastValidAudioRef.current = audioBlobUrl;
+  }, [audioBlobUrl]);
 
   const { translations, loading: transLoading } = useQuranTranslation(
     settings.surahId, settings.fromAyah, settings.toAyah,
@@ -215,7 +226,7 @@ function App() {
     setCurrentTimeMs(0);
   }, []); 
 
-  const handleExportVideo = useCallback(async () => {
+  const handleExportVideo = useCallback(() => {
     const tv = timedVersesRef.current;
     if (!tv?.length) {
       alert("⚠️ لا توجد بيانات آيات. يرجى انتظار تحميل التوقيتات.");
@@ -226,33 +237,41 @@ function App() {
       return;
     }
 
-    try {
-      const size = videoSizes.find((s) => s.id === settings.videoSize) || videoSizes[0];
-      const chapter = chapters.find((c) => c.id === settings.surahId);
-      const surahName = chapter?.name_arabic || `Surah${settings.surahId}`;
-      const fileName = `Tarteel_${surahName}_${settings.fromAyah}-${settings.toAyah}`;
-      const bgSrc = buildBgSrc();
-      console.log(`📤 [Export] bgSrc: ${bgSrc.substring(0, 80)}...`);
+    const size = videoSizes.find((s) => s.id === settings.videoSize) || videoSizes[0];
+    const chapter = chapters.find((c) => c.id === settings.surahId);
+    const surahName = chapter?.name_arabic || `Surah${settings.surahId}`;
+    const fileName = `Tarteel_${surahName}_${settings.fromAyah}-${settings.toAyah}`;
+    const bgSrc = buildBgSrc();
+    console.log(`📤 [Export] bgSrc: ${bgSrc.substring(0, 80)}...`);
 
-      const textLines = (displayTexts || []).map((t) => t?.text || "");
-      console.log(`📤 [Export] تصدير ${tv.length} آية | نصوص: ${textLines.length} سطر | الوضع: ${contentMode}`);
+    const textLines = (displayTexts || []).map((t) => t?.text || "");
+    console.log(`📤 [Export] تصدير ${tv.length} آية | نصوص: ${textLines.length} سطر | الوضع: ${contentMode}`);
 
-      const outBlob = await exportVideo(bgSrc, audioBlobUrl, tv,
-        { width: size.width, height: size.height }, fileName,
-        { textColor, translationColor, watermarkText, enableReverb,
-          translationLines: textLines, audioBlob,
-          bgIsVideo, bgScale, bgDim, bgBlur, textScale,
-          showTranslation, contentMode,
-          chapterName: surahName,
-          logoUrl: appLogoUrl,
-          collaboration: appCollab,
-          secondaryLogoUrl: appSecondaryLogoUrl,
-          secondaryUsername: appSecondaryUsername }
-      );
-      if (outBlob && outBlob.size > 1000) setLastVideo({ blob: outBlob, name: `${fileName}.mp4` });
-    } catch (err) {
-      console.error("❌ [App] خطأ في التصدير:", err);
-    }
+    startDownload({
+      id: 'video-export',
+      label: 'تصدير الفيديو',
+      filename: `${fileName}.mp4`,
+      generateBlob: async (onProgress, signal) => {
+        const outBlob = await exportVideo(bgSrc, audioBlobUrl, tv,
+          { width: size.width, height: size.height }, fileName,
+          { textColor, translationColor, watermarkText, enableReverb,
+            translationLines: textLines, audioBlob, autoDownload: false,
+            bgIsVideo, bgScale, bgDim, bgBlur, textScale,
+            showTranslation, contentMode,
+            chapterName: surahName,
+            logoUrl: appLogoUrl,
+            collaboration: appCollab,
+            secondaryLogoUrl: appSecondaryLogoUrl,
+            secondaryUsername: appSecondaryUsername,
+            onProgress, signal }
+        );
+        if (outBlob && outBlob.size > 1000) {
+          setLastVideo({ blob: outBlob, name: `${fileName}.mp4` });
+          return outBlob;
+        }
+        throw new Error("فشل تصدير الفيديو أو حجمه صغير جداً.");
+      }
+    });
   }, [settings, chapters, buildBgSrc, audioBlobUrl, audioBlob, exportVideo, textColor, translationColor, watermarkText, enableReverb, displayTexts, contentMode, bgIsVideo, bgScale, bgDim, bgBlur, textScale, showTranslation, appLogoUrl, appCollab, appSecondaryLogoUrl, appSecondaryUsername]);
 
   const handleExportReels = useCallback(async (opts = {}) => {
@@ -268,7 +287,6 @@ function App() {
     }
 
     try {
-      
       const startMs = tv[0].timestampFrom;
       let lastIdx = 0;
       for (let i = 0; i < tv.length; i++) {
@@ -292,37 +310,36 @@ function App() {
       const bgSrc = buildBgSrc();
       console.log(`📤 [Reels] bgSrc: ${bgSrc.substring(0, 80)}...`);
 
-      const blob = await exportVideo(bgSrc, audioBlobUrl, reelVerses,
-        { width: 1080, height: 1920 }, fileName,
-        { textColor, translationColor, watermarkText, enableReverb,
-          translationLines: textLines, autoDownload: false, audioBlob,
-          bgIsVideo, bgScale, bgDim, bgBlur, textScale,
-          showTranslation, contentMode,
-          chapterName: surahName,
-          logoUrl: appLogoUrl,
-          collaboration: appCollab,
-          secondaryLogoUrl: appSecondaryLogoUrl,
-          secondaryUsername: appSecondaryUsername }
-      );
+      const generateVideo = async (onProgress, signal) => {
+        const blob = await exportVideo(bgSrc, audioBlobUrl, reelVerses,
+          { width: 1080, height: 1920 }, fileName,
+          { textColor, translationColor, watermarkText, enableReverb,
+            translationLines: textLines, autoDownload: false, audioBlob,
+            bgIsVideo, bgScale, bgDim, bgBlur, textScale,
+            showTranslation, contentMode,
+            chapterName: surahName,
+            logoUrl: appLogoUrl,
+            collaboration: appCollab,
+            secondaryLogoUrl: appSecondaryLogoUrl,
+            secondaryUsername: appSecondaryUsername,
+            onProgress, signal }
+        );
+        if (blob && blob.size > 1000) {
+          setLastVideo({ blob, name: `${fileName}.mp4` });
+          return blob;
+        }
+        throw new Error("ملف الريلز صغير جداً.");
+      };
 
-      if (blob && blob.size > 1000 && opts.share) {
-        setLastVideo({ blob, name: `${fileName}.mp4` });
-        return blob;
-      }
-      if (blob && blob.size > 1000) {
-        setLastVideo({ blob, name: `${fileName}.mp4` });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${fileName}.mp4`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        
-        setTimeout(() => URL.revokeObjectURL(url), 30000);
-        console.log(`✅ [Reels] تم تحميل ${(blob.size / 1024 / 1024).toFixed(2)} MB`);
-      } else if (blob) {
-        alert("⚠️ ملف الريلز صغير جداً. يرجى المحاولة مجدداً.");
+      if (opts.share) {
+        return await generateVideo();
+      } else {
+        startDownload({
+          id: 'reels-export',
+          label: 'تصدير الريلز',
+          filename: `${fileName}.mp4`,
+          generateBlob: generateVideo
+        });
       }
     } catch (err) {
       console.error("❌ [Reels] خطأ:", err);
@@ -353,7 +370,7 @@ function App() {
           isPlaying={isPlaying}
           onPlayPause={handlePlayPause}
           timedLoading={timedLoading || audioBlobLoading}
-          audioUrl={audioBlobUrl}
+          audioUrl={audioBlobUrl || lastValidAudioRef.current}
           bgImage={effectiveBg}
           bgIsVideo={bgIsVideo}
           textColor={textColor}
@@ -370,6 +387,7 @@ function App() {
           collaboration={appCollab}
           secondaryLogoUrl={appSecondaryLogoUrl}
           secondaryUsername={appSecondaryUsername}
+          selectedReciterName={selectedReciterName}
         />
       </main>
 

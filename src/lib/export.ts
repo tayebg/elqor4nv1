@@ -3,17 +3,17 @@ import JSZip from "jszip";
 
 interface ZipExportOptions {
   count: number;
-  hizb: number;
+  hizb?: number;
   captureId: string;
   prepareSlide: (index: number) => Promise<void>;
   onProgress?: (progress: number) => void;
   width?: number;
   height?: number;
   backgroundColor?: string;
+  signal?: AbortSignal;
 }
 
 async function nextPaint() {
-  await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
   await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
 }
 
@@ -23,13 +23,11 @@ export async function captureNodeToBlob(
 ): Promise<Blob> {
   const node = document.getElementById(id);
   if (!node) throw new Error(`Slide ${id} not found`);
-  if (document.fonts) await document.fonts.ready;
   await nextPaint();
   const blob = await toBlob(node, {
     width: opts.width,
     height: opts.height,
     pixelRatio: 1,
-    cacheBust: true,
     backgroundColor: opts.backgroundColor ?? "#ffffff",
   });
   if (!blob) throw new Error(`Slide ${id} could not be captured`);
@@ -55,17 +53,20 @@ export function triggerDownloadBlob(blob: Blob, filename: string) {
 /** Capture every slide and download as a single ZIP archive. */
 export async function exportAllPngZip({
   count,
-  hizb,
+  hizb = 1,
   captureId,
   prepareSlide,
   onProgress,
   width = 1080,
   height = 1080,
   backgroundColor = "#fbf8f3",
+  signal,
 }: ZipExportOptions) {
+  if (document.fonts) await document.fonts.ready;
   const zip = new JSZip();
   const folder = zip.folder(`hizb-${String(hizb).padStart(2, "0")}`)!;
   for (let i = 0; i < count; i++) {
+    if (signal?.aborted) throw new Error("Aborted");
     await prepareSlide(i);
     const blob = await captureNodeToBlob(captureId, { width, height, backgroundColor });
     folder.file(
@@ -75,9 +76,13 @@ export async function exportAllPngZip({
     onProgress?.(Math.round(((i + 1) / count) * 85));
     await nextPaint();
   }
+  if (signal?.aborted) throw new Error("Aborted");
   const archive = await zip.generateAsync(
     { type: "blob", compression: "STORE" },
-    (metadata) => onProgress?.(85 + Math.round(metadata.percent * 0.15)),
+    (metadata) => {
+      if (signal?.aborted) throw new Error("Aborted");
+      onProgress?.(85 + Math.round(metadata.percent * 0.15))
+    },
   );
   return {
     blob: archive,
@@ -105,6 +110,7 @@ export async function exportAllPngFiles({
   backgroundColor?: string;
   filename?: (index: number) => string;
 }): Promise<File[]> {
+  if (document.fonts) await document.fonts.ready;
   const files: File[] = [];
   for (let i = 0; i < count; i++) {
     await prepareSlide(i);

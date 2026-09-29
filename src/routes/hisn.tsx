@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { loadHisn, type HisnChapter } from "@/lib/hisn";
-import { HisnCoverSlide, HisnItemSlide, HisnClosingSlide } from "@/components/slides/HisnSlide";
+import { HisnItemSlide, HisnClosingSlide } from "@/components/slides/HisnSlide";
 import { Button } from "@/components/ui/button";
 import { exportAllPngZip, exportAllPngFiles, triggerDownloadUrl, captureNodeToBlob } from "@/lib/export";
 import { ShareMenu } from "@/components/ShareMenu";
@@ -12,6 +12,8 @@ import { ScaledSlide } from "@/components/ScaledSlide";
 import { useSettings } from "@/lib/settings";
 import { ArabicField } from "@/components/ArabicField";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { startDownload } from "@/lib/download-manager";
 
 const EXPORT_ID = "slide-export-hisn";
 const SHOW_CAROUSEL_SHARE = false; // temporarily hidden while sharing pipeline is reviewed
@@ -37,50 +39,56 @@ export const Route = createFileRoute("/hisn")({
 function HisnPage() {
   const s = useSettings();
   const [all, setAll] = useState<HisnChapter[] | null>(null);
-  const [chIdx, setChIdx] = useState(1);
+  const [chIdx, setChIdxState] = useState(s.pageState.selectedHisnChapter);
   const [exporting, setExporting] = useState(false);
   const [exportIdx, setExportIdx] = useState(0);
   const [exportProgress, setExportProgress] = useState(0);
   const [previewIdx, setPreviewIdx] = useState(0);
   const [sharingAll, setSharingAll] = useState(false);
   const [shareIndex, setShareIndex] = useState(0);
-  const dlRef = useRef<string | null>(null);
 
+  const setChIdx = (i: number) => {
+    setChIdxState(i);
+    s.setPageState("selectedHisnChapter", i);
+  };
 
   useEffect(() => { loadHisn().then(setAll); }, []);
-  useEffect(() => () => { if (dlRef.current) URL.revokeObjectURL(dlRef.current); }, []);
 
   const chapter = all?.find((c) => c.index === chIdx);
   const slideIds = useMemo(
-    () => chapter ? ["h-cover", ...chapter.items.map((_, i) => `h-item-${i}`), "h-closing"] : [],
+    () => chapter ? [...chapter.items.map((_, i) => `h-item-${i}`), "h-closing"] : [],
     [chapter],
   );
   const total = slideIds.length;
   const safeIdx = Math.min(previewIdx, Math.max(0, total - 1));
 
-  const handleZip = async () => {
+  const handleZip = () => {
     if (!chapter) return;
-    if (dlRef.current) URL.revokeObjectURL(dlRef.current);
-    dlRef.current = null;
-    setExporting(true);
-    setExportProgress(0);
-    try {
-      const { blob } = await exportAllPngZip({
-        count: slideIds.length,
-        hizb: chIdx,
-        captureId: EXPORT_ID,
-        onProgress: setExportProgress,
-        prepareSlide: async (i) => {
-          setExportIdx(i);
-          await new Promise((r) => requestAnimationFrame(() => r(null)));
-        },
-      });
-      const url = URL.createObjectURL(blob);
-      dlRef.current = url;
-      triggerDownloadUrl(url, `hisn-${String(chIdx).padStart(3, "0")}.zip`);
-    } finally {
-      setExporting(false);
-    }
+    startDownload({
+      id: `hisn-chapter-${chIdx}`,
+      label: `تنزيل صور حصن المسلم ${chIdx}`,
+      filename: `hisn-${String(chIdx).padStart(3, "0")}.zip`,
+      generateBlob: async (onProgress, signal) => {
+        setExporting(true);
+        setExportProgress(0);
+        try {
+          const { blob } = await exportAllPngZip({
+            count: slideIds.length,
+            hizb: chIdx,
+            captureId: EXPORT_ID,
+            onProgress,
+            signal,
+            prepareSlide: async (i) => {
+              setExportIdx(i);
+              await new Promise((r) => requestAnimationFrame(() => r(null)));
+            },
+          });
+          return blob;
+        } finally {
+          setExporting(false);
+        }
+      }
+    });
   };
 
   return (
@@ -89,18 +97,22 @@ function HisnPage() {
         <aside className="space-y-6 w-full min-w-0">
           <section className="space-y-3">
             <label className="text-sm font-medium">اختر الباب</label>
-            <select
-              value={chIdx}
-              onChange={(e) => { setChIdx(Number(e.target.value)); setPreviewIdx(0); }}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            <Select
+              value={String(chIdx)}
+              onValueChange={(v) => { setChIdx(Number(v)); setPreviewIdx(0); }}
               disabled={!all}
             >
-              {all?.map((c) => (
-                <option key={c.index} value={c.index} dir="rtl">
-                  {c.index}. {c.title}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="w-full bg-background" dir="rtl">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="max-h-72">
+                {all?.map((c) => (
+                  <SelectItem key={c.index} value={String(c.index)} dir="rtl">
+                    {c.index}. {c.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </section>
 
           <section className="space-y-2">
@@ -216,7 +228,6 @@ function RenderSlide({
   idx, chapter, slideIds, slideId,
 }: { idx: number; chapter: HisnChapter; slideIds: string[]; slideId?: string }) {
   const id = slideId ?? `preview-${slideIds[idx]}`;
-  if (idx === 0) return <HisnCoverSlide chapter={chapter} slideId={id} />;
   if (idx === slideIds.length - 1) return <HisnClosingSlide slideId={id} />;
-  return <HisnItemSlide chapter={chapter} itemIndex={idx - 1} slideId={id} />;
+  return <HisnItemSlide chapter={chapter} itemIndex={idx} slideId={id} />;
 }

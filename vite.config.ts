@@ -105,6 +105,34 @@ export default defineConfig(({ command }) => ({
               expiration: { maxEntries: 120, maxAgeSeconds: 60 * 60 * 24 * 30 },
             },
           },
+          {
+            urlPattern: ({ url }) => url.hostname === 'api.quran.com',
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'quran-api',
+              expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 7 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            urlPattern: ({ url }) => url.hostname === 'download.quranicaudio.com' || url.pathname.startsWith('/audio-proxy'),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'quran-audio',
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 14 },
+              cacheableResponse: { statuses: [0, 200] },
+              rangeRequests: true,
+            },
+          },
+          {
+            urlPattern: ({ url }) => url.hostname.includes('pixabay.com') || url.hostname.includes('vimeocdn.com'),
+            handler: 'CacheFirst',  
+            options: {
+              cacheName: 'pixabay-media',
+              expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 7 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
         ],
       },
     }),

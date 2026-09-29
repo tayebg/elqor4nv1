@@ -35,15 +35,20 @@
   font-display: swap;
 }
 
-/* Application UI font.
-   Primary choice is the licensed "Mobtakar-Fat" typeface: if the user has it
-   installed locally (or a self-hosted .otf is added later), it wins. Otherwise
-   the app falls back to Cairo (loaded from Google Fonts in __root.tsx), a
-   free bold geometric Arabic display face very close in feel to Mobtakar-Fat.
-   Generated slide/canvas content keeps its Naskh/Warsh Mushaf fonts. */
+/* Thmanyah (mobtakar) — used ONLY in specific generated slide content
+   (Hadith posts, Hisn posts), NOT as the global UI font. */
 @font-face {
-  font-family: "Mobtakar-Fat";
-  src: local("Mobtakar Fat"), local("Mobtakar-Fat"), local("MobtakarFat");
+  font-family: "mobtakar";
+  font-style: normal;
+  font-weight: 300;
+  src: local("mobtakar"), local("Mobtakar");
+  font-display: swap;
+}
+@font-face {
+  font-family: "mobtakar";
+  font-style: normal;
+  font-weight: 800;
+  src: local("mobtakar"), local("Mobtakar");
   font-display: swap;
 }
 
@@ -193,7 +198,7 @@ button, a, [role="button"], select, input, label {
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: "Mobtakar-Fat", "Cairo", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   }
   /* Do NOT let the UI font leak into generated post/reel/tweet content. */
   .slide-canvas, .slide-canvas *, .warsh-text {

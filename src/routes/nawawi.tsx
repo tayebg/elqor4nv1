@@ -12,6 +12,8 @@ import { ScaledSlide } from "@/components/ScaledSlide";
 import { useSettings } from "@/lib/settings";
 import { ArabicField } from "@/components/ArabicField";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { startDownload } from "@/lib/download-manager";
 
 const EXPORT_ID = "slide-export-nawawi";
 const SHOW_CAROUSEL_SHARE = false; // temporarily hidden while sharing pipeline is reviewed
@@ -37,18 +39,20 @@ export const Route = createFileRoute("/nawawi")({
 function NawawiPage() {
   const s = useSettings();
   const [all, setAll] = useState<NawawiHadith[] | null>(null);
-  const [index, setIndex] = useState(1);
+  const [index, setIndexState] = useState(s.pageState.selectedHadith);
   const [exporting, setExporting] = useState(false);
   const [exportIdx, setExportIdx] = useState(0);
   const [exportProgress, setExportProgress] = useState(0);
   const [previewIdx, setPreviewIdx] = useState(0);
   const [sharingAll, setSharingAll] = useState(false);
   const [shareIndex, setShareIndex] = useState(0);
-  const dlRef = useRef<string | null>(null);
 
+  const setIndex = (i: number) => {
+    setIndexState(i);
+    s.setPageState("selectedHadith", i);
+  };
 
   useEffect(() => { loadNawawi().then(setAll); }, []);
-  useEffect(() => () => { if (dlRef.current) URL.revokeObjectURL(dlRef.current); }, []);
 
   const hadith = all?.find((h) => h.index === index);
   const pages = useMemo(() => hadith ? paginateHadith(hadith.body) : [], [hadith]);
@@ -60,29 +64,33 @@ function NawawiPage() {
   const total = slideIds.length;
   const safeIdx = Math.min(previewIdx, Math.max(0, total - 1));
 
-  const handleZip = async () => {
+  const handleZip = () => {
     if (!hadith) return;
-    if (dlRef.current) URL.revokeObjectURL(dlRef.current);
-    dlRef.current = null;
-    setExporting(true);
-    setExportProgress(0);
-    try {
-      const { blob } = await exportAllPngZip({
-        count: slideIds.length,
-        hizb: index, // reused as folder/filename number
-        captureId: EXPORT_ID,
-        onProgress: setExportProgress,
-        prepareSlide: async (i) => {
-          setExportIdx(i);
-          await new Promise((r) => requestAnimationFrame(() => r(null)));
-        },
-      });
-      const url = URL.createObjectURL(blob);
-      dlRef.current = url;
-      triggerDownloadUrl(url, `hadith-${String(index).padStart(2, "0")}.zip`);
-    } finally {
-      setExporting(false);
-    }
+    startDownload({
+      id: `nawawi-hadith-${index}`,
+      label: `تنزيل صور الحديث ${index}`,
+      filename: `hadith-${String(index).padStart(2, "0")}.zip`,
+      generateBlob: async (onProgress, signal) => {
+        setExporting(true);
+        setExportProgress(0);
+        try {
+          const { blob } = await exportAllPngZip({
+            count: slideIds.length,
+            hizb: index, // reused as folder/filename number
+            captureId: EXPORT_ID,
+            onProgress,
+            signal,
+            prepareSlide: async (i) => {
+              setExportIdx(i);
+              await new Promise((r) => requestAnimationFrame(() => r(null)));
+            },
+          });
+          return blob;
+        } finally {
+          setExporting(false);
+        }
+      }
+    });
   };
 
   return (
@@ -91,18 +99,22 @@ function NawawiPage() {
         <aside className="space-y-6 w-full min-w-0">
           <section className="space-y-3">
             <label className="text-sm font-medium">اختر الحديث</label>
-            <select
-              value={index}
-              onChange={(e) => { setIndex(Number(e.target.value)); setPreviewIdx(0); }}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            <Select
+              value={String(index)}
+              onValueChange={(v) => { setIndex(Number(v)); setPreviewIdx(0); }}
               disabled={!all}
             >
-              {all?.map((h) => (
-                <option key={h.index} value={h.index} dir="rtl">
-                  {hadithTitleAr(h.index)}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="w-full bg-background" dir="rtl">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="max-h-72">
+                {all?.map((h) => (
+                  <SelectItem key={h.index} value={String(h.index)} dir="rtl">
+                    {hadithTitleAr(h.index)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </section>
 
           <section className="space-y-2">

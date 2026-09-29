@@ -19,6 +19,8 @@ interface Props {
    * Non-collab always renders the primary brand regardless of this prop.
    */
   collabBrand?: "primary" | "secondary";
+  textZoom?: number;
+  imageUrl?: string | null;
 }
 
 const THEMES = {
@@ -29,6 +31,7 @@ const THEMES = {
 
 export function TweetCard({
   id, text, displayName, handle, theme, showTimestamp, avatarUrl, collabBrand = "primary",
+  textZoom = 100, imageUrl,
 }: Props) {
   const t = THEMES[theme];
   const collaboration = useSettings((s) => s.collaboration);
@@ -58,7 +61,7 @@ export function TweetCard({
         height: TWEET_SIZE,
         backgroundColor: t.bg,
         color: t.ink,
-        fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+        fontFamily: "system-ui, -apple-system, 'Segoe UI', sans-serif",
         padding: 80,
         boxSizing: "border-box",
         display: "flex",
@@ -125,7 +128,7 @@ export function TweetCard({
         <div
           className="warsh-text"
           style={{
-            fontSize: 62,
+            fontSize: Math.round(62 * (textZoom ?? 100) / 100),
             lineHeight: 1.55,
             whiteSpace: "pre-wrap",
             wordBreak: "break-word",
@@ -134,6 +137,28 @@ export function TweetCard({
         >
           {text}
         </div>
+
+        {imageUrl && (
+          <div style={{
+            marginTop: 30,
+            borderRadius: 24,
+            overflow: 'hidden',
+            border: `1px solid ${t.border}`,
+            maxHeight: 500,
+          }}>
+            <img
+              src={imageUrl}
+              crossOrigin="anonymous"
+              alt=""
+              style={{
+                width: '100%',
+                maxHeight: 500,
+                objectFit: 'cover',
+                display: 'block',
+              }}
+            />
+          </div>
+        )}
 
         {showTimestamp && (
           <div

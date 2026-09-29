@@ -16,7 +16,7 @@ const ITEMS = [
     to: "/reels-watermark" as const,
     title: "علامة مائية",
     arabic: "ريلز",
-    desc: "أضف الشعار والمعرّف إلى فيديو عمودي.",
+    desc: "أضف الشعار والمعرّف إلى فيديو.",
     Icon: Clapperboard,
     accent: "from-indigo-950 to-slate-900 text-slate-100 border-indigo-800",
   },

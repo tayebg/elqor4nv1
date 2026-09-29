@@ -30,6 +30,7 @@ export default function PreviewPanel({
   collaboration = false,
   secondaryLogoUrl = "",
   secondaryUsername = "",
+  selectedReciterName = "",
 }) {
   const { t } = useTranslation();
 
@@ -210,7 +211,7 @@ export default function PreviewPanel({
 
   return (
     <section className="flex min-h-0 flex-1 flex-col items-center justify-center overflow-hidden bg-muted/40 p-2 lg:p-6">
-      <div className="mb-3 hidden w-full max-w-4xl items-center justify-between gap-3 lg:flex">
+      <div className="mb-3 flex w-full max-w-4xl flex-wrap items-center justify-between gap-2 lg:gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-border bg-card text-muted-foreground">
             <Video className="h-4 w-4" />
@@ -222,7 +223,7 @@ export default function PreviewPanel({
             </p>
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
           <Toggle
             size="sm"
             pressed={showSafeZones}
@@ -249,6 +250,11 @@ export default function PreviewPanel({
           <Badge variant="outline" className="font-mono text-[10px]">
             {EXPORT_W} × {EXPORT_H}
           </Badge>
+          {selectedReciterName && (
+            <Badge variant="outline" className="max-w-[150px] truncate text-[10px]">
+              {selectedReciterName}
+            </Badge>
+          )}
         </div>
       </div>
 

@@ -188,7 +188,7 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
 
   if (showTranslation && activeTranslation) {
     ctx.font = `${contentMode === "tafsir" ? "" : "italic "}${transFontSize}px ${
-      contentMode === "tafsir" ? '"Cairo", "Amiri", sans-serif' : '"Inter", "Cairo", sans-serif'
+      contentMode === "tafsir" ? 'system-ui, -apple-system, sans-serif' : '"Inter", system-ui, -apple-system, sans-serif'
     }`;
     const transText = contentMode === "tafsir" && activeTranslation.length > 200
       ? activeTranslation.substring(0, 200) + "..."
@@ -209,7 +209,7 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
     ctx.shadowOffsetY = 2;
     ctx.direction = contentMode === "tafsir" ? "rtl" : "ltr";
     ctx.font = `${contentMode === "tafsir" ? "" : "italic "}${transFontSize}px ${
-      contentMode === "tafsir" ? '"Cairo", "Amiri", sans-serif' : '"Inter", "Cairo", sans-serif'
+      contentMode === "tafsir" ? 'system-ui, -apple-system, sans-serif' : '"Inter", system-ui, -apple-system, sans-serif'
     }`;
     ctx.fillStyle = translationColor;
     ctx.globalAlpha = 0.85;
@@ -229,7 +229,7 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
     ctx.save();
     ctx.direction = "ltr";
     ctx.textBaseline = "middle";
-    ctx.font = `600 ${wmFontSize}px "Cairo", sans-serif`;
+    ctx.font = `600 ${wmFontSize}px system-ui, -apple-system, sans-serif`;
     ctx.textAlign = "left";
     const label1 = watermarkText || "";
     const label2 = secondaryUsername || "";
@@ -259,11 +259,11 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
     }
     // × connector
     ctx.fillStyle = "rgba(255,255,255,0.65)";
-    ctx.font = `500 ${Math.round(wmFontSize * 1.2)}px "Cairo", sans-serif`;
+    ctx.font = `500 ${Math.round(wmFontSize * 1.2)}px system-ui, -apple-system, sans-serif`;
     ctx.textAlign = "center";
     ctx.fillText("×", x + xGap / 2, y);
     ctx.textAlign = "left";
-    ctx.font = `600 ${wmFontSize}px "Cairo", sans-serif`;
+    ctx.font = `600 ${wmFontSize}px system-ui, -apple-system, sans-serif`;
     x += xGap;
     // Block 2
     if (hasSecondaryLogo) {
@@ -279,7 +279,7 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
     ctx.save();
     ctx.direction = "ltr";
     ctx.textBaseline = "middle";
-    ctx.font = `600 ${wmFontSize}px "Cairo", sans-serif`;
+    ctx.font = `600 ${wmFontSize}px system-ui, -apple-system, sans-serif`;
     const label = watermarkText || "";
     ctx.textAlign = "left";
     const textW = label ? ctx.measureText(label).width : 0;
@@ -304,7 +304,7 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
   ctx.direction = "rtl";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.font = `500 ${Math.round(height * 0.018)}px "Cairo", sans-serif`;
+  ctx.font = `500 ${Math.round(height * 0.018)}px system-ui, -apple-system, sans-serif`;
 
   const badgeMetrics = ctx.measureText(badgeText);
   const badgeW = badgeMetrics.width + 60;

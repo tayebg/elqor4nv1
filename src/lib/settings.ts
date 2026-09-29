@@ -86,6 +86,15 @@ interface PerGenerator {
   reelCover: ReelCoverSettings;
 }
 
+export interface PageState {
+  selectedHizb: number;
+  selectedHadith: number;
+  selectedHisnChapter: number;
+  tweetText: string;
+  reelCoverTitle: string;
+  reelCoverSubtitle: string;
+}
+
 interface Shared {
   logoUrl: string;
   username: string;
@@ -114,6 +123,8 @@ interface Store extends Shared, PerGenerator {
   setHisn: <K extends keyof HisnSettings>(k: K, v: HisnSettings[K]) => void;
   setTweet: <K extends keyof TweetSettings>(k: K, v: TweetSettings[K]) => void;
   setReelCover: <K extends keyof ReelCoverSettings>(k: K, v: ReelCoverSettings[K]) => void;
+  pageState: PageState;
+  setPageState: <K extends keyof PageState>(k: K, v: PageState[K]) => void;
 }
 
 const DEFAULT_QURAN: QuranSettings = {
@@ -140,6 +151,15 @@ const DEFAULT_REEL_COVER: ReelCoverSettings = {
   showAccentBars: true,
   backgroundUrl: null,
   backgroundDim: 0.45,
+};
+
+const DEFAULT_PAGE_STATE: PageState = {
+  selectedHizb: 1,
+  selectedHadith: 1,
+  selectedHisnChapter: 1,
+  tweetText: "قَالَ رَسُولُ اللَّهِ ﷺ:\n«إِنَّ اللَّهَ لَا يَنْظُرُ إِلَى صُوَرِكُمْ وَأَمْوَالِكُمْ، وَلَكِنْ يَنْظُرُ إِلَى قُلُوبِكُمْ وَأَعْمَالِكُمْ»",
+  reelCoverTitle: "مِنْ أَحَبِّ الْأَعْمَالِ إِلَى اللَّهِ",
+  reelCoverSubtitle: "",
 };
 
 const DEFAULT_BRANDING: BrandingProfile = {
@@ -182,6 +202,7 @@ export const useSettings = create<Store>()(
       hisn: DEFAULT_HISN,
       tweet: DEFAULT_TWEET,
       reelCover: DEFAULT_REEL_COVER,
+      pageState: DEFAULT_PAGE_STATE,
       setLogo: (url) => set((s) => persistToProfile(s, { logoUrl: url })),
       resetLogo: () => set((s) => persistToProfile(s, { logoUrl: defaultLogo.url })),
       setUsername: (u) => set((s) => persistToProfile(s, { username: u })),
@@ -244,10 +265,11 @@ export const useSettings = create<Store>()(
       setHisn: (k, v) => set((s) => ({ hisn: { ...s.hisn, [k]: v } })),
       setTweet: (k, v) => set((s) => ({ tweet: { ...s.tweet, [k]: v } })),
       setReelCover: (k, v) => set((s) => ({ reelCover: { ...s.reelCover, [k]: v } })),
+      setPageState: (k, v) => set((s) => ({ pageState: { ...s.pageState, [k]: v } })),
     }),
     {
       name: "elqor4n-settings",
-      version: 8,
+      version: 9,
       migrate: (persisted: unknown, version) => {
         if (!persisted || typeof persisted !== "object") return persisted as never;
         const p = persisted as Record<string, unknown>;
@@ -262,7 +284,7 @@ export const useSettings = create<Store>()(
           if (o.secondaryDisplay !== "logo" && o.secondaryDisplay !== "name") o.secondaryDisplay = "both";
         };
         withDisplay(p);
-        if (version >= 5) {
+        if (version >= 5 && version < 9) {
           if (isStale(p.logoUrl)) p.logoUrl = defaultLogo.url;
           if (isStale(p.secondaryLogoUrl)) p.secondaryLogoUrl = fajrLogo.url;
           const profiles = p.profiles as Record<string, Record<string, unknown>> | undefined;
@@ -273,6 +295,9 @@ export const useSettings = create<Store>()(
               if (isStale(prof.secondaryLogoUrl)) prof.secondaryLogoUrl = fajrLogo.url;
               withDisplay(prof);
             }
+          }
+          if (version < 9) {
+            p.pageState = { ...DEFAULT_PAGE_STATE, ...(p.pageState as Partial<PageState> || {}) };
           }
           return p as never;
         }
@@ -298,6 +323,7 @@ export const useSettings = create<Store>()(
           hisn: (p.hisn as HisnSettings) ?? DEFAULT_HISN,
           tweet: (p.tweet as TweetSettings) ?? DEFAULT_TWEET,
           reelCover: { ...DEFAULT_REEL_COVER, ...prevReel },
+          pageState: (p.pageState as PageState) ?? DEFAULT_PAGE_STATE,
         } as never;
       },
     },

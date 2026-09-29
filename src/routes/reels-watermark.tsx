@@ -152,13 +152,13 @@ function ReelsPage() {
         </aside>
 
         <section>
-          <div className="mx-auto max-w-[360px] aspect-[9/16] rounded-xl overflow-hidden bg-black border border-border">
+          <div className="mx-auto max-w-[360px] aspect-video max-h-[80vh] rounded-xl overflow-hidden bg-black border border-border">
             {outUrl ? (
               <video key={outUrl} src={outUrl} controls preload="metadata" playsInline className="w-full h-full object-contain bg-black" />
             ) : videoUrl ? (
               <video key={videoUrl} src={videoUrl} controls preload="metadata" playsInline className="w-full h-full object-contain bg-black" />
             ) : (
-              <div className="w-full h-full grid place-items-center text-muted-foreground text-sm">ارفع فيديو عمودي</div>
+              <div className="w-full h-full grid place-items-center text-muted-foreground text-sm">ارفع فيديو</div>
             )}
           </div>
         </section>

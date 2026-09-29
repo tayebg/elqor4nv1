@@ -103,7 +103,7 @@ interface ItemProps {
 }
 
 export function HisnItemSlide({ chapter, itemIndex, slideId }: ItemProps) {
-  const item = chapter.items[itemIndex];
+  const item = chapter.items[itemIndex] as any;
   const { line: footerHandles } = useBrandHandles();
   return (
     <Frame id={slideId}>
@@ -122,18 +122,32 @@ export function HisnItemSlide({ chapter, itemIndex, slideId }: ItemProps) {
         </span>
       </header>
 
+      {item.count && (
+        <div className="absolute top-[130px] left-0 right-0 flex justify-center">
+          <div className="bg-[#e6c878]/20 border border-[#e6c878]/40 text-[#e6c878] px-6 py-2 rounded-full font-bold text-2xl flex items-center gap-2" style={{ fontFamily: '"mobtakar", sans-serif', direction: 'rtl' }}>
+            <span>التكرار:</span>
+            <span>{item.count}</span>
+          </div>
+        </div>
+      )}
+
       <div
-        className="absolute left-0 right-0"
-        style={{ top: 200, bottom: item.footnote ? 200 : 140, paddingLeft: 96, paddingRight: 96 }}
+        className="absolute left-0 right-0 flex flex-col justify-center"
+        style={{ top: item.count ? 200 : 160, bottom: item.footnote ? 160 : 100, paddingLeft: 120, paddingRight: 120 }}
       >
         <AutoFitText
-          min={28}
-          max={72}
+          min={32}
+          max={80}
           deps={`${chapter.index}-${itemIndex}-${item.text.length}`}
         >
           <div
-            className="warsh-text text-center"
-            style={{ color: "#eaf0ff", lineHeight: 2 }}
+            style={{ 
+              fontFamily: '"mobtakar", sans-serif', 
+              color: "#eaf0ff", 
+              lineHeight: 2, 
+              direction: 'rtl', 
+              textAlign: 'center' 
+            }}
           >
             {item.text}
           </div>
@@ -143,14 +157,14 @@ export function HisnItemSlide({ chapter, itemIndex, slideId }: ItemProps) {
       {item.footnote && (
         <div
           className="absolute left-0 right-0 text-center"
-          style={{ bottom: 70, paddingLeft: 96, paddingRight: 96, color: "rgba(230,200,120,0.7)", fontSize: 22 }}
+          style={{ bottom: 60, paddingLeft: 120, paddingRight: 120, color: "rgba(230,200,120,0.7)", fontSize: 20, fontFamily: '"mobtakar", sans-serif', direction: 'rtl', lineHeight: 1.6 }}
         >
           {item.footnote}
         </div>
       )}
 
       <footer
-        className="absolute bottom-10 left-0 right-0 text-center text-[22px] tracking-[0.3em]"
+        className="absolute bottom-8 left-0 right-0 text-center text-[18px] tracking-[0.2em]"
         style={{ color: "rgba(234,240,255,0.45)" }}
       >
         <span dir="ltr" style={{ unicodeBidi: "isolate", display: "inline-block" }}>{footerHandles}</span> · حصن المسلم

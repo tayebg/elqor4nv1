@@ -150,6 +150,23 @@ export default function SettingsPanel({
   return (
     <aside className="flex w-full min-h-0 flex-1 flex-col border-t border-border bg-background lg:h-full lg:w-1/3 lg:border-s lg:border-t-0">
       <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-6 md:px-5">
+        <Section icon={Mic} title={t("reciter")} />
+        <Panel>
+          <Select
+            value={settings.reciterId}
+            onValueChange={(v) => onSettingsChange({ ...settings, reciterId: v })}
+          >
+            <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+            <SelectContent className="max-h-72">
+              {reciters.map((r) => (
+                <SelectItem key={r.id} value={String(r.id)}>
+                  {r.translated_name?.name || r.reciter_name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Panel>
+
         <Section icon={BookOpen} title={t("surah")} />
         <Panel>
           <Select value={String(settings.surahId)} onValueChange={handleSurahChange} disabled={loading}>
@@ -223,23 +240,6 @@ export default function SettingsPanel({
             <SelectContent>
               {videoSizes.map((size) => (
                 <SelectItem key={size.id} value={size.id}>{t(`size_${size.id}`, { defaultValue: size.name })}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </Panel>
-
-        <Section icon={Mic} title={t("reciter")} />
-        <Panel>
-          <Select
-            value={settings.reciterId}
-            onValueChange={(v) => onSettingsChange({ ...settings, reciterId: v })}
-          >
-            <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
-            <SelectContent className="max-h-72">
-              {reciters.map((r) => (
-                <SelectItem key={r.id} value={String(r.id)}>
-                  {r.translated_name?.name || r.reciter_name}
-                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -341,17 +341,15 @@ export default function SettingsPanel({
             ].map((c) => (
               <div key={c.label} className="space-y-1.5">
                 <Label className="text-xs text-muted-foreground">{c.label}</Label>
-                <div className="flex items-center gap-2 rounded-md border border-input bg-background px-2.5 py-2">
+                <div className="relative flex items-center gap-2">
                   <input
                     type="color"
                     value={c.value}
                     onChange={(e) => c.onChange(e.target.value)}
-                    className="h-6 w-6 shrink-0 cursor-pointer rounded border-0 bg-transparent p-0"
+                    className="h-9 w-14 cursor-pointer appearance-none rounded-md border border-border bg-background p-1 focus:outline-none focus:ring-2 focus:ring-ring"
                     aria-label={c.label}
                   />
-                  <span className="min-w-0 truncate font-mono text-xs text-muted-foreground">
-                    {c.value}
-                  </span>
+                  <span className="text-sm font-mono text-muted-foreground uppercase">{c.value}</span>
                 </div>
               </div>
             ))}

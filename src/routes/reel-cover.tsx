@@ -9,6 +9,7 @@ import { Download, Loader2, Upload, RotateCcw } from "lucide-react";
 import { ClientOnly } from "@/components/ClientOnly";
 import { captureNodeToBlob, triggerDownloadBlob } from "@/lib/export";
 import { ShareMenu } from "@/components/ShareMenu";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const W = 1080;
 const H = 1920;
@@ -32,9 +33,19 @@ const NODE_ID = "reel-cover-export";
 function ReelCoverPage() {
   const s = useSettings();
   const rb = useResolvedBranding();
-  const [title, setTitle] = useState("مِنْ أَحَبِّ الْأَعْمَالِ إِلَى اللَّهِ");
-  const [subtitle, setSubtitle] = useState("");
+  const [title, setTitleState] = useState(s.pageState.reelCoverTitle);
+  const [subtitle, setSubtitleState] = useState(s.pageState.reelCoverSubtitle);
   const [saving, setSaving] = useState(false);
+
+  const setTitle = (v: string) => {
+    setTitleState(v);
+    s.setPageState("reelCoverTitle", v);
+  };
+
+  const setSubtitle = (v: string) => {
+    setSubtitleState(v);
+    s.setPageState("reelCoverSubtitle", v);
+  };
 
   const handleDownload = async () => {
     setSaving(true);
@@ -66,19 +77,31 @@ function ReelCoverPage() {
             <p className="text-xs font-medium text-foreground">نمط الغلاف</p>
             <div className="space-y-2">
               <Label className="text-xs">القالب</Label>
-              <select
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={s.reelCover.template}
-                onChange={(e) => s.setReelCover("template", e.target.value as "minimal" | "gradient" | "quran")}
+              <Select
+                value={String(s.reelCover.template)}
+                onValueChange={(v) => s.setReelCover("template", v as "minimal" | "gradient" | "quran")}
               >
-                <option value="minimal">عاجي بسيط</option>
-                <option value="gradient">تدرج زمردي</option>
-                <option value="quran">ليلة قرآنية</option>
-              </select>
+                <SelectTrigger className="w-full bg-background" dir="rtl">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="max-h-72">
+                  <SelectItem value="minimal" dir="rtl">عاجي بسيط</SelectItem>
+                  <SelectItem value="gradient" dir="rtl">تدرج زمردي</SelectItem>
+                  <SelectItem value="quran" dir="rtl">ليلة قرآنية</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label className="text-xs">لون التمييز</Label>
-              <Input type="color" value={s.reelCover.accent} onChange={(e) => s.setReelCover("accent", e.target.value)} />
+              <div className="relative flex items-center gap-2">
+                <input
+                  type="color"
+                  value={s.reelCover.accent}
+                  onChange={(e) => s.setReelCover("accent", e.target.value)}
+                  className="h-9 w-14 cursor-pointer appearance-none rounded-md border border-border bg-background p-1 focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+                <span className="text-sm font-mono text-muted-foreground uppercase">{s.reelCover.accent}</span>
+              </div>
             </div>
             <label className="flex items-center gap-2 text-xs">
               <input
@@ -284,7 +307,24 @@ function ReelCover({
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: secondary ? 60 : 24 }}>
       <div dir="ltr" style={{ display: "flex", alignItems: "center", gap: 20 }}>
         {logoUrl && (
-          <img src={logoUrl} crossOrigin="anonymous" alt="" style={{ width: size, height: size, objectFit: "contain", filter: logoFilter }} />
+          <div style={{
+            width: size,
+            height: size,
+            borderRadius: size * 0.2,
+            overflow: 'hidden',
+            backgroundColor: hasBg ? 'rgba(255,255,255,0.15)' : 'transparent',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}>
+            <img src={logoUrl} crossOrigin="anonymous" alt="" style={{
+              width: size * 0.8,
+              height: size * 0.8,
+              objectFit: 'contain',
+              filter: logoFilter
+            }} />
+          </div>
         )}
         {username && (
           <span dir="ltr" style={{ fontSize, letterSpacing: 4, color: brandColor, fontWeight: 600, unicodeBidi: "isolate" }}>
@@ -297,7 +337,24 @@ function ReelCover({
           <span style={{ fontSize: fontSize * 1.1, color: brandColor, opacity: 0.55 }}>×</span>
           <div dir="ltr" style={{ display: "flex", alignItems: "center", gap: 20 }}>
             {secondary.logoUrl && (
-              <img src={secondary.logoUrl} crossOrigin="anonymous" alt="" style={{ width: size, height: size, objectFit: "contain", filter: logoFilter }} />
+              <div style={{
+                width: size,
+                height: size,
+                borderRadius: size * 0.2,
+                overflow: 'hidden',
+                backgroundColor: hasBg ? 'rgba(255,255,255,0.15)' : 'transparent',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                <img src={secondary.logoUrl} crossOrigin="anonymous" alt="" style={{
+                  width: size * 0.8,
+                  height: size * 0.8,
+                  objectFit: 'contain',
+                  filter: logoFilter
+                }} />
+              </div>
             )}
             {secondary.username && (
               <span dir="ltr" style={{ fontSize, letterSpacing: 4, color: brandColor, fontWeight: 600, unicodeBidi: "isolate" }}>
@@ -325,7 +382,7 @@ function ReelCover({
         justifyContent: "space-between",
         alignItems: "center",
         textAlign: "center",
-        fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+        fontFamily: "system-ui, -apple-system, 'Segoe UI', sans-serif",
         position: "relative",
         overflow: "hidden",
       }}
@@ -352,13 +409,12 @@ function ReelCover({
             <div style={{ width: 120, height: 6, background: settings.accent, borderRadius: 3 }} />
           )}
           <div
-            className="warsh-text"
-            style={{ fontSize: 130, lineHeight: 1.35, fontWeight: 600, maxWidth: 880, color: hasBg ? "#fff" : t.ink, textShadow: hasBg ? "0 4px 30px rgba(0,0,0,0.6)" : undefined }}
+            style={{ fontSize: 110, lineHeight: 1.35, fontWeight: 600, maxWidth: 920, textAlign: 'center', fontFamily: '"mobtakar", sans-serif', direction: 'rtl', wordSpacing: 'normal', color: hasBg ? "#fff" : t.ink, textShadow: hasBg ? "0 4px 30px rgba(0,0,0,0.6)" : undefined }}
           >
             {title}
           </div>
           {subtitle && (
-            <div className="warsh-text" style={{ fontSize: 52, opacity: 0.85, color: hasBg ? "#f3f4f6" : t.sub, maxWidth: 820 }}>
+            <div style={{ fontSize: 52, opacity: 0.85, color: hasBg ? "#f3f4f6" : t.sub, maxWidth: 820, textAlign: 'center', fontFamily: '"mobtakar", sans-serif', direction: 'rtl', wordSpacing: 'normal' }}>
               {subtitle}
             </div>
           )}

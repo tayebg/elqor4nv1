@@ -15,6 +15,8 @@ import { ScaledSlide } from "@/components/ScaledSlide";
 import { useSettings } from "@/lib/settings";
 import { ArabicField } from "@/components/ArabicField";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { startDownload } from "@/lib/download-manager";
 
 const EXPORT_SLIDE_ID = "slide-export-current";
 const SHOW_CAROUSEL_SHARE = false; // temporarily hidden while sharing pipeline is reviewed
@@ -40,24 +42,21 @@ export const Route = createFileRoute("/quran")({
 function Index() {
   const s = useSettings();
   const [all, setAll] = useState<Ayah[] | null>(null);
-  const [hizb, setHizb] = useState(1);
+  const [hizb, setHizbState] = useState(s.pageState.selectedHizb);
   const [exporting, setExporting] = useState(false);
   const [exportIndex, setExportIndex] = useState(0);
   const [exportProgress, setExportProgress] = useState(0);
   const [previewIndex, setPreviewIndex] = useState(0);
   const [sharingAll, setSharingAll] = useState(false);
   const [shareIndex, setShareIndex] = useState(0);
-  const downloadUrlRef = useRef<string | null>(null);
 
+  const setHizb = (h: number) => {
+    setHizbState(h);
+    s.setPageState("selectedHizb", h);
+  };
 
   useEffect(() => {
     loadQuran().then(setAll);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (downloadUrlRef.current) URL.revokeObjectURL(downloadUrlRef.current);
-    };
   }, []);
 
   const pages = useMemo(() => {
@@ -71,28 +70,32 @@ function Index() {
     [pages],
   );
 
-  const handleZip = async () => {
-    if (downloadUrlRef.current) URL.revokeObjectURL(downloadUrlRef.current);
-    downloadUrlRef.current = null;
-    setExporting(true);
-    setExportProgress(0);
-    try {
-      const { blob, filename } = await exportAllPngZip({
-        count: slideIds.length,
-        hizb,
-        captureId: EXPORT_SLIDE_ID,
-        onProgress: setExportProgress,
-        prepareSlide: async (index) => {
-          setExportIndex(index);
-          await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
-        },
-      });
-      const url = URL.createObjectURL(blob);
-      downloadUrlRef.current = url;
-      triggerDownloadUrl(url, filename);
-    } finally {
-      setExporting(false);
-    }
+  const handleZip = () => {
+    startDownload({
+      id: `quran-hizb-${hizb}`,
+      label: `تنزيل صور الحزب ${hizb}`,
+      filename: `hizb-${String(hizb).padStart(2, "0")}.zip`,
+      generateBlob: async (onProgress, signal) => {
+        setExporting(true);
+        setExportProgress(0);
+        try {
+          const { blob } = await exportAllPngZip({
+            count: slideIds.length,
+            hizb,
+            captureId: EXPORT_SLIDE_ID,
+            onProgress,
+            signal,
+            prepareSlide: async (index) => {
+              setExportIndex(index);
+              await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+            },
+          });
+          return blob;
+        } finally {
+          setExporting(false);
+        }
+      }
+    });
   };
 
   const total = slideIds.length;
@@ -104,17 +107,21 @@ function Index() {
         <aside className="space-y-6 w-full min-w-0">
           <section className="space-y-3">
             <label className="text-sm font-medium">اختر الحزب</label>
-            <select
-              value={hizb}
-              onChange={(e) => { setHizb(Number(e.target.value)); setPreviewIndex(0); }}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            <Select
+              value={String(hizb)}
+              onValueChange={(v) => { setHizb(Number(v)); setPreviewIndex(0); }}
             >
-              {HIZB_STARTS.map((h) => (
-                <option key={h.hizb} value={h.hizb} dir="rtl">
-                  {hizbTitleAr(h.hizb)} — الجزء {Math.ceil(h.hizb / 2)}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="w-full bg-background" dir="rtl">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="max-h-72">
+                {HIZB_STARTS.map((h) => (
+                  <SelectItem key={h.hizb} value={String(h.hizb)} dir="rtl">
+                    {hizbTitleAr(h.hizb)} — الجزء {Math.ceil(h.hizb / 2)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </section>
 
           <section className="space-y-2">

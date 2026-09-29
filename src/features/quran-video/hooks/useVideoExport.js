@@ -57,10 +57,13 @@ export function useVideoExport() {
         collaboration = false,
         secondaryLogoUrl = "",
         secondaryUsername = "",
+        onProgress,
+        signal,
       } = exportOptions;
 
       setIsExporting(true);
       setProgress(0);
+      onProgress?.(0);
       setStatusText("جارٍ التحضير...");
 
       let wakeLock = null;
@@ -185,7 +188,6 @@ export function useVideoExport() {
         try {
           await document.fonts.load('40px "Amiri Quran"');
           await document.fonts.load('40px "Amiri"');
-          await document.fonts.load('40px "Cairo"');
           await document.fonts.load('italic 40px "Inter"');
         } catch (_) {}
 
@@ -250,6 +252,8 @@ export function useVideoExport() {
 
         for (let frame = 0; frame < totalFrames; frame++) {
           
+          if (signal?.aborted) throw new Error("Aborted");
+
           if (videoError) throw videoError;
           if (videoEncoder.state === "closed") {
             throw new Error("انتهى الترميز بشكل غير متوقع");
@@ -288,6 +292,7 @@ export function useVideoExport() {
           const keyFrame = frame % (FPS * 2) === 0;
 
           while (videoEncoder.encodeQueueSize > 5) {
+            if (signal?.aborted) throw new Error("Aborted");
             await new Promise((r) => setTimeout(r, 10));
           }
 
@@ -297,6 +302,7 @@ export function useVideoExport() {
           if (frame % 5 === 0) {
             const pct = 25 + Math.round((frame / totalFrames) * 55);
             setProgress(pct);
+            onProgress?.(pct);
             await new Promise((r) => setTimeout(r, 0));
           }
         }
@@ -327,6 +333,7 @@ export function useVideoExport() {
 
         const chunkSize = 1024;
         for (let offset = 0; offset < trimmedLength; offset += chunkSize) {
+          if (signal?.aborted) throw new Error("Aborted");
           if (audioError) throw audioError;
           if (audioEncoder.state === "closed") break;
 
@@ -353,6 +360,7 @@ export function useVideoExport() {
           audioData.close();
 
           while (audioEncoder.encodeQueueSize > 10) {
+            if (signal?.aborted) throw new Error("Aborted");
             await new Promise((r) => setTimeout(r, 5));
           }
         }

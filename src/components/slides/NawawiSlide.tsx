@@ -74,22 +74,21 @@ export function NawawiContentSlide({
           deps={`${hadith.index}-${pageNumber}-${pageText.length}`}
         >
           <div
-            className="warsh-text"
-            style={{ color: "#f4ecd6", lineHeight: 2 }}
+            style={{ color: "#f4ecd6", lineHeight: 2, direction: 'rtl', textAlign: 'center' }}
           >
             {isFirst && (
               <div
-                className="text-center mb-8"
+                className="warsh-text text-center mb-8"
                 style={{ color: "#d6b463", fontSize: "0.85em", fontWeight: 700 }}
               >
                 — {hadithTitleAr(hadith.index)} —
               </div>
             )}
-            <div>{pageText}</div>
+            <div style={{ fontFamily: '"mobtakar", sans-serif' }}>{pageText}</div>
             {pageNumber === totalPages && hadith.narrator && (
               <div
                 className="text-center mt-8"
-                style={{ color: "#d6b463", fontSize: "0.78em" }}
+                style={{ color: "#d6b463", fontSize: "0.78em", fontFamily: '"mobtakar", sans-serif' }}
               >
                 {hadith.narrator}
               </div>
