@@ -198,7 +198,7 @@ button, a, [role="button"], select, input, label {
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-family: "Cairo", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   }
   /* Do NOT let the UI font leak into generated post/reel/tweet content. */
   .slide-canvas, .slide-canvas *, .warsh-text {
