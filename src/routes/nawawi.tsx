@@ -43,6 +43,7 @@ function NawawiPage() {
   const [exporting, setExporting] = useState(false);
   const [exportIdx, setExportIdx] = useState(0);
   const [exportProgress, setExportProgress] = useState(0);
+  const downloadRef = useRef<any>(null);
   const [previewIdx, setPreviewIdx] = useState(0);
   const [sharingAll, setSharingAll] = useState(false);
   const [shareIndex, setShareIndex] = useState(0);
@@ -66,7 +67,7 @@ function NawawiPage() {
 
   const handleZip = () => {
     if (!hadith) return;
-    startDownload({
+    downloadRef.current = startDownload({
       id: `nawawi-hadith-${index}`,
       label: `تنزيل صور الحديث ${index}`,
       filename: `hadith-${String(index).padStart(2, "0")}.zip`,
@@ -119,9 +120,21 @@ function NawawiPage() {
 
           <section className="space-y-2">
             <div className="text-sm font-medium">التصدير</div>
-            <Button onClick={handleZip} disabled={!all || exporting} className="w-full">
+            <Button
+              onClick={() => {
+                if (exporting && downloadRef.current) {
+                  downloadRef.current.cancel();
+                  downloadRef.current = null;
+                } else {
+                  handleZip();
+                }
+              }}
+              disabled={!all && !exporting}
+              className="w-full"
+              variant={exporting ? "destructive" : "default"}
+            >
               {exporting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
-              {exporting ? `جارٍ التوليد… ${exportProgress}%` : `تنزيل ${total} صورة (ZIP)`}
+              {exporting ? `إلغاء التحميل (${exportProgress}%)` : `تنزيل ${total} صورة (ZIP)`}
             </Button>
             {SHOW_CAROUSEL_SHARE && (
               <ShareMenu

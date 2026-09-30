@@ -83,6 +83,14 @@ function App() {
   const [lastVideo, setLastVideo] = useState(null); // { blob, name }
   const [currentTimeMs, setCurrentTimeMs] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const downloadRef = useRef(null);
+
+  const handleCancelExport = useCallback(() => {
+    if (downloadRef.current) {
+      downloadRef.current.cancel();
+      downloadRef.current = null;
+    }
+  }, []);
 
   const effectiveBg = useMemo(() => customBgUrl || bgImage, [customBgUrl, bgImage]);
 
@@ -274,7 +282,7 @@ function App() {
     const textLines = (displayTexts || []).map((t) => t?.text || "");
     console.log(`📤 [Export] تصدير ${tv.length} آية | نصوص: ${textLines.length} سطر | الوضع: ${contentMode}`);
 
-    startDownload({
+    downloadRef.current = startDownload({
       id: 'video-export',
       label: 'تصدير الفيديو',
       filename: `${fileName}.mp4`,
@@ -363,7 +371,7 @@ function App() {
       if (opts.share) {
         return await generateVideo();
       } else {
-        startDownload({
+        downloadRef.current = startDownload({
           id: 'reels-export',
           label: 'تصدير الريلز',
           filename: `${fileName}.mp4`,
@@ -386,7 +394,7 @@ function App() {
 
       {/* Main preview area — chrome-less. All account, language, and
           contact controls were moved to the global ELQOR4N Settings page. */}
-      <main className="flex h-[36vh] w-full min-w-0 shrink-0 flex-col border-b border-border bg-muted/40 lg:h-full lg:w-2/3 lg:border-b-0">
+      <main className="flex h-[50vh] w-full min-w-0 shrink-0 flex-col border-b border-border bg-muted/40 lg:h-full lg:w-2/3 lg:border-b-0">
 
         {}
         <PreviewPanel
@@ -472,6 +480,7 @@ function App() {
         exportProgress={progress}
         exportStatus={statusText}
         audioReady={!!(audioBlobUrl || audioBlob) && !audioBlobLoading}
+        onCancelExport={handleCancelExport}
         shareSlot={
           <ShareMenu
             className="w-full"

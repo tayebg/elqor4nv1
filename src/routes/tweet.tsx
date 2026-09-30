@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSettings, formatHandle } from "@/lib/settings";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,6 +11,7 @@ import { ShareMenu } from "@/components/ShareMenu";
 import { TweetCard, TWEET_SIZE } from "@/components/tweet/TweetCard";
 import { ScaledSlide } from "@/components/ScaledSlide";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { startDownload } from "@/lib/download-manager";
 
 export const Route = createFileRoute("/tweet")({
   head: () => ({
@@ -57,18 +58,27 @@ function TweetPage() {
     ? "فجر التلاوة"
     : (s.tweet.displayName || "القرآن");
 
-  const handleDownload = async () => {
-    setSaving(true);
-    try {
-      const blob = await captureNodeToBlob(NODE_ID, {
-        width: TWEET_SIZE,
-        height: TWEET_SIZE,
-        backgroundColor: s.tweet.theme === "light" ? "#ffffff" : s.tweet.theme === "dim" ? "#15202b" : "#000000",
-      });
-      triggerDownloadBlob(blob, `tweet-${Date.now()}.png`);
-    } finally {
-      setSaving(false);
-    }
+  const downloadRef = useRef<any>(null);
+
+  const handleDownload = () => {
+    downloadRef.current = startDownload({
+      id: "tweet-export",
+      label: "تنزيل التغريدة",
+      filename: `tweet-${Date.now()}.png`,
+      generateBlob: async (onProgress, signal) => {
+        setSaving(true);
+        try {
+          const blob = await captureNodeToBlob(NODE_ID, {
+            width: TWEET_SIZE,
+            height: TWEET_SIZE,
+            backgroundColor: s.tweet.theme === "light" ? "#ffffff" : s.tweet.theme === "dim" ? "#15202b" : "#000000",
+          });
+          return blob;
+        } finally {
+          setSaving(false);
+        }
+      }
+    });
   };
 
   return (
@@ -185,9 +195,21 @@ function TweetPage() {
               </p>
             </div>
           )}
-          <Button onClick={handleDownload} disabled={saving} className="w-full">
+          <Button
+            onClick={() => {
+              if (saving && downloadRef.current) {
+                downloadRef.current.cancel();
+                downloadRef.current = null;
+              } else {
+                handleDownload();
+              }
+            }}
+            disabled={!downloadRef.current && saving}
+            className="w-full"
+            variant={saving ? "destructive" : "default"}
+          >
             {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
-            تنزيل PNG
+            {saving ? "إلغاء التحميل (0%)" : "تنزيل PNG"}
           </Button>
           <ShareMenu
             className="w-full"

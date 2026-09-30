@@ -10,6 +10,7 @@ import { ClientOnly } from "@/components/ClientOnly";
 import { captureNodeToBlob, triggerDownloadBlob } from "@/lib/export";
 import { ShareMenu } from "@/components/ShareMenu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { startDownload } from "@/lib/download-manager";
 
 
 
@@ -49,16 +50,23 @@ function ReelCoverPage() {
     s.setPageState("reelCoverSubtitle", v);
   };
 
-  const handleDownload = async () => {
-    setSaving(true);
-    try {
-      const blob = await captureNodeToBlob(NODE_ID, { width: W, height: H });
-      triggerDownloadBlob(blob, `reel-cover-${Date.now()}.png`);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSaving(false);
-    }
+  const downloadRef = useRef<any>(null);
+
+  const handleDownload = () => {
+    downloadRef.current = startDownload({
+      id: "reel-cover",
+      label: "تنزيل الغلاف",
+      filename: `reel-cover-${Date.now()}.png`,
+      generateBlob: async (onProgress, signal) => {
+        setSaving(true);
+        try {
+          const blob = await captureNodeToBlob(NODE_ID, { width: W, height: H });
+          return blob;
+        } finally {
+          setSaving(false);
+        }
+      }
+    });
   };
 
   return (
@@ -164,9 +172,21 @@ function ReelCoverPage() {
               </div>
             )}
           </div>
-          <Button onClick={handleDownload} disabled={saving} className="w-full">
+          <Button
+            onClick={() => {
+              if (saving && downloadRef.current) {
+                downloadRef.current.cancel();
+                downloadRef.current = null;
+              } else {
+                handleDownload();
+              }
+            }}
+            disabled={!downloadRef.current && saving}
+            className="w-full"
+            variant={saving ? "destructive" : "default"}
+          >
             {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
-            تنزيل PNG (1080×1920)
+            {saving ? "إلغاء التحميل (0%)" : "تنزيل PNG (1080×1920)"}
           </Button>
           <ShareMenu
             className="w-full"
@@ -414,12 +434,13 @@ function ReelCover({
             <div style={{ width: 120, height: 6, background: settings.accent, borderRadius: 3 }} />
           )}
           <div
-            style={{ fontSize: 110, lineHeight: 1.35, fontWeight: 600, maxWidth: 920, textAlign: 'center', fontFamily: '"mobtakar", sans-serif', direction: 'rtl', wordSpacing: 'normal', color: hasBg ? "#fff" : t.ink, textShadow: hasBg ? "0 4px 30px rgba(0,0,0,0.6)" : undefined }}
+            className="warsh-text"
+            style={{ fontSize: 110, lineHeight: 1.35, fontWeight: 600, maxWidth: 920, textAlign: 'center', direction: 'rtl', wordSpacing: 'normal', color: hasBg ? "#fff" : t.ink, textShadow: hasBg ? "0 4px 30px rgba(0,0,0,0.6)" : undefined }}
           >
             {title}
           </div>
           {subtitle && (
-            <div style={{ fontSize: 52, opacity: 0.85, color: hasBg ? "#f3f4f6" : t.sub, maxWidth: 820, textAlign: 'center', fontFamily: '"mobtakar", sans-serif', direction: 'rtl', wordSpacing: 'normal' }}>
+            <div className="warsh-text" style={{ fontSize: 52, opacity: 0.85, color: hasBg ? "#f3f4f6" : t.sub, maxWidth: 820, textAlign: 'center', direction: 'rtl', wordSpacing: 'normal' }}>
               {subtitle}
             </div>
           )}

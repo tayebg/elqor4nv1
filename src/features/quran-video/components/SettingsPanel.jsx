@@ -82,6 +82,7 @@ export default function SettingsPanel({
   onExportVideo, onExportReels, onDownloadAudio,
   isExporting = false, exportProgress = 0,
   exportStatus = "", audioReady = false,
+  onCancelExport,
   shareSlot = null,
 }) {
   const { t } = useTranslation();
@@ -458,10 +459,7 @@ export default function SettingsPanel({
               <span className="shrink-0 font-mono">{exportProgress}%</span>
             </div>
             <Progress value={exportProgress} className="h-2" />
-            <div className="flex items-center gap-2 rounded-md border border-border bg-muted/50 px-3 py-2">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-primary" />
-              <span className="text-xs text-muted-foreground">{t("export_keep_open")}</span>
-            </div>
+            <Button variant="destructive" size="sm" className="w-full mt-2" onClick={onCancelExport}>إلغاء التحميل</Button>
           </div>
         )}
 

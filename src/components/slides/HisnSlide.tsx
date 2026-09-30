@@ -165,7 +165,7 @@ export function HisnItemSlide({ chapter, itemIndex, slideId, pageText, pageNumbe
 
       {item.count && (
         <div className="absolute top-[130px] left-0 right-0 flex justify-center z-10">
-          <div className="bg-[#e6c878]/20 border border-[#e6c878]/40 text-[#e6c878] px-6 py-2 rounded-full font-bold text-2xl flex items-center gap-2" style={{ fontFamily: '"mobtakar", sans-serif', direction: 'rtl' }}>
+          <div className="bg-[#e6c878]/20 border border-[#e6c878]/40 text-[#e6c878] px-6 py-2 rounded-full font-bold text-2xl flex items-center gap-2 warsh-text" style={{ direction: 'rtl' }}>
             <span>التكرار:</span>
             <span>{item.count}</span>
           </div>

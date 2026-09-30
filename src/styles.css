@@ -35,22 +35,7 @@
   font-display: swap;
 }
 
-/* Thmanyah (mobtakar) — used ONLY in specific generated slide content
-   (Hadith posts, Hisn posts), NOT as the global UI font. */
-@font-face {
-  font-family: "mobtakar";
-  font-style: normal;
-  font-weight: 300;
-  src: local("mobtakar"), local("Mobtakar");
-  font-display: swap;
-}
-@font-face {
-  font-family: "mobtakar";
-  font-style: normal;
-  font-weight: 800;
-  src: local("mobtakar"), local("Mobtakar");
-  font-display: swap;
-}
+
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

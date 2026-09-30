@@ -145,7 +145,7 @@ function SettingsPage() {
 
         {tab === "branding" && (
           <div className="space-y-5">
-            <Section title="الشعار" description="يُستخدم في كل الأماكن التي يظهر فيها الشعار.">
+            <Section title="الشعار" description="أضف شعاراً بخلفية شفافة (PNG / SVG) لتجنب ظهوره كمربع مصمت.">
               <div className="flex items-center gap-6 flex-wrap">
                 <div className="h-28 w-28 bg-card border border-border rounded-md flex items-center justify-center overflow-hidden">
                   <img src={s.logoUrl} alt="الشعار الحالي" className="max-h-full max-w-full object-contain" />
@@ -154,7 +154,7 @@ function SettingsPage() {
                   <input
                     ref={fileRef}
                     type="file"
-                    accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                    accept="image/png,image/webp,image/svg+xml"
                     className="hidden"
                     onChange={(e) => { const f = e.target.files?.[0]; if (f) readAsDataURL(f, s.setLogo); }}
                   />
@@ -251,7 +251,7 @@ function SettingsPage() {
               </button>
             </Section>
 
-            <Section title="العلامة الثانية" description="تُستخدم فقط عند تفعيل وضع التعاون.">
+            <Section title="العلامة الثانية" description="أضف شعاراً بخلفية شفافة (PNG / SVG) لتجنب ظهوره كمربع مصمت.">
               <div className="flex items-center gap-6 flex-wrap">
                 <div className="h-24 w-24 bg-card border border-border rounded-md flex items-center justify-center overflow-hidden">
                   <img src={s.secondaryLogoUrl} alt="" className="max-h-full max-w-full object-contain" />
@@ -260,7 +260,7 @@ function SettingsPage() {
                   <input
                     ref={secondaryFileRef}
                     type="file"
-                    accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                    accept="image/png,image/webp,image/svg+xml"
                     className="hidden"
                     onChange={(e) => { const f = e.target.files?.[0]; if (f) readAsDataURL(f, s.setSecondaryLogo); }}
                   />
