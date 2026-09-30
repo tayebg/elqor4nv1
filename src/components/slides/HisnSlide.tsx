@@ -100,9 +100,12 @@ interface ItemProps {
   chapter: HisnChapter;
   itemIndex: number;
   slideId: string;
+  pageText: string;
+  pageNumber: number;
+  totalPages: number;
 }
 
-export function HisnItemSlide({ chapter, itemIndex, slideId }: ItemProps) {
+export function HisnItemSlide({ chapter, itemIndex, slideId, pageText, pageNumber, totalPages }: ItemProps) {
   const item = chapter.items[itemIndex] as any;
   const { line: footerHandles } = useBrandHandles();
 
@@ -126,21 +129,22 @@ export function HisnItemSlide({ chapter, itemIndex, slideId }: ItemProps) {
               ? `${chapter.items.length} أذْكَارٍ وَارِدَةٍ فِي ${chapter.title}`
               : `${chapter.items.length} ذِكْرًا وَارِدًا فِي ${chapter.title}`;
 
-  const cleanText = item.text.replace(/[\(\)\[\]\{\}\*_\-]/g, '').trim();
-
   let footnoteLabel = "المصدر: ";
-  if (item.footnote) {
-    if (item.footnote.includes('سورة')) {
-      footnoteLabel = "المصدر: ";
-    } else if (item.footnote.includes('رواه') || item.footnote.includes('أخرجه') || item.footnote.includes('البخاري') || item.footnote.includes('مسلم')) {
-      footnoteLabel = "الراوي: ";
+  let showFootnote = false;
+  if (item.footnote && pageNumber === totalPages) {
+    if (item.footnote.startsWith('*') || item.footnote.includes('أي ') || item.footnote.includes('يعني ') || item.footnote.includes('أي: ') || item.footnote.includes('يعني: ')) {
+      showFootnote = false;
+    } else {
+      showFootnote = true;
+      if (item.footnote.includes('سورة')) {
+        footnoteLabel = "المصدر: ";
+      } else if (item.footnote.includes('رواه') || item.footnote.includes('أخرجه') || item.footnote.includes('البخاري') || item.footnote.includes('مسلم')) {
+        footnoteLabel = "الراوي: ";
+      }
     }
   }
 
-  let contentTop = item.count ? 200 : 160;
-  if (itemIndex === 0) {
-    contentTop = item.count ? 360 : 320;
-  }
+  const isFirst = itemIndex === 0 && pageNumber === 1;
 
   return (
     <Frame id={slideId}>
@@ -150,20 +154,17 @@ export function HisnItemSlide({ chapter, itemIndex, slideId }: ItemProps) {
           style={{ color: "#e6c878" }}
         >
           {headerTitle}
+          {totalPages > 1 && (
+            <span style={{ color: "rgba(234,240,255,0.6)" }} className="mr-3">
+              ({pageNumber}/{totalPages})
+            </span>
+          )}
         </span>
         <HijriBadge color="rgba(234,240,255,0.85)" accent="#e6c878" fontSize={26} />
       </header>
 
-      {itemIndex === 0 && (
-        <div className="absolute left-0 w-full text-center px-12 z-10 flex flex-col items-center gap-6" style={{ top: item.count ? 210 : 180 }}>
-          <div className="warsh-text text-[60px] text-primary" style={{ color: "rgba(234, 240, 255, 0.9)" }}>
-            — {titleText} —
-          </div>
-        </div>
-      )}
-
       {item.count && (
-        <div className="absolute top-[130px] left-0 right-0 flex justify-center">
+        <div className="absolute top-[130px] left-0 right-0 flex justify-center z-10">
           <div className="bg-[#e6c878]/20 border border-[#e6c878]/40 text-[#e6c878] px-6 py-2 rounded-full font-bold text-2xl flex items-center gap-2" style={{ fontFamily: '"mobtakar", sans-serif', direction: 'rtl' }}>
             <span>التكرار:</span>
             <span>{item.count}</span>
@@ -173,12 +174,12 @@ export function HisnItemSlide({ chapter, itemIndex, slideId }: ItemProps) {
 
       <div
         className="absolute left-0 right-0 flex flex-col justify-center"
-        style={{ top: contentTop, bottom: 100, paddingLeft: 120, paddingRight: 120 }}
+        style={{ top: 200, bottom: 140, paddingLeft: 96, paddingRight: 96 }}
       >
         <AutoFitText
           min={32}
           max={80}
-          deps={`${chapter.index}-${itemIndex}-${cleanText.length}`}
+          deps={`${chapter.index}-${itemIndex}-${pageNumber}-${pageText.length}`}
         >
           <div
             className="flex flex-col justify-center"
@@ -189,13 +190,21 @@ export function HisnItemSlide({ chapter, itemIndex, slideId }: ItemProps) {
               textAlign: 'center' 
             }}
           >
+            {isFirst && (
+              <div
+                className="warsh-text text-center mb-8"
+                style={{ color: "#e6c878", fontSize: "0.85em", fontWeight: 700 }}
+              >
+                — {titleText} —
+              </div>
+            )}
             <div className="warsh-text">
-              {cleanText}
+              {pageText}
             </div>
-            {item.footnote && (
+            {showFootnote && (
               <div
                 className="warsh-text text-center mt-8"
-                style={{ color: "#e6c878", fontSize: "0.6em" }}
+                style={{ color: "#eaf0ff", fontSize: "0.78em" }}
               >
                 [{footnoteLabel}{item.footnote}]
               </div>

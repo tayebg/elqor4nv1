@@ -342,15 +342,17 @@ export default function SettingsPanel({
             ].map((c) => (
               <div key={c.label} className="space-y-1.5">
                 <Label className="text-xs text-muted-foreground">{c.label}</Label>
-                <div className="relative h-10 w-full overflow-hidden rounded-md border border-input shadow-sm flex items-center bg-background px-3">
+                <div className="relative h-10 w-full overflow-hidden rounded-md border border-input shadow-sm flex items-center justify-between px-3 bg-background hover:bg-accent transition-colors cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    <div className="h-5 w-5 rounded-full border shadow-sm shrink-0" style={{ backgroundColor: c.value }} />
+                    <span className="text-sm font-medium">تغيير اللون</span>
+                  </div>
                   <input
                     type="color"
                     value={c.value}
                     onChange={(e) => c.onChange(e.target.value)}
                     className="absolute opacity-0 inset-0 w-full h-full cursor-pointer"
                   />
-                  <div className="h-5 w-5 rounded-full border shadow-sm shrink-0" style={{ backgroundColor: c.value }} />
-                  <span className="ms-3 text-sm font-mono text-muted-foreground" dir="ltr">{c.value}</span>
                 </div>
               </div>
             ))}

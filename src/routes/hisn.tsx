@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { loadHisn, type HisnChapter } from "@/lib/hisn";
+import { paginateHadith } from "@/lib/nawawi";
 import { HisnItemSlide, HisnClosingSlide } from "@/components/slides/HisnSlide";
 import { Button } from "@/components/ui/button";
 import { exportAllPngZip, exportAllPngFiles, triggerDownloadUrl, captureNodeToBlob } from "@/lib/export";
@@ -55,10 +56,35 @@ function HisnPage() {
   useEffect(() => { loadHisn().then(setAll); }, []);
 
   const chapter = all?.find((c) => c.index === chIdx);
-  const slideIds = useMemo(
-    () => chapter ? [...chapter.items.map((_, i) => `h-item-${i}`), "h-closing"] : [],
-    [chapter],
-  );
+  const slideIds = useMemo(() => {
+    if (!chapter) return [];
+    const slides: {
+      type: "item" | "closing";
+      itemIndex?: number;
+      pageText?: string;
+      pageNumber?: number;
+      totalPages?: number;
+      id: string;
+    }[] = [];
+
+    chapter.items.forEach((item, itemIndex) => {
+      const cleanText = item.text.replace(/[\(\)\[\]\{\}\*_\-]/g, '').trim();
+      const pages = paginateHadith(cleanText);
+      pages.forEach((pageText, pageIdx) => {
+        slides.push({
+          type: "item",
+          itemIndex,
+          pageText,
+          pageNumber: pageIdx + 1,
+          totalPages: pages.length,
+          id: `h-item-${itemIndex}-page-${pageIdx}`,
+        });
+      });
+    });
+    slides.push({ type: "closing", id: "h-closing" });
+    return slides;
+  }, [chapter]);
+
   const total = slideIds.length;
   const safeIdx = Math.min(previewIdx, Math.max(0, total - 1));
 
@@ -129,7 +155,8 @@ function HisnPage() {
                 text={chapter ? `${chapter.title} · حصن المسلم` : "حصن المسلم"}
                 disabled={!chapter || sharingAll}
                 getFile={async () => {
-                  const blob = await captureNodeToBlob(`preview-${slideIds[safeIdx]}`, { width: 1080, height: 1080 });
+                  const slide = slideIds[safeIdx];
+                  const blob = await captureNodeToBlob(`preview-${slide.id}`, { width: 1080, height: 1080 });
                   return new File([blob], `hisn-${String(chIdx).padStart(3, "0")}-${safeIdx + 1}.png`, { type: "image/png" });
                 }}
                 getFiles={async () => {
@@ -226,8 +253,18 @@ function HisnPage() {
 
 function RenderSlide({
   idx, chapter, slideIds, slideId,
-}: { idx: number; chapter: HisnChapter; slideIds: string[]; slideId?: string }) {
-  const id = slideId ?? `preview-${slideIds[idx]}`;
-  if (idx === slideIds.length - 1) return <HisnClosingSlide slideId={id} />;
-  return <HisnItemSlide chapter={chapter} itemIndex={idx} slideId={id} />;
+}: { idx: number; chapter: HisnChapter; slideIds: any[]; slideId?: string }) {
+  const slide = slideIds[idx];
+  const id = slideId ?? `preview-${slide.id}`;
+  if (slide.type === "closing") return <HisnClosingSlide slideId={id} />;
+  return (
+    <HisnItemSlide 
+      chapter={chapter} 
+      itemIndex={slide.itemIndex!} 
+      slideId={id} 
+      pageText={slide.pageText!}
+      pageNumber={slide.pageNumber!}
+      totalPages={slide.totalPages!}
+    />
+  );
 }

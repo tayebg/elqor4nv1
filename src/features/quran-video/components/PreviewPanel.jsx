@@ -144,6 +144,7 @@ export default function PreviewPanel({
     fallbackText, chapterName,
     collaboration,
     secondaryUsername,
+    reciterName: selectedReciterName,
   };
 
   const currentTimeMsRef = useRef(currentTimeMs);
@@ -201,7 +202,7 @@ export default function PreviewPanel({
     timedVerses, translations, showTranslation, watermarkText, contentMode,
     fallbackText, chapterName,
     logoUrl, secondaryLogoUrl, collaboration, secondaryUsername,
-    EXPORT_W, EXPORT_H,
+    EXPORT_W, EXPORT_H, selectedReciterName
   ]);
 
   const activeIdx = hasTimedData
@@ -255,11 +256,6 @@ export default function PreviewPanel({
           <Badge variant="outline" className="font-mono text-[10px]">
             {EXPORT_W} × {EXPORT_H}
           </Badge>
-          {selectedReciterName && (
-            <Badge variant="outline" className="max-w-[150px] truncate text-[10px]">
-              {selectedReciterName}
-            </Badge>
-          )}
         </div>
       </div>
 
