@@ -14,7 +14,9 @@ export function useVideoExport() {
     return new Promise((resolve, reject) => {
       if (!url) { resolve(null); return; }
       const img = new Image();
-      img.crossOrigin = "anonymous";
+      if (url.startsWith("http")) {
+        img.crossOrigin = "anonymous";
+      }
       img.onload = () => resolve(img);
       img.onerror = () => reject(new Error("فشل تحميل الصورة: " + url));
       img.src = url;
@@ -112,7 +114,9 @@ export function useVideoExport() {
         if (bgIsVideo) {
           bgElement = await new Promise((resolve, reject) => {
             const vid = document.createElement("video");
-            vid.crossOrigin = "anonymous";
+            if (bgImageUrl.startsWith("http")) {
+              vid.crossOrigin = "anonymous";
+            }
             vid.src = bgImageUrl;
             vid.muted = true;
             vid.playsInline = true;
