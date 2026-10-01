@@ -235,12 +235,19 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
     const label1 = watermarkText || "";
     const label2 = secondaryUsername || "";
     const logoSize = Math.round(wmFontSize * 2.2);
+    const getDims = (img) => {
+      if (!img || !img.naturalWidth) return { w: 0, h: 0 };
+      const aspect = img.naturalWidth / img.naturalHeight;
+      return aspect > 1 ? { w: logoSize, h: logoSize / aspect } : { w: logoSize * aspect, h: logoSize };
+    };
+    const dim1 = getDims(logoImage);
+    const dim2 = getDims(secondaryLogoImage);
     const gap = Math.round(wmFontSize * 0.5);
     const w1 =
-      (logoImage && logoImage.naturalWidth ? logoSize + gap : 0) +
+      (dim1.w ? dim1.w + gap : 0) +
       (label1 ? ctx.measureText(label1).width : 0);
     const w2 =
-      (hasSecondaryLogo ? logoSize + gap : 0) +
+      (dim2.w ? dim2.w + gap : 0) +
       (label2 ? ctx.measureText(label2).width : 0);
     const xGap = Math.round(wmFontSize * 1.6);
     const totalW = w1 + xGap + w2;
@@ -249,9 +256,9 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
     ctx.shadowBlur = 8;
     ctx.shadowColor = "rgba(0,0,0,0.4)";
     // Block 1
-    if (logoImage && logoImage.naturalWidth) {
-      ctx.drawImage(logoImage, x, y - logoSize / 2, logoSize, logoSize);
-      x += logoSize + gap;
+    if (dim1.w) {
+      ctx.drawImage(logoImage, x, y - dim1.h / 2, dim1.w, dim1.h);
+      x += dim1.w + gap;
     }
     if (label1) {
       ctx.fillStyle = "rgba(255,255,255,0.9)";
@@ -267,9 +274,9 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
     ctx.font = `600 ${wmFontSize}px system-ui, -apple-system, sans-serif`;
     x += xGap;
     // Block 2
-    if (hasSecondaryLogo) {
-      ctx.drawImage(secondaryLogoImage, x, y - logoSize / 2, logoSize, logoSize);
-      x += logoSize + gap;
+    if (dim2.w) {
+      ctx.drawImage(secondaryLogoImage, x, y - dim2.h / 2, dim2.w, dim2.h);
+      x += dim2.w + gap;
     }
     if (label2) {
       ctx.fillStyle = "rgba(255,255,255,0.9)";
@@ -284,19 +291,25 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
     const label = watermarkText || "";
     ctx.textAlign = "left";
     const textW = label ? ctx.measureText(label).width : 0;
-    const logoSize = logoImage && logoImage.naturalWidth ? Math.round(wmFontSize * 2.2) : 0;
-    const gap = logoSize && label ? Math.round(wmFontSize * 0.5) : 0;
-    const totalW = logoSize + gap + textW;
+    const maxLogoSize = Math.round(wmFontSize * 2.2);
+    let drawW = 0, drawH = 0;
+    if (logoImage && logoImage.naturalWidth) {
+      const aspect = logoImage.naturalWidth / logoImage.naturalHeight;
+      if (aspect > 1) { drawW = maxLogoSize; drawH = maxLogoSize / aspect; }
+      else { drawW = maxLogoSize * aspect; drawH = maxLogoSize; }
+    }
+    const gap = drawW && label ? Math.round(wmFontSize * 0.5) : 0;
+    const totalW = drawW + gap + textW;
     const startX = centerX - totalW / 2;
     const y = height - Math.round(height * 0.08);
     ctx.shadowBlur = 8;
     ctx.shadowColor = "rgba(0,0,0,0.4)";
-    if (logoSize) {
-      ctx.drawImage(logoImage, startX, y - logoSize / 2, logoSize, logoSize);
+    if (drawW) {
+      ctx.drawImage(logoImage, startX, y - drawH / 2, drawW, drawH);
     }
     if (label) {
       ctx.fillStyle = "rgba(255,255,255,0.85)";
-      ctx.fillText(label, startX + logoSize + gap, y);
+      ctx.fillText(label, startX + drawW + gap, y);
     }
     ctx.restore();
   }
