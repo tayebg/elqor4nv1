@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+﻿import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ShareMenu } from "@/components/ShareMenu";
@@ -12,13 +12,13 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/reels-watermark")({
   head: () => ({
-    meta: [{ title: "عَلامَةُ ريلز · ELQOR4N" }],
+    meta: [{ title: "Ø¹ÙŽÙ„Ø§Ù…ÙŽØ©Ù Ø±ÙŠÙ„Ø² Â· ELQOR4N" }],
   }),
   component: () => (
     <ClientOnly
       fallback={
         <div className="min-h-screen flex items-center justify-center text-muted-foreground">
-          جارٍ التحميل…
+          Ø¬Ø§Ø±Ù Ø§Ù„ØªØ­Ù…ÙŠÙ„â€¦
         </div>
       }
     >
@@ -82,9 +82,9 @@ function ReelsPage() {
         onProgress: setProgress,
       });
       setOutUrl(URL.createObjectURL(blob));
-      toast.success("جاهز — يمكن التنزيل أو المشاركة");
+      toast.success("Ø¬Ø§Ù‡Ø² â€” ÙŠÙ…ÙƒÙ† Ø§Ù„ØªÙ†Ø²ÙŠÙ„ Ø£Ùˆ Ø§Ù„Ù…Ø´Ø§Ø±ÙƒØ©");
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "فشل التصدير");
+      toast.error(e instanceof Error ? e.message : "ÙØ´Ù„ Ø§Ù„ØªØµØ¯ÙŠØ±");
     } finally {
       setRendering(false);
     }
@@ -96,7 +96,7 @@ function ReelsPage() {
         <div className="grid lg:grid-cols-[320px_minmax(0,1fr)] gap-8">
           <aside className="space-y-5">
             <div>
-              <Label>ملف الفيديو</Label>
+              <Label>Ù…Ù„Ù Ø§Ù„ÙÙŠØ¯ÙŠÙˆ</Label>
               <label className="mt-2 flex items-center justify-center h-24 rounded-md border-2 border-dashed border-border cursor-pointer hover:bg-muted/30 text-sm text-muted-foreground">
                 <input
                   type="file"
@@ -106,13 +106,13 @@ function ReelsPage() {
                 />
                 <span className="flex items-center gap-2">
                   <Upload className="h-4 w-4" />{" "}
-                  {file ? file.name.slice(0, 24) : "اختر فيديو"}
+                  {file ? file.name.slice(0, 24) : "Ø§Ø®ØªØ± ÙÙŠØ¯ÙŠÙˆ"}
                 </span>
               </label>
             </div>
             <div className="rounded-md border border-border bg-muted/20 px-3 py-2 text-xs text-muted-foreground space-y-1">
               <p>
-                العلامة المائية:{" "}
+                Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„Ù…Ø§Ø¦ÙŠØ©:{" "}
                 <span
                   className="font-medium text-foreground"
                   dir="ltr"
@@ -123,7 +123,7 @@ function ReelsPage() {
               </p>
               {collaboration && (
                 <p>
-                  العلامة الثانية:{" "}
+                  Ø§Ù„Ø¹Ù„Ø§Ù…Ø© Ø§Ù„Ø«Ø§Ù†ÙŠØ©:{" "}
                   <span
                     className="font-medium text-foreground"
                     dir="ltr"
@@ -134,12 +134,12 @@ function ReelsPage() {
                 </p>
               )}
               <p className="pt-1">
-                الشعار والمعرّف والتعاون تُدار في{" "}
-                <span className="text-foreground">الإعدادات ← العلامة</span>.
+                Ø§Ù„Ø´Ø¹Ø§Ø± ÙˆØ§Ù„Ù…Ø¹Ø±Ù‘Ù ÙˆØ§Ù„ØªØ¹Ø§ÙˆÙ† ØªÙØ¯Ø§Ø± ÙÙŠ{" "}
+                <span className="text-foreground">Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª â† Ø§Ù„Ø¹Ù„Ø§Ù…Ø©</span>.
               </p>
             </div>
             <div>
-              <Label>الموضع</Label>
+              <Label>Ø§Ù„Ù…ÙˆØ¶Ø¹</Label>
               <div className="grid grid-cols-2 gap-2 mt-2">
                 {(collaboration
                   ? (["tc", "bc"] as Position[])
@@ -153,12 +153,12 @@ function ReelsPage() {
                     {
                       (
                         {
-                          tl: "أعلى يسار",
-                          tr: "أعلى يمين",
-                          bl: "أسفل يسار",
-                          br: "أسفل يمين",
-                          tc: "أعلى الوسط",
-                          bc: "أسفل الوسط",
+                          tl: "Ø£Ø¹Ù„Ù‰ ÙŠØ³Ø§Ø±",
+                          tr: "Ø£Ø¹Ù„Ù‰ ÙŠÙ…ÙŠÙ†",
+                          bl: "Ø£Ø³ÙÙ„ ÙŠØ³Ø§Ø±",
+                          br: "Ø£Ø³ÙÙ„ ÙŠÙ…ÙŠÙ†",
+                          tc: "Ø£Ø¹Ù„Ù‰ Ø§Ù„ÙˆØ³Ø·",
+                          bc: "Ø£Ø³ÙÙ„ Ø§Ù„ÙˆØ³Ø·",
                         } as const
                       )[p]
                     }
@@ -167,12 +167,12 @@ function ReelsPage() {
               </div>
               {collaboration && (
                 <p className="text-[11px] text-muted-foreground mt-1.5">
-                  وضع التعاون يقتصر على المواضع المركزية.
+                  ÙˆØ¶Ø¹ Ø§Ù„ØªØ¹Ø§ÙˆÙ† ÙŠÙ‚ØªØµØ± Ø¹Ù„Ù‰ Ø§Ù„Ù…ÙˆØ§Ø¶Ø¹ Ø§Ù„Ù…Ø±ÙƒØ²ÙŠØ©.
                 </p>
               )}
             </div>
             <div>
-              <Label>الشفافية: {(opacity * 100).toFixed(0)}%</Label>
+              <Label>Ø§Ù„Ø´ÙØ§ÙÙŠØ©: {(opacity * 100).toFixed(0)}%</Label>
               <input
                 type="range"
                 min={0.2}
@@ -190,12 +190,12 @@ function ReelsPage() {
             >
               {rendering ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> جارٍ التصدير{" "}
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Ø¬Ø§Ø±Ù Ø§Ù„ØªØµØ¯ÙŠØ±{" "}
                   {Math.round(progress * 100)}%
                 </>
               ) : (
                 <>
-                  <Play className="h-4 w-4 mr-2" /> تطبيق العلامة
+                  <Play className="h-4 w-4 mr-2" /> ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„Ø¹Ù„Ø§Ù…Ø©
                 </>
               )}
             </Button>
@@ -207,13 +207,13 @@ function ReelsPage() {
                   className="block"
                 >
                   <Button variant="outline" className="w-full">
-                    <Download className="h-4 w-4 mr-2" /> تنزيل MP4/WebM
+                    <Download className="h-4 w-4 mr-2" /> ØªÙ†Ø²ÙŠÙ„ MP4/WebM
                   </Button>
                 </a>
                 <ShareMenu
                   className="w-full"
-                  label="مشاركة الريل"
-                  title="ريلز"
+                  label="Ù…Ø´Ø§Ø±ÙƒØ© Ø§Ù„Ø±ÙŠÙ„"
+                  title="Ø±ÙŠÙ„Ø²"
                   text={handle}
                   getFile={async () => {
                     const blob = await fetch(outUrl).then((r) => r.blob());
@@ -226,9 +226,9 @@ function ReelsPage() {
               </div>
             )}
             <p className="text-[11px] text-muted-foreground leading-relaxed">
-              التصدير يتم كله في متصفحك باستخدام Canvas + MediaRecorder — لا
-              يُرفع أي شيء إلى الخادم. الترميز يعتمد على المتصفح (WebM على
-              Chromium، MP4 على Safari).
+              Ø§Ù„ØªØµØ¯ÙŠØ± ÙŠØªÙ… ÙƒÙ„Ù‡ ÙÙŠ Ù…ØªØµÙØ­Ùƒ Ø¨Ø§Ø³ØªØ®Ø¯Ø§Ù… Canvas + MediaRecorder â€” Ù„Ø§
+              ÙŠÙØ±ÙØ¹ Ø£ÙŠ Ø´ÙŠØ¡ Ø¥Ù„Ù‰ Ø§Ù„Ø®Ø§Ø¯Ù…. Ø§Ù„ØªØ±Ù…ÙŠØ² ÙŠØ¹ØªÙ…Ø¯ Ø¹Ù„Ù‰ Ø§Ù„Ù…ØªØµÙØ­ (WebM Ø¹Ù„Ù‰
+              ChromiumØŒ MP4 Ø¹Ù„Ù‰ Safari).
             </p>
           </aside>
 
@@ -254,7 +254,7 @@ function ReelsPage() {
                 />
               ) : (
                 <div className="w-full h-full grid place-items-center text-muted-foreground text-sm">
-                  ارفع فيديو
+                  Ø§Ø±ÙØ¹ ÙÙŠØ¯ÙŠÙˆ
                 </div>
               )}
             </div>
@@ -293,7 +293,7 @@ async function renderWithWatermark(opts: {
   video.crossOrigin = "anonymous";
   await new Promise<void>((res, rej) => {
     video.onloadedmetadata = () => res();
-    video.onerror = () => rej(new Error("تعذّر تحميل الفيديو"));
+    video.onerror = () => rej(new Error("ØªØ¹Ø°Ù‘Ø± ØªØ­Ù…ÙŠÙ„ Ø§Ù„ÙÙŠØ¯ÙŠÙˆ"));
   });
 
   const loadImg = (src: string) =>
@@ -316,9 +316,7 @@ async function renderWithWatermark(opts: {
 
   const stream = canvas.captureStream(30);
   try {
-    // @ts-expect-error non-standard but widely supported
-    const audioStream: MediaStream | undefined =
-      video.captureStream?.() ?? video.mozCaptureStream?.();
+    const audioStream: MediaStream | undefined = (video as any).captureStream?.() ?? (video as any).mozCaptureStream?.();
     audioStream?.getAudioTracks().forEach((t) => stream.addTrack(t));
   } catch {
     /* no audio */
@@ -413,7 +411,7 @@ async function renderWithWatermark(opts: {
       ctx.textBaseline = "middle";
       ctx.shadowColor = "rgba(0,0,0,0.6)";
       ctx.shadowBlur = 6;
-      ctx.fillText("×", x + Math.round(fontSize * 0.7), y);
+      ctx.fillText("Ã—", x + Math.round(fontSize * 0.7), y);
       ctx.restore();
       x += Math.round(fontSize * 1.4) + crossGap;
       drawBrand(logo2, secondary.handle, x, y);
@@ -441,3 +439,4 @@ async function renderWithWatermark(opts: {
   rec.stop();
   return done;
 }
+
