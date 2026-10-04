@@ -82,7 +82,9 @@ function ReelsPage() {
         onProgress: setProgress,
       });
       setOutUrl(URL.createObjectURL(blob));
-      toast.success("Ø¬Ø§Ù‡Ø² â€” ÙŠÙ…ÙƒÙ† Ø§Ù„ØªÙ†Ø²ÙŠÙ„ Ø£Ùˆ Ø§Ù„Ù…Ø´Ø§Ø±ÙƒØ©");
+      toast.success(
+        "Ø¬Ø§Ù‡Ø² â€” ÙŠÙ…ÙƒÙ† Ø§Ù„ØªÙ†Ø²ÙŠÙ„ Ø£Ùˆ Ø§Ù„Ù…Ø´Ø§Ø±ÙƒØ©",
+      );
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "ÙØ´Ù„ Ø§Ù„ØªØµØ¯ÙŠØ±");
     } finally {
@@ -135,7 +137,10 @@ function ReelsPage() {
               )}
               <p className="pt-1">
                 Ø§Ù„Ø´Ø¹Ø§Ø± ÙˆØ§Ù„Ù…Ø¹Ø±Ù‘Ù ÙˆØ§Ù„ØªØ¹Ø§ÙˆÙ† ØªÙØ¯Ø§Ø± ÙÙŠ{" "}
-                <span className="text-foreground">Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª â† Ø§Ù„Ø¹Ù„Ø§Ù…Ø©</span>.
+                <span className="text-foreground">
+                  Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª â† Ø§Ù„Ø¹Ù„Ø§Ù…Ø©
+                </span>
+                .
               </p>
             </div>
             <div>
@@ -167,7 +172,8 @@ function ReelsPage() {
               </div>
               {collaboration && (
                 <p className="text-[11px] text-muted-foreground mt-1.5">
-                  ÙˆØ¶Ø¹ Ø§Ù„ØªØ¹Ø§ÙˆÙ† ÙŠÙ‚ØªØµØ± Ø¹Ù„Ù‰ Ø§Ù„Ù…ÙˆØ§Ø¶Ø¹ Ø§Ù„Ù…Ø±ÙƒØ²ÙŠØ©.
+                  ÙˆØ¶Ø¹ Ø§Ù„ØªØ¹Ø§ÙˆÙ† ÙŠÙ‚ØªØµØ± Ø¹Ù„Ù‰ Ø§Ù„Ù…ÙˆØ§Ø¶Ø¹
+                  Ø§Ù„Ù…Ø±ÙƒØ²ÙŠØ©.
                 </p>
               )}
             </div>
@@ -190,8 +196,8 @@ function ReelsPage() {
             >
               {rendering ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Ø¬Ø§Ø±Ù Ø§Ù„ØªØµØ¯ÙŠØ±{" "}
-                  {Math.round(progress * 100)}%
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Ø¬Ø§Ø±Ù
+                  Ø§Ù„ØªØµØ¯ÙŠØ± {Math.round(progress * 100)}%
                 </>
               ) : (
                 <>
@@ -226,9 +232,10 @@ function ReelsPage() {
               </div>
             )}
             <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Ø§Ù„ØªØµØ¯ÙŠØ± ÙŠØªÙ… ÙƒÙ„Ù‡ ÙÙŠ Ù…ØªØµÙØ­Ùƒ Ø¨Ø§Ø³ØªØ®Ø¯Ø§Ù… Canvas + MediaRecorder â€” Ù„Ø§
-              ÙŠÙØ±ÙØ¹ Ø£ÙŠ Ø´ÙŠØ¡ Ø¥Ù„Ù‰ Ø§Ù„Ø®Ø§Ø¯Ù…. Ø§Ù„ØªØ±Ù…ÙŠØ² ÙŠØ¹ØªÙ…Ø¯ Ø¹Ù„Ù‰ Ø§Ù„Ù…ØªØµÙØ­ (WebM Ø¹Ù„Ù‰
-              ChromiumØŒ MP4 Ø¹Ù„Ù‰ Safari).
+              Ø§Ù„ØªØµØ¯ÙŠØ± ÙŠØªÙ… ÙƒÙ„Ù‡ ÙÙŠ Ù…ØªØµÙØ­Ùƒ Ø¨Ø§Ø³ØªØ®Ø¯Ø§Ù…
+              Canvas + MediaRecorder â€” Ù„Ø§ ÙŠÙØ±ÙØ¹ Ø£ÙŠ Ø´ÙŠØ¡ Ø¥Ù„Ù‰
+              Ø§Ù„Ø®Ø§Ø¯Ù…. Ø§Ù„ØªØ±Ù…ÙŠØ² ÙŠØ¹ØªÙ…Ø¯ Ø¹Ù„Ù‰ Ø§Ù„Ù…ØªØµÙØ­ (WebM
+              Ø¹Ù„Ù‰ ChromiumØŒ MP4 Ø¹Ù„Ù‰ Safari).
             </p>
           </aside>
 
@@ -316,7 +323,8 @@ async function renderWithWatermark(opts: {
 
   const stream = canvas.captureStream(30);
   try {
-    const audioStream: MediaStream | undefined = (video as any).captureStream?.() ?? (video as any).mozCaptureStream?.();
+    const audioStream: MediaStream | undefined =
+      (video as any).captureStream?.() ?? (video as any).mozCaptureStream?.();
     audioStream?.getAudioTracks().forEach((t) => stream.addTrack(t));
   } catch {
     /* no audio */
@@ -439,4 +447,3 @@ async function renderWithWatermark(opts: {
   rec.stop();
   return done;
 }
-
