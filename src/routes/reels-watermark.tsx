@@ -369,12 +369,10 @@ async function renderWithWatermark(opts: {
   ) => {
     const drewLogo = !!(img && img.complete && img.naturalWidth);
     if (drewLogo) {
-      
-        const aspect = img!.naturalWidth / img!.naturalHeight;
-        let drawW = aspect > 1 ? logoSize : Math.round(logoSize * aspect);
-        let drawH = aspect > 1 ? Math.round(logoSize / aspect) : logoSize;
-        ctx.drawImage(img!, x, y - drawH / 2, drawW, drawH);
-
+      const aspect = img!.naturalWidth / img!.naturalHeight;
+      const drawW = aspect > 1 ? logoSize : Math.round(logoSize * aspect);
+      const drawH = aspect > 1 ? Math.round(logoSize / aspect) : logoSize;
+      ctx.drawImage(img!, x, y - drawH / 2, drawW, drawH);
     }
     if (!text) return;
     const textX = x + (drewLogo ? logoSize + gap : 0);
