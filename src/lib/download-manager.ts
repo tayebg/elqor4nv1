@@ -1,4 +1,4 @@
-import { toast } from 'sonner';
+import { toast } from "sonner";
 
 interface ActiveDownload {
   id: string;
@@ -12,7 +12,10 @@ const activeDownloads = new Map<string, ActiveDownload>();
 export function startDownload(opts: {
   id: string;
   label: string;
-  generateBlob: (onProgress: (p: number) => void, signal: AbortSignal) => Promise<Blob>;
+  generateBlob: (
+    onProgress: (p: number) => void,
+    signal: AbortSignal,
+  ) => Promise<Blob>;
   filename: string;
 }) {
   const abort = new AbortController();
@@ -24,30 +27,34 @@ export function startDownload(opts: {
   };
   activeDownloads.set(opts.id, download);
 
-  opts.generateBlob(
-    (p) => {
+  opts
+    .generateBlob((p) => {
       download.progress = p;
-    },
-    abort.signal,
-  ).then((blob) => {
-    activeDownloads.delete(opts.id);
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = opts.filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 30000);
-    toast.success(`${opts.label} — تم بنجاح`, { duration: 4000 });
-  }).catch((err) => {
-    activeDownloads.delete(opts.id);
-    if (err?.name === 'AbortError' || err?.message === 'Aborted') {
-      toast.info(`${opts.label} — تم إلغاء التحميل بنجاح`, { duration: 4000 });
-      return;
-    }
-    toast.error(`${opts.label} — فشل: ${err?.message || 'خطأ'}`, { duration: 6000 });
-  });
+    }, abort.signal)
+    .then((blob) => {
+      activeDownloads.delete(opts.id);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = opts.filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 30000);
+      toast.success(`${opts.label} — تم بنجاح`, { duration: 4000 });
+    })
+    .catch((err) => {
+      activeDownloads.delete(opts.id);
+      if (err?.name === "AbortError" || err?.message === "Aborted") {
+        toast.info(`${opts.label} — تم إلغاء التحميل بنجاح`, {
+          duration: 4000,
+        });
+        return;
+      }
+      toast.error(`${opts.label} — فشل: ${err?.message || "خطأ"}`, {
+        duration: 6000,
+      });
+    });
 
   return {
     cancel: () => abort.abort(),
@@ -55,7 +62,7 @@ export function startDownload(opts: {
 }
 
 export function cancelAllDownloads() {
-  activeDownloads.forEach(d => d.abort.abort());
+  activeDownloads.forEach((d) => d.abort.abort());
   activeDownloads.clear();
 }
 

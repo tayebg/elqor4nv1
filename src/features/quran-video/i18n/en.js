@@ -1,5 +1,4 @@
 export const en = {
-  
   app_name: "Tarteel Studio",
   app_subtitle: "Quran Video Producer",
   app_desc: "Customize your Quran clip",
@@ -65,7 +64,8 @@ export const en = {
   export_video: "Export Video",
   exporting: "Exporting...",
   reels_60s: "Reels 60s",
-  export_keep_open: "Keep the app open & screen on — don't switch apps during export",
+  export_keep_open:
+    "Keep the app open & screen on — don't switch apps during export",
   login_to_download: "Sign in to Download",
   login_required: "Google sign-in required",
   login: "Sign in",

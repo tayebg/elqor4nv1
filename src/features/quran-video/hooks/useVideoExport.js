@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from "react";
 import { Muxer, ArrayBufferTarget } from "mp4-muxer";
 import { renderFrame } from "./useCanvasRenderer";
@@ -12,7 +11,10 @@ export function useVideoExport() {
 
   const loadImage = useCallback((url) => {
     return new Promise((resolve, reject) => {
-      if (!url) { resolve(null); return; }
+      if (!url) {
+        resolve(null);
+        return;
+      }
       const img = new Image();
       if (url.startsWith("http")) {
         img.crossOrigin = "anonymous";
@@ -24,8 +26,14 @@ export function useVideoExport() {
   }, []);
 
   const exportVideo = useCallback(
-    async (bgImageUrl, audioUrl, timedVerses, videoSize, fileName = "Tarteel_Video", exportOptions = {}) => {
-      
+    async (
+      bgImageUrl,
+      audioUrl,
+      timedVerses,
+      videoSize,
+      fileName = "Tarteel_Video",
+      exportOptions = {},
+    ) => {
       if (!timedVerses?.length) {
         alert("⚠️ لا توجد بيانات آيات للتصدير.");
         return null;
@@ -36,7 +44,9 @@ export function useVideoExport() {
       }
 
       if (typeof VideoEncoder === "undefined") {
-        alert("❌ متصفحك لا يدعم WebCodecs API.\nيرجى استخدام Google Chrome أو Microsoft Edge بأحدث إصدار.");
+        alert(
+          "❌ متصفحك لا يدعم WebCodecs API.\nيرجى استخدام Google Chrome أو Microsoft Edge بأحدث إصدار.",
+        );
         return null;
       }
 
@@ -106,7 +116,9 @@ export function useVideoExport() {
 
         const durationSec = durationMs / 1000;
         const totalFrames = Math.ceil(durationSec * FPS);
-        console.log(`🎬 [Export] ${w}×${h} | ${durationSec.toFixed(1)}s | ${totalFrames} إطار | ${timedVerses.length} آية`);
+        console.log(
+          `🎬 [Export] ${w}×${h} | ${durationSec.toFixed(1)}s | ${totalFrames} إطار | ${timedVerses.length} آية`,
+        );
 
         setStatusText("تحميل الخلفية...");
         let bgElement = null;
@@ -133,10 +145,15 @@ export function useVideoExport() {
         let secondaryLogoImage = null;
         try {
           if (logoUrl) logoImage = await loadImage(logoUrl);
-        } catch (e) { console.warn("logo load failed", e.message); }
+        } catch (e) {
+          console.warn("logo load failed", e.message);
+        }
         try {
-          if (secondaryLogoUrl) secondaryLogoImage = await loadImage(secondaryLogoUrl);
-        } catch (e) { console.warn("secondary logo load failed", e.message); }
+          if (secondaryLogoUrl)
+            secondaryLogoImage = await loadImage(secondaryLogoUrl);
+        } catch (e) {
+          console.warn("secondary logo load failed", e.message);
+        }
         setProgress(10);
 
         setStatusText("معالجة الصوت...");
@@ -149,14 +166,16 @@ export function useVideoExport() {
         }
 
         const offlineCtx = new OfflineAudioContext(2, 1, 44100);
-        const fullAudioBuffer = await offlineCtx.decodeAudioData(audioArrayBuffer.slice(0));
+        const fullAudioBuffer = await offlineCtx.decodeAudioData(
+          audioArrayBuffer.slice(0),
+        );
 
         const sampleRate = fullAudioBuffer.sampleRate;
         const numChannels = fullAudioBuffer.numberOfChannels;
         const startSample = Math.floor((offsetMs / 1000) * sampleRate);
         const endSample = Math.min(
           Math.floor((lastEnd / 1000) * sampleRate),
-          fullAudioBuffer.length
+          fullAudioBuffer.length,
         );
         const trimmedLength = endSample - startSample;
 
@@ -164,8 +183,16 @@ export function useVideoExport() {
           throw new Error("طول الصوت المقطوع غير صالح");
         }
 
-        const trimmedCtx2 = new OfflineAudioContext(numChannels, trimmedLength, sampleRate);
-        const trimmedBuffer = trimmedCtx2.createBuffer(numChannels, trimmedLength, sampleRate);
+        const trimmedCtx2 = new OfflineAudioContext(
+          numChannels,
+          trimmedLength,
+          sampleRate,
+        );
+        const trimmedBuffer = trimmedCtx2.createBuffer(
+          numChannels,
+          trimmedLength,
+          sampleRate,
+        );
         for (let ch = 0; ch < numChannels; ch++) {
           const src = fullAudioBuffer.getChannelData(ch);
           const dst = trimmedBuffer.getChannelData(ch);
@@ -175,19 +202,22 @@ export function useVideoExport() {
         }
         setProgress(20);
 
-        const translations = (translationLines || []).map((t) =>
-          ({ text: typeof t === "string" ? t : t?.text || "" })
-        );
+        const translations = (translationLines || []).map((t) => ({
+          text: typeof t === "string" ? t : t?.text || "",
+        }));
 
         setStatusText("إعداد محرك الفيديو...");
         exportCanvas = document.createElement("canvas");
         exportCanvas.width = w;
         exportCanvas.height = h;
-        
-        exportCanvas.style.cssText = "position:fixed;top:-9999px;left:-9999px;pointer-events:none;opacity:0;";
+
+        exportCanvas.style.cssText =
+          "position:fixed;top:-9999px;left:-9999px;pointer-events:none;opacity:0;";
         document.body.appendChild(exportCanvas);
 
-        const ctx = exportCanvas.getContext("2d", { willReadFrequently: false });
+        const ctx = exportCanvas.getContext("2d", {
+          willReadFrequently: false,
+        });
         if (!ctx) throw new Error("فشل إنشاء Canvas context");
 
         try {
@@ -236,7 +266,6 @@ export function useVideoExport() {
         try {
           const support = await VideoEncoder.isConfigSupported(codecConfig);
           if (!support.supported) {
-            
             codecConfig.hardwareAcceleration = "prefer-software";
             const support2 = await VideoEncoder.isConfigSupported(codecConfig);
             if (!support2.supported) {
@@ -256,7 +285,6 @@ export function useVideoExport() {
         const frameDurationUs = Math.round((1 / FPS) * 1_000_000);
 
         for (let frame = 0; frame < totalFrames; frame++) {
-          
           if (signal?.aborted) throw new Error("Aborted");
 
           if (videoError) throw videoError;
@@ -277,10 +305,17 @@ export function useVideoExport() {
 
           renderFrame(ctx, w, h, timeMs, {
             bgImage: bgElement,
-            bgScale, bgDim, bgBlur,
-            textColor, translationColor, textScale,
-            timedVerses, translations,
-            showTranslation, watermarkText, contentMode,
+            bgScale,
+            bgDim,
+            bgBlur,
+            textColor,
+            translationColor,
+            textScale,
+            timedVerses,
+            translations,
+            showTranslation,
+            watermarkText,
+            contentMode,
             chapterName,
             fallbackText: "",
             logoImage,
@@ -385,7 +420,9 @@ export function useVideoExport() {
           throw new Error("الملف المُصدَّر صغير جداً — ربما فشل الرندر");
         }
 
-        console.log(`📥 [Export] حجم: ${(blob.size / 1024 / 1024).toFixed(2)} MB`);
+        console.log(
+          `📥 [Export] حجم: ${(blob.size / 1024 / 1024).toFixed(2)} MB`,
+        );
 
         if (autoDownload) {
           const url = URL.createObjectURL(blob);
@@ -401,9 +438,8 @@ export function useVideoExport() {
         setStatusText("تم التصدير بنجاح ✅");
         setProgress(100);
         return blob;
-
       } catch (err) {
-        if (err.name === 'AbortError' || err.message === 'Aborted') {
+        if (err.name === "AbortError" || err.message === "Aborted") {
           console.log("🛑 [Export] تم الإلغاء بواسطة المستخدم");
           setStatusText("تم إلغاء التحميل بنجاح");
           setProgress(0);
@@ -412,25 +448,27 @@ export function useVideoExport() {
         console.error("❌ [Export] خطأ:", err);
         setStatusText("❌ فشل التصدير");
         setProgress(0);
-        alert(`❌ فشل تصدير الفيديو:\n${err.message}\n\nيرجى المحاولة مجدداً أو تقليل عدد الآيات.`);
+        alert(
+          `❌ فشل تصدير الفيديو:\n${err.message}\n\nيرجى المحاولة مجدداً أو تقليل عدد الآيات.`,
+        );
         return null;
       } finally {
         setIsExporting(false);
-        
+
         if (exportCanvas && exportCanvas.parentNode) {
           exportCanvas.parentNode.removeChild(exportCanvas);
         }
-        
+
         if (wakeLock) {
           wakeLock.release().catch(() => {});
           console.log("🔓 [Export] Wake Lock مُحرَّر");
         }
-        
+
         document.removeEventListener("visibilitychange", handleVisibility);
         window.removeEventListener("beforeunload", handleBeforeUnload);
       }
     },
-    [loadImage]
+    [loadImage],
   );
 
   return { exportVideo, isExporting, progress, statusText };

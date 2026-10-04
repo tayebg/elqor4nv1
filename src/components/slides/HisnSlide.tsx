@@ -44,15 +44,19 @@ export function HisnCoverSlide({ chapter, slideId }: CoverProps) {
       <div className="absolute inset-0 flex flex-col items-center justify-between px-24 py-32 text-center">
         <div className="flex flex-col items-center gap-6">
           {!collaboration && logoUrl && (
-          <img
-            src={logoUrl}
-            alt="الشعار"
-            className="h-40 w-40 object-contain"
-            crossOrigin="anonymous"
-            style={{ filter: "brightness(0) invert(1)" }}
-          />
+            <img
+              src={logoUrl}
+              alt="الشعار"
+              className="h-40 w-40 object-contain"
+              crossOrigin="anonymous"
+              style={{ filter: "brightness(0) invert(1)" }}
+            />
           )}
-          <HijriBadge color="rgba(234,240,255,0.85)" accent="#e6c878" fontSize={28} />
+          <HijriBadge
+            color="rgba(234,240,255,0.85)"
+            accent="#e6c878"
+            fontSize={28}
+          />
         </div>
         <div className="space-y-10">
           <div
@@ -71,7 +75,8 @@ export function HisnCoverSlide({ chapter, slideId }: CoverProps) {
             className="text-[34px]"
             style={{ color: "rgba(234,240,255,0.65)" }}
           >
-            {chapter.items.length} {chapter.items.length === 1 ? "ذِكْر" : "أذكار"}
+            {chapter.items.length}{" "}
+            {chapter.items.length === 1 ? "ذِكْر" : "أذكار"}
           </div>
         </div>
         {collaboration ? (
@@ -84,7 +89,11 @@ export function HisnCoverSlide({ chapter, slideId }: CoverProps) {
         ) : (
           <div
             className="text-[36px] tracking-[0.25em]"
-            style={{ color: "rgba(234,240,255,0.9)", fontWeight: 600, direction: "ltr" }}
+            style={{
+              color: "rgba(234,240,255,0.9)",
+              fontWeight: 600,
+              direction: "ltr",
+            }}
             dir="ltr"
           >
             {handleLine}
@@ -95,7 +104,6 @@ export function HisnCoverSlide({ chapter, slideId }: CoverProps) {
   );
 }
 
-
 interface ItemProps {
   chapter: HisnChapter;
   itemIndex: number;
@@ -105,14 +113,35 @@ interface ItemProps {
   totalPages: number;
 }
 
-export function HisnItemSlide({ chapter, itemIndex, slideId, pageText, pageNumber, totalPages }: ItemProps) {
+export function HisnItemSlide({
+  chapter,
+  itemIndex,
+  slideId,
+  pageText,
+  pageNumber,
+  totalPages,
+}: ItemProps) {
   const item = chapter.items[itemIndex] as any;
   const { line: footerHandles } = useBrandHandles();
 
-  const isDua = chapter.title.includes('دعاء') || chapter.title.includes('أدعية') || chapter.title.includes('الدعاء');
-  const typeName = isDua ? 'الدعاء' : 'الذكر';
-  const ordinalNames = ["الأول", "الثاني", "الثالث", "الرابع", "الخامس", "السادس", "السابع", "الثامن", "التاسع", "العاشر"];
-  
+  const isDua =
+    chapter.title.includes("دعاء") ||
+    chapter.title.includes("أدعية") ||
+    chapter.title.includes("الدعاء");
+  const typeName = isDua ? "الدعاء" : "الذكر";
+  const ordinalNames = [
+    "الأول",
+    "الثاني",
+    "الثالث",
+    "الرابع",
+    "الخامس",
+    "السادس",
+    "السابع",
+    "الثامن",
+    "التاسع",
+    "العاشر",
+  ];
+
   let headerTitle = "";
   if (chapter.items.length === 1) {
     headerTitle = typeName;
@@ -121,24 +150,36 @@ export function HisnItemSlide({ chapter, itemIndex, slideId, pageText, pageNumbe
     headerTitle = `${typeName} ${ordinal}`;
   }
 
-  const titleText = chapter.items.length === 1 
+  const titleText =
+    chapter.items.length === 1
       ? `ذِكْرٌ وَارِدٌ فِي ${chapter.title}`
-      : chapter.items.length === 2 
-          ? `ذِكْرَانِ وَارِدَانِ فِي ${chapter.title}`
-          : chapter.items.length <= 10 
-              ? `${chapter.items.length} أذْكَارٍ وَارِدَةٍ فِي ${chapter.title}`
-              : `${chapter.items.length} ذِكْرًا وَارِدًا فِي ${chapter.title}`;
+      : chapter.items.length === 2
+        ? `ذِكْرَانِ وَارِدَانِ فِي ${chapter.title}`
+        : chapter.items.length <= 10
+          ? `${chapter.items.length} أذْكَارٍ وَارِدَةٍ فِي ${chapter.title}`
+          : `${chapter.items.length} ذِكْرًا وَارِدًا فِي ${chapter.title}`;
 
   let footnoteLabel = "المصدر: ";
   let showFootnote = false;
   if (item.footnote && pageNumber === totalPages) {
-    if (item.footnote.startsWith('*') || item.footnote.includes('أي ') || item.footnote.includes('يعني ') || item.footnote.includes('أي: ') || item.footnote.includes('يعني: ')) {
+    if (
+      item.footnote.startsWith("*") ||
+      item.footnote.includes("أي ") ||
+      item.footnote.includes("يعني ") ||
+      item.footnote.includes("أي: ") ||
+      item.footnote.includes("يعني: ")
+    ) {
       showFootnote = false;
     } else {
       showFootnote = true;
-      if (item.footnote.includes('سورة')) {
+      if (item.footnote.includes("سورة")) {
         footnoteLabel = "المصدر: ";
-      } else if (item.footnote.includes('رواه') || item.footnote.includes('أخرجه') || item.footnote.includes('البخاري') || item.footnote.includes('مسلم')) {
+      } else if (
+        item.footnote.includes("رواه") ||
+        item.footnote.includes("أخرجه") ||
+        item.footnote.includes("البخاري") ||
+        item.footnote.includes("مسلم")
+      ) {
         footnoteLabel = "الراوي: ";
       }
     }
@@ -160,12 +201,19 @@ export function HisnItemSlide({ chapter, itemIndex, slideId, pageText, pageNumbe
             </span>
           )}
         </span>
-        <HijriBadge color="rgba(234,240,255,0.85)" accent="#e6c878" fontSize={26} />
+        <HijriBadge
+          color="rgba(234,240,255,0.85)"
+          accent="#e6c878"
+          fontSize={26}
+        />
       </header>
 
       {item.count && (
         <div className="absolute top-[130px] left-0 right-0 flex justify-center z-10">
-          <div className="bg-[#e6c878]/20 border border-[#e6c878]/40 text-[#e6c878] px-6 py-2 rounded-full font-bold text-2xl flex items-center gap-2 warsh-text" style={{ direction: 'rtl' }}>
+          <div
+            className="bg-[#e6c878]/20 border border-[#e6c878]/40 text-[#e6c878] px-6 py-2 rounded-full font-bold text-2xl flex items-center gap-2 warsh-text"
+            style={{ direction: "rtl" }}
+          >
             <span>التكرار:</span>
             <span>{item.count}</span>
           </div>
@@ -183,30 +231,33 @@ export function HisnItemSlide({ chapter, itemIndex, slideId, pageText, pageNumbe
         >
           <div
             className="flex flex-col justify-center"
-            style={{ 
-              color: "#eaf0ff", 
-              lineHeight: 2, 
-              direction: 'rtl', 
-              textAlign: 'center' 
+            style={{
+              color: "#eaf0ff",
+              lineHeight: 2,
+              direction: "rtl",
+              textAlign: "center",
             }}
           >
             {isFirst && (
               <div
                 className="warsh-text text-center mb-8"
-                style={{ color: "#eaf0ff", fontSize: "0.85em", fontWeight: 700 }}
+                style={{
+                  color: "#eaf0ff",
+                  fontSize: "0.85em",
+                  fontWeight: 700,
+                }}
               >
                 — {titleText} —
               </div>
             )}
-            <div className="warsh-text">
-              {pageText}
-            </div>
+            <div className="warsh-text">{pageText}</div>
             {showFootnote && (
               <div
                 className="warsh-text text-center mt-8"
                 style={{ color: "#e6c878", fontSize: "0.78em" }}
               >
-                [{footnoteLabel}{item.footnote}]
+                [{footnoteLabel}
+                {item.footnote}]
               </div>
             )}
           </div>
@@ -217,7 +268,13 @@ export function HisnItemSlide({ chapter, itemIndex, slideId, pageText, pageNumbe
         className="absolute bottom-8 left-0 right-0 text-center text-[18px] tracking-[0.2em]"
         style={{ color: "rgba(234,240,255,0.45)" }}
       >
-        <span dir="ltr" style={{ unicodeBidi: "isolate", display: "inline-block" }}>{footerHandles}</span> · حصن المسلم
+        <span
+          dir="ltr"
+          style={{ unicodeBidi: "isolate", display: "inline-block" }}
+        >
+          {footerHandles}
+        </span>{" "}
+        · حصن المسلم
       </footer>
     </Frame>
   );
@@ -276,4 +333,3 @@ export function HisnClosingSlide({ slideId }: { slideId: string }) {
     </Frame>
   );
 }
-

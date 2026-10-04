@@ -19,8 +19,9 @@ export function useTranslation(chapterId, fromAyah, toAyah, translationId) {
     async function fetchTranslations() {
       setLoading(true);
       try {
-        
-        const langEntry = translationLanguages.find((l) => l.id === translationId);
+        const langEntry = translationLanguages.find(
+          (l) => l.id === translationId,
+        );
         const lang = langEntry?.lang || "en";
         const url = `${API_BASE}/verses/by_chapter/${chapterId}?language=${lang}&translations=${translationId}&fields=text_uthmani&per_page=286&page=1`;
 
@@ -30,7 +31,6 @@ export function useTranslation(chapterId, fromAyah, toAyah, translationId) {
         const data = await res.json();
 
         if (!cancelled && data.verses) {
-          
           const result = [];
           for (let ayah = fromAyah; ayah <= toAyah; ayah++) {
             const key = `${chapterId}:${ayah}`;
@@ -45,7 +45,12 @@ export function useTranslation(chapterId, fromAyah, toAyah, translationId) {
           }
 
           setTranslations(result);
-          console.log("✅ [Translation] تم جلب", result.length, "ترجمة لنطاق", `${chapterId}:${fromAyah}-${toAyah}`);
+          console.log(
+            "✅ [Translation] تم جلب",
+            result.length,
+            "ترجمة لنطاق",
+            `${chapterId}:${fromAyah}-${toAyah}`,
+          );
         }
       } catch (err) {
         console.error("❌ [Translation] خطأ:", err.message);
@@ -56,7 +61,9 @@ export function useTranslation(chapterId, fromAyah, toAyah, translationId) {
     }
 
     fetchTranslations();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [chapterId, fromAyah, toAyah, translationId]);
 
   return { translations, loading };

@@ -18,7 +18,11 @@ const nitroOptions = preset
   ? { preset }
   : {
       preset: "cloudflare-module",
-      output: { dir: "dist", serverDir: "dist/server", publicDir: "dist/client" },
+      output: {
+        dir: "dist",
+        serverDir: "dist/server",
+        publicDir: "dist/client",
+      },
       cloudflare: { nodeCompat: true, deployConfig: true },
     };
 
@@ -36,7 +40,13 @@ export default defineConfig(({ command }) => ({
     ],
   },
   optimizeDeps: {
-    include: ["react", "react-dom", "react-dom/client", "react/jsx-runtime", "react/jsx-dev-runtime"],
+    include: [
+      "react",
+      "react-dom",
+      "react-dom/client",
+      "react/jsx-runtime",
+      "react/jsx-dev-runtime",
+    ],
   },
   server: {
     host: "::",
@@ -72,7 +82,9 @@ export default defineConfig(({ command }) => ({
         clientsClaim: true,
         skipWaiting: true,
         maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
-        globPatterns: ["**/*.{js,css,html,woff2,woff,ttf,otf,png,svg,ico,json}"],
+        globPatterns: [
+          "**/*.{js,css,html,woff2,woff,ttf,otf,png,svg,ico,json}",
+        ],
         navigateFallback: "/",
         navigateFallbackDenylist: [/^\/api\//, /^\/~oauth/],
         runtimeCaching: [
@@ -98,7 +110,8 @@ export default defineConfig(({ command }) => ({
           },
           {
             urlPattern: ({ url, sameOrigin }) =>
-              sameOrigin && /\.(?:png|jpg|jpeg|svg|webp|woff2?)$/.test(url.pathname),
+              sameOrigin &&
+              /\.(?:png|jpg|jpeg|svg|webp|woff2?)$/.test(url.pathname),
             handler: "CacheFirst",
             options: {
               cacheName: "static-assets",
@@ -106,29 +119,33 @@ export default defineConfig(({ command }) => ({
             },
           },
           {
-            urlPattern: ({ url }) => url.hostname === 'api.quran.com',
-            handler: 'StaleWhileRevalidate',
+            urlPattern: ({ url }) => url.hostname === "api.quran.com",
+            handler: "StaleWhileRevalidate",
             options: {
-              cacheName: 'quran-api',
+              cacheName: "quran-api",
               expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 7 },
               cacheableResponse: { statuses: [0, 200] },
             },
           },
           {
-            urlPattern: ({ url }) => url.hostname === 'download.quranicaudio.com' || url.pathname.startsWith('/audio-proxy'),
-            handler: 'CacheFirst',
+            urlPattern: ({ url }) =>
+              url.hostname === "download.quranicaudio.com" ||
+              url.pathname.startsWith("/audio-proxy"),
+            handler: "CacheFirst",
             options: {
-              cacheName: 'quran-audio',
+              cacheName: "quran-audio",
               expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 14 },
               cacheableResponse: { statuses: [0, 200] },
               rangeRequests: true,
             },
           },
           {
-            urlPattern: ({ url }) => url.hostname.includes('pixabay.com') || url.hostname.includes('vimeocdn.com'),
-            handler: 'CacheFirst',  
+            urlPattern: ({ url }) =>
+              url.hostname.includes("pixabay.com") ||
+              url.hostname.includes("vimeocdn.com"),
+            handler: "CacheFirst",
             options: {
-              cacheName: 'pixabay-media',
+              cacheName: "pixabay-media",
               expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 7 },
               cacheableResponse: { statuses: [0, 200] },
             },

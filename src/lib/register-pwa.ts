@@ -7,18 +7,23 @@ export function registerPWA() {
   const url = new URL(window.location.href);
   const host = window.location.hostname;
   const inIframe = window.self !== window.top;
-  const isPreview = host.startsWith("id-preview--") || host.startsWith("preview--");
+  const isPreview =
+    host.startsWith("id-preview--") || host.startsWith("preview--");
   const killSwitch = url.searchParams.get("sw") === "off";
   const isProd = import.meta.env.PROD;
 
   const shouldRegister = isProd && !inIframe && !isPreview && !killSwitch;
 
   if (!shouldRegister) {
-    navigator.serviceWorker.getRegistrations?.().then((regs) => {
-      for (const r of regs) {
-        if (r.active?.scriptURL.endsWith("/sw.js")) r.unregister().catch(() => {});
-      }
-    }).catch(() => {});
+    navigator.serviceWorker
+      .getRegistrations?.()
+      .then((regs) => {
+        for (const r of regs) {
+          if (r.active?.scriptURL.endsWith("/sw.js"))
+            r.unregister().catch(() => {});
+        }
+      })
+      .catch(() => {});
     return;
   }
 

@@ -29,5 +29,13 @@ export function usePixabay() {
   const searchImages = useCallback((query) => search(query, "image"), [search]);
   const searchVideos = useCallback((query) => search(query, "video"), [search]);
 
-  return { results, images: results, loading, error, searchImages, searchVideos, search };
+  return {
+    results,
+    images: results,
+    loading,
+    error,
+    searchImages,
+    searchVideos,
+    search,
+  };
 }

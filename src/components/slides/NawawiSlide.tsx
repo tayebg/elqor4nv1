@@ -56,7 +56,11 @@ export function NawawiContentSlide({
           {pageNumber} / {totalPages}
         </span>
         {isFirst ? (
-          <HijriBadge color="rgba(244,236,214,0.85)" accent="#d6b463" fontSize={26} />
+          <HijriBadge
+            color="rgba(244,236,214,0.85)"
+            accent="#d6b463"
+            fontSize={26}
+          />
         ) : (
           <span className="warsh-text text-[44px]" style={{ color: "#f4ecd6" }}>
             {hadithTitleAr(hadith.index)}
@@ -74,12 +78,21 @@ export function NawawiContentSlide({
           deps={`${hadith.index}-${pageNumber}-${pageText.length}`}
         >
           <div
-            style={{ color: "#f4ecd6", lineHeight: 2, direction: 'rtl', textAlign: 'center' }}
+            style={{
+              color: "#f4ecd6",
+              lineHeight: 2,
+              direction: "rtl",
+              textAlign: "center",
+            }}
           >
             {isFirst && (
               <div
                 className="warsh-text text-center mb-8"
-                style={{ color: "#d6b463", fontSize: "0.85em", fontWeight: 700 }}
+                style={{
+                  color: "#d6b463",
+                  fontSize: "0.85em",
+                  fontWeight: 700,
+                }}
               >
                 — {hadithTitleAr(hadith.index)} —
               </div>
@@ -101,7 +114,13 @@ export function NawawiContentSlide({
         className="absolute bottom-12 left-0 right-0 text-center text-[24px] tracking-[0.3em]"
         style={{ color: "rgba(244,236,214,0.55)" }}
       >
-        <span dir="ltr" style={{ unicodeBidi: "isolate", display: "inline-block" }}>{footerHandles}</span> · الأربعون النووية
+        <span
+          dir="ltr"
+          style={{ unicodeBidi: "isolate", display: "inline-block" }}
+        >
+          {footerHandles}
+        </span>{" "}
+        · الأربعون النووية
       </footer>
     </Frame>
   );
@@ -122,7 +141,10 @@ export function NawawiClosingSlide({ slideId }: { slideId: string }) {
             alt="الشعار"
             className="h-44 w-44 object-contain"
             crossOrigin="anonymous"
-            style={{ filter: "brightness(0) invert(1) sepia(0.4) saturate(3) hue-rotate(5deg)" }}
+            style={{
+              filter:
+                "brightness(0) invert(1) sepia(0.4) saturate(3) hue-rotate(5deg)",
+            }}
           />
         )}
         <div
@@ -149,4 +171,3 @@ export function NawawiClosingSlide({ slideId }: { slideId: string }) {
     </Frame>
   );
 }
-

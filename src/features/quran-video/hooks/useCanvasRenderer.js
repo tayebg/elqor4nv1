@@ -1,4 +1,3 @@
-
 import { useRef, useCallback } from "react";
 
 function drawCover(ctx, img, canvasW, canvasH, scale = 1) {
@@ -11,13 +10,11 @@ function drawCover(ctx, img, canvasW, canvasH, scale = 1) {
 
   let sw, sh, sx, sy;
   if (imgRatio > canvasRatio) {
-    
     sh = ih;
     sw = ih * canvasRatio;
     sx = (iw - sw) / 2;
     sy = 0;
   } else {
-    
     sw = iw;
     sh = iw / canvasRatio;
     sx = 0;
@@ -93,7 +90,7 @@ function drawDecorativeCorners(ctx, w, h, margin, size, lineWidth) {
 
 export function renderFrame(ctx, width, height, timestampMs, options) {
   const {
-    bgImage = null,         
+    bgImage = null,
     bgScale = 100,
     bgDim = 30,
     bgBlur = 0,
@@ -117,17 +114,25 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
   const isPortrait = height > width;
   const sf = textScale / 100;
 
-  const quranFontSize = Math.round((isPortrait ? height * 0.038 : height * 0.055) * sf);
-  const transFontSize = Math.round((isPortrait ? height * 0.024 : height * 0.032) * sf);
-  const wmFontSize = Math.round((isPortrait ? height * 0.013 : height * 0.016) * sf);
-  const marginH = isPortrait ? Math.round(width * 0.08) : Math.round(width * 0.10);
+  const quranFontSize = Math.round(
+    (isPortrait ? height * 0.038 : height * 0.055) * sf,
+  );
+  const transFontSize = Math.round(
+    (isPortrait ? height * 0.024 : height * 0.032) * sf,
+  );
+  const wmFontSize = Math.round(
+    (isPortrait ? height * 0.013 : height * 0.016) * sf,
+  );
+  const marginH = isPortrait
+    ? Math.round(width * 0.08)
+    : Math.round(width * 0.1);
   const maxTextWidth = width - marginH * 2;
 
   ctx.clearRect(0, 0, width, height);
 
   if (bgImage) {
     ctx.save();
-    
+
     if (bgBlur > 0) {
       ctx.filter = `blur(${Math.min(bgBlur, 20)}px)`;
     }
@@ -135,7 +140,6 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
     ctx.filter = "none";
     ctx.restore();
   } else {
-    
     ctx.fillStyle = "#0a1a14";
     ctx.fillRect(0, 0, width, height);
   }
@@ -152,7 +156,7 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
   let activeIdx = -1;
   if (timedVerses.length > 0) {
     activeIdx = timedVerses.findIndex(
-      (v) => timestampMs >= v.timestampFrom && timestampMs < v.timestampTo
+      (v) => timestampMs >= v.timestampFrom && timestampMs < v.timestampTo,
     );
   }
   const displayIdx = activeIdx >= 0 ? activeIdx : 0;
@@ -165,7 +169,7 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
   ctx.textBaseline = "middle";
 
   const centerX = width / 2;
-  let textY = height * (isPortrait ? 0.40 : 0.42);
+  let textY = height * (isPortrait ? 0.4 : 0.42);
 
   const verseText = activeVerse
     ? `${activeVerse.text} \u200F﴿${activeVerse.verseNumber}﴾\u200F`
@@ -189,17 +193,21 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
 
   if (showTranslation && activeTranslation) {
     ctx.font = `${contentMode === "tafsir" ? "" : "italic "}${transFontSize}px ${
-      contentMode === "tafsir" ? 'system-ui, -apple-system, sans-serif' : '"Inter", system-ui, -apple-system, sans-serif'
+      contentMode === "tafsir"
+        ? "system-ui, -apple-system, sans-serif"
+        : '"Inter", system-ui, -apple-system, sans-serif'
     }`;
-    const transText = contentMode === "tafsir" && activeTranslation.length > 200
-      ? activeTranslation.substring(0, 200) + "..."
-      : activeTranslation;
+    const transText =
+      contentMode === "tafsir" && activeTranslation.length > 200
+        ? activeTranslation.substring(0, 200) + "..."
+        : activeTranslation;
     transLines = wrapText(ctx, transText, maxTextWidth * 0.95);
     transLineHeight = transFontSize * 1.8;
-    totalBlockHeight += transLines.length * transLineHeight + quranFontSize * 0.8; 
+    totalBlockHeight +=
+      transLines.length * transLineHeight + quranFontSize * 0.8;
   }
 
-  const blockStartY = (height / 2) - (totalBlockHeight / 2) + quranFontSize;
+  const blockStartY = height / 2 - totalBlockHeight / 2 + quranFontSize;
 
   ctx.font = `${quranFontSize}px "Amiri Quran", "Amiri", serif`;
   ctx.fillStyle = textColor;
@@ -210,7 +218,9 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
     ctx.shadowOffsetY = 2;
     ctx.direction = contentMode === "tafsir" ? "rtl" : "ltr";
     ctx.font = `${contentMode === "tafsir" ? "" : "italic "}${transFontSize}px ${
-      contentMode === "tafsir" ? 'system-ui, -apple-system, sans-serif' : '"Inter", system-ui, -apple-system, sans-serif'
+      contentMode === "tafsir"
+        ? "system-ui, -apple-system, sans-serif"
+        : '"Inter", system-ui, -apple-system, sans-serif'
     }`;
     ctx.fillStyle = translationColor;
     ctx.globalAlpha = 0.85;
@@ -223,7 +233,9 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
 
   // Watermark: single brand (logo + handle) by default; when collaboration is
   // enabled and a second logo is available, draw:  logo1 + handle1  ×  logo2 + handle2.
-  const hasSecondaryLogo = !!(secondaryLogoImage && secondaryLogoImage.naturalWidth);
+  const hasSecondaryLogo = !!(
+    secondaryLogoImage && secondaryLogoImage.naturalWidth
+  );
   const hasSecondary =
     collaboration && (hasSecondaryLogo || !!secondaryUsername);
   if (hasSecondary) {
@@ -238,7 +250,9 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
     const getDims = (img) => {
       if (!img || !img.naturalWidth) return { w: 0, h: 0 };
       const aspect = img.naturalWidth / img.naturalHeight;
-      return aspect > 1 ? { w: logoSize, h: logoSize / aspect } : { w: logoSize * aspect, h: logoSize };
+      return aspect > 1
+        ? { w: logoSize, h: logoSize / aspect }
+        : { w: logoSize * aspect, h: logoSize };
     };
     const dim1 = getDims(logoImage);
     const dim2 = getDims(secondaryLogoImage);
@@ -292,11 +306,17 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
     ctx.textAlign = "left";
     const textW = label ? ctx.measureText(label).width : 0;
     const maxLogoSize = Math.round(wmFontSize * 2.2);
-    let drawW = 0, drawH = 0;
+    let drawW = 0,
+      drawH = 0;
     if (logoImage && logoImage.naturalWidth) {
       const aspect = logoImage.naturalWidth / logoImage.naturalHeight;
-      if (aspect > 1) { drawW = maxLogoSize; drawH = maxLogoSize / aspect; }
-      else { drawW = maxLogoSize * aspect; drawH = maxLogoSize; }
+      if (aspect > 1) {
+        drawW = maxLogoSize;
+        drawH = maxLogoSize / aspect;
+      } else {
+        drawW = maxLogoSize * aspect;
+        drawH = maxLogoSize;
+      }
     }
     const gap = drawW && label ? Math.round(wmFontSize * 0.5) : 0;
     const totalW = drawW + gap + textW;
@@ -314,7 +334,9 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
     ctx.restore();
   }
 
-  const badgeText = reciterName ? `سورة ${chapterName} • ${reciterName}` : `سورة ${chapterName}`;
+  const badgeText = reciterName
+    ? `سورة ${chapterName} • ${reciterName}`
+    : `سورة ${chapterName}`;
   ctx.direction = "rtl";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -333,7 +355,6 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
   if (ctx.roundRect) {
     ctx.roundRect(badgeX, badgeY, badgeW, badgeH, badgeH / 2);
   } else {
-    
     const r = badgeH / 2;
     ctx.moveTo(badgeX + r, badgeY);
     ctx.arcTo(badgeX + badgeW, badgeY, badgeX + badgeW, badgeY + badgeH, r);
@@ -351,12 +372,15 @@ export function renderFrame(ctx, width, height, timestampMs, options) {
 }
 
 export function useCanvasRenderer() {
-  const bgImageRef = useRef(null);  
-  const bgVideoRef = useRef(null);  
+  const bgImageRef = useRef(null);
+  const bgVideoRef = useRef(null);
 
   const loadBgImage = useCallback((src) => {
     return new Promise((resolve, reject) => {
-      if (!src || src === "custom") { resolve(null); return; }
+      if (!src || src === "custom") {
+        resolve(null);
+        return;
+      }
 
       const img = new Image();
       img.crossOrigin = "anonymous";

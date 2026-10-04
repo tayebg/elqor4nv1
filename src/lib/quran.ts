@@ -79,9 +79,10 @@ export function getHizbSlice(all: Ayah[], hizb: number): HizbSlice {
   const ayahs = all.slice(startIdx, endIdx + 1);
 
   const rendered: AyahRender[] = ayahs.map((a, index) => ({
-    ayah: index === 0 && hizb > 1 && startsWithRubHizb(a.aya_text)
-      ? { ...a, aya_text: stripLeadingRubHizb(a.aya_text) }
-      : a,
+    ayah:
+      index === 0 && hizb > 1 && startsWithRubHizb(a.aya_text)
+        ? { ...a, aya_text: stripLeadingRubHizb(a.aya_text) }
+        : a,
   }));
 
   // Place labels at ۞ occurrences within the hizb, in order.
@@ -98,13 +99,16 @@ export function getHizbSlice(all: Ayah[], hizb: number): HizbSlice {
   // even if the dataset lacks a ۞ at that exact position.
   const last = rendered.length - 1;
   if (last >= 0) {
-    const already = rendered[last].endLabel === THUMUN_END_LABELS[THUMUN_END_LABELS.length - 1];
+    const already =
+      rendered[last].endLabel ===
+      THUMUN_END_LABELS[THUMUN_END_LABELS.length - 1];
     if (!already) {
       // If the last ayah already has some earlier label (e.g. "ثُمُنٌ"),
       // still overwrite to "حِزْبٌ" — end-of-hizb takes precedence.
       rendered[last].endLabel = THUMUN_END_LABELS[THUMUN_END_LABELS.length - 1];
       // If a ۞ is inside the ayah use inline; otherwise append at end.
-      rendered[last].endLabelInline = rendered[last].ayah.aya_text.includes(RUB_HIZB);
+      rendered[last].endLabelInline =
+        rendered[last].ayah.aya_text.includes(RUB_HIZB);
     }
   }
 
@@ -135,7 +139,11 @@ export function paginateHizb(slice: HizbSlice, maxPages = 18): ContentPage[] {
     cur.push(rendered[i]);
     curW += weights[i];
     const remaining = maxPages - pages.length - 1;
-    if (remaining > 0 && curW >= target * 0.95 && rendered.length - i - 1 >= remaining) {
+    if (
+      remaining > 0 &&
+      curW >= target * 0.95 &&
+      rendered.length - i - 1 >= remaining
+    ) {
       pages.push(cur);
       cur = [];
       curW = 0;

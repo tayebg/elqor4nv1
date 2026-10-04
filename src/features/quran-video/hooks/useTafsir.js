@@ -18,7 +18,6 @@ export function useTafsir(chapterId, fromAyah, toAyah, tafsirId) {
     async function fetchTafsirs() {
       setLoading(true);
       try {
-        
         const results = [];
         for (let ayah = fromAyah; ayah <= toAyah; ayah++) {
           const verseKey = `${chapterId}:${ayah}`;
@@ -46,7 +45,9 @@ export function useTafsir(chapterId, fromAyah, toAyah, tafsirId) {
     }
 
     fetchTafsirs();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [chapterId, fromAyah, toAyah, tafsirId]);
 
   return { tafsirs, loading };

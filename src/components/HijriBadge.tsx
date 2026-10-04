@@ -22,7 +22,9 @@ export function HijriBadge({
   className,
 }: Props) {
   const [label, setLabel] = useState<string | null>(null);
-  useEffect(() => { setLabel(formatHijriLong()); }, []);
+  useEffect(() => {
+    setLabel(formatHijriLong());
+  }, []);
   if (!label) return null;
   return (
     <div
@@ -37,9 +39,27 @@ export function HijriBadge({
         letterSpacing: "0.04em",
       }}
     >
-      <span style={{ width: 6, height: 6, borderRadius: 9999, background: accent, opacity: 0.75 }} />
-      <span className="warsh-text" style={{ fontSize: fontSize * 1.05 }}>{label}</span>
-      <span style={{ width: 6, height: 6, borderRadius: 9999, background: accent, opacity: 0.75 }} />
+      <span
+        style={{
+          width: 6,
+          height: 6,
+          borderRadius: 9999,
+          background: accent,
+          opacity: 0.75,
+        }}
+      />
+      <span className="warsh-text" style={{ fontSize: fontSize * 1.05 }}>
+        {label}
+      </span>
+      <span
+        style={{
+          width: 6,
+          height: 6,
+          borderRadius: 9999,
+          background: accent,
+          opacity: 0.75,
+        }}
+      />
     </div>
   );
 }

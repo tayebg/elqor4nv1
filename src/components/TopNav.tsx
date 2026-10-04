@@ -26,17 +26,26 @@ interface Props {
 function getParentPath(pathname: string): string {
   if (pathname === "/" || pathname === "") return "/";
   // Posts family
-  if (["/quran", "/nawawi", "/hisn", "/tweet"].some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+  if (
+    ["/quran", "/nawawi", "/hisn", "/tweet"].some(
+      (p) => pathname === p || pathname.startsWith(`${p}/`),
+    )
+  ) {
     return "/posts";
   }
   if (pathname === "/posts") return "/";
   // Reels family
-  if (pathname === "/reels-watermark" || pathname === "/reel-cover" || pathname.startsWith("/reels/")) {
+  if (
+    pathname === "/reels-watermark" ||
+    pathname === "/reel-cover" ||
+    pathname.startsWith("/reels/")
+  ) {
     return "/reels";
   }
   if (pathname === "/reels") return "/";
   // Videos
-  if (pathname === "/quran-video" || pathname.startsWith("/quran-video/")) return "/";
+  if (pathname === "/quran-video" || pathname.startsWith("/quran-video/"))
+    return "/";
   if (pathname === "/videos") return "/";
   // Settings tree
   if (pathname.startsWith("/settings/")) return "/settings";
@@ -59,7 +68,13 @@ export function TopNav({ backTo, actions }: Props) {
     <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-3">
         {/* Brand lockup — ELQOR4N + Arabic القرآن, same size, baseline aligned */}
-        <Link to="/" aria-label="ELQOR4N القرآن" title={handle} className="flex items-center gap-2 min-w-0" dir="ltr">
+        <Link
+          to="/"
+          aria-label="ELQOR4N القرآن"
+          title={handle}
+          className="flex items-center gap-2 min-w-0"
+          dir="ltr"
+        >
           <span className="h-8 w-8 rounded-md bg-card border border-border grid place-items-center overflow-hidden shrink-0">
             <img
               src={appLogoUrl}

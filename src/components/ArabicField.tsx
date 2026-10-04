@@ -14,10 +14,29 @@ interface Props {
  * removed at the user's request — enter the exact text (with or without
  * tashkeel) and it is kept verbatim.
  */
-export function ArabicField({ value, onChange, multiline, rows = 3, placeholder }: Props) {
+export function ArabicField({
+  value,
+  onChange,
+  multiline,
+  rows = 3,
+  placeholder,
+}: Props) {
   return multiline ? (
-    <Textarea dir="rtl" rows={rows} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} className="warsh-text" />
+    <Textarea
+      dir="rtl"
+      rows={rows}
+      value={value}
+      placeholder={placeholder}
+      onChange={(e) => onChange(e.target.value)}
+      className="warsh-text"
+    />
   ) : (
-    <Input dir="rtl" value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} className="warsh-text" />
+    <Input
+      dir="rtl"
+      value={value}
+      placeholder={placeholder}
+      onChange={(e) => onChange(e.target.value)}
+      className="warsh-text"
+    />
   );
 }

@@ -12,10 +12,14 @@ function apply(mode: Mode) {
 }
 
 function readStored(): Mode {
-  const raw = (typeof localStorage !== "undefined" && localStorage.getItem(KEY)) || null;
+  const raw =
+    (typeof localStorage !== "undefined" && localStorage.getItem(KEY)) || null;
   if (raw === "light" || raw === "dark") return raw;
   // Migrate legacy "system" (or first visit) → follow current OS preference once.
-  if (typeof window !== "undefined" && window.matchMedia?.("(prefers-color-scheme: dark)").matches) {
+  if (
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-color-scheme: dark)").matches
+  ) {
     return "dark";
   }
   return "light";

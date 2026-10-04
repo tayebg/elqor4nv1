@@ -29,7 +29,7 @@ export function useAudioBlob(audioUrl) {
           const xhr = new XMLHttpRequest();
           xhr.open("GET", audioUrl, true);
           xhr.responseType = "blob";
-          
+
           xhr.onprogress = (e) => {
             if (e.lengthComputable && !cancelled) {
               setProgress(Math.round((e.loaded / e.total) * 100));
@@ -40,7 +40,11 @@ export function useAudioBlob(audioUrl) {
             if (xhr.status >= 200 && xhr.status < 300) {
               resolve(xhr.response);
             } else {
-              reject(new Error(`فشل جلب الصوت: HTTP ${xhr.status} ${xhr.statusText}`));
+              reject(
+                new Error(
+                  `فشل جلب الصوت: HTTP ${xhr.status} ${xhr.statusText}`,
+                ),
+              );
             }
           };
 
@@ -52,7 +56,7 @@ export function useAudioBlob(audioUrl) {
         console.log(
           "✅ [useAudioBlob] تم جلب الصوت بنجاح:",
           (blob.size / 1024 / 1024).toFixed(2),
-          "MB"
+          "MB",
         );
 
         if (!cancelled) {
@@ -90,7 +94,7 @@ export function useAudioBlob(audioUrl) {
         URL.revokeObjectURL(blobUrl);
       }
     };
-  }, []); 
+  }, []);
 
   return { blobUrl, audioBlob, loading, progress, error };
 }

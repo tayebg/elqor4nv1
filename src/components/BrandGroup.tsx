@@ -42,7 +42,9 @@ export function useBrandHandles() {
   const brandDisplay = useSettings((s) => s.brandDisplay);
   const secondaryDisplay = useSettings((s) => s.secondaryDisplay);
   const primary =
-    brandDisplay !== "logo" && hasHandle(username) ? formatHandle(username, "@elqor4n") : "";
+    brandDisplay !== "logo" && hasHandle(username)
+      ? formatHandle(username, "@elqor4n")
+      : "";
   const secondary =
     secondaryDisplay !== "logo" && hasHandle(secondaryUsername)
       ? formatHandle(secondaryUsername, "")
@@ -52,7 +54,10 @@ export function useBrandHandles() {
     primary,
     secondary,
     /** "@one × @two" when collaborating with both, otherwise "@one". */
-    line: collaboration && secondary && primary ? `${primary} × ${secondary}` : primary || secondary,
+    line:
+      collaboration && secondary && primary
+        ? `${primary} × ${secondary}`
+        : primary || secondary,
   };
 }
 
@@ -76,7 +81,13 @@ function BrandLogoImg({
       alt=""
       crossOrigin="anonymous"
       onError={() => setFailed(true)}
-      style={{ height: size, width: size, objectFit: "contain", filter, flexShrink: 0 }}
+      style={{
+        height: size,
+        width: size,
+        objectFit: "contain",
+        filter,
+        flexShrink: 0,
+      }}
     />
   );
 }
@@ -137,7 +148,14 @@ export function BrandGroup({
         direction: "ltr",
       }}
     >
-      {showLogo && <BrandLogoImg src={logo} fallback={fallback} size={size} filter={filter} />}
+      {showLogo && (
+        <BrandLogoImg
+          src={logo}
+          fallback={fallback}
+          size={size}
+          filter={filter}
+        />
+      )}
       {showName && (
         <span
           style={{
@@ -167,7 +185,7 @@ export function BrandGroup({
     handleAvailable: boolean,
   ) => {
     let showLogo = display !== "name" && logoAvailable;
-    let showName = display !== "logo" && handleAvailable;
+    const showName = display !== "logo" && handleAvailable;
     if (!showLogo && !showName) showLogo = true;
     return { showLogo, showName };
   };

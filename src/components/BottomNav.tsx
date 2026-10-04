@@ -17,9 +17,28 @@ const isPostsPath = (p: string) =>
 const ITEMS: Item[] = [
   { to: "/", label: "الرئيسية", Icon: Home, match: (p) => p === "/" },
   { to: "/posts", label: "منشورات", Icon: ImagePlay, match: isPostsPath },
-  { to: "/videos", label: "فيديوهات", Icon: Video, match: (p) => p === "/videos" || p.startsWith("/quran-video") },
-  { to: "/reels", label: "ريلز", Icon: Clapperboard, match: (p) => p === "/reels" || p.startsWith("/reels/") || p.startsWith("/reels-") || p.startsWith("/reel-cover") },
-  { to: "/settings", label: "الإعدادات", Icon: Settings, match: (p) => p === "/settings" || p.startsWith("/settings/") },
+  {
+    to: "/videos",
+    label: "فيديوهات",
+    Icon: Video,
+    match: (p) => p === "/videos" || p.startsWith("/quran-video"),
+  },
+  {
+    to: "/reels",
+    label: "ريلز",
+    Icon: Clapperboard,
+    match: (p) =>
+      p === "/reels" ||
+      p.startsWith("/reels/") ||
+      p.startsWith("/reels-") ||
+      p.startsWith("/reel-cover"),
+  },
+  {
+    to: "/settings",
+    label: "الإعدادات",
+    Icon: Settings,
+    match: (p) => p === "/settings" || p.startsWith("/settings/"),
+  },
 ];
 
 /**

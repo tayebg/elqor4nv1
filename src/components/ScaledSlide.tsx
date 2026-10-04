@@ -46,4 +46,3 @@ export function ScaledSlide({ children }: { children: ReactNode }) {
     </div>
   );
 }
-

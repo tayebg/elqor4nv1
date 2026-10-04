@@ -55,7 +55,6 @@ export function AutoFitText({
     }
     inner.style.fontSize = `${best}px`;
     setSize(best);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deps, max, min]);
 
   return (

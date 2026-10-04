@@ -7,7 +7,12 @@ import { CoverSlide } from "@/components/slides/CoverSlide";
 import { ContentSlide } from "@/components/slides/ContentSlide";
 import { ClosingSlide } from "@/components/slides/ClosingSlide";
 import { Button } from "@/components/ui/button";
-import { exportAllPngZip, exportAllPngFiles, triggerDownloadUrl, captureNodeToBlob } from "@/lib/export";
+import {
+  exportAllPngZip,
+  exportAllPngFiles,
+  triggerDownloadUrl,
+  captureNodeToBlob,
+} from "@/lib/export";
 import { ShareMenu } from "@/components/ShareMenu";
 import { Loader2, Download } from "lucide-react";
 import { ClientOnly } from "@/components/ClientOnly";
@@ -15,7 +20,13 @@ import { ScaledSlide } from "@/components/ScaledSlide";
 import { useSettings } from "@/lib/settings";
 import { ArabicField } from "@/components/ArabicField";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { startDownload } from "@/lib/download-manager";
 
 const EXPORT_SLIDE_ID = "slide-export-current";
@@ -25,15 +36,27 @@ export const Route = createFileRoute("/quran")({
   head: () => ({
     meta: [
       { title: "ELQOR4N · حِزْبٌ كُلَّ يَوْم" },
-      { name: "description", content: "توليد كاروسيلات الأحزاب (رواية ورش) لإنستغرام." },
+      {
+        name: "description",
+        content: "توليد كاروسيلات الأحزاب (رواية ورش) لإنستغرام.",
+      },
       { property: "og:title", content: "ELQOR4N · حِزْبٌ كُلَّ يَوْم" },
-      { property: "og:description", content: "توليد كاروسيلات الأحزاب (رواية ورش) لإنستغرام." },
+      {
+        property: "og:description",
+        content: "توليد كاروسيلات الأحزاب (رواية ورش) لإنستغرام.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
   }),
   component: () => (
-    <ClientOnly fallback={<div className="min-h-screen flex items-center justify-center text-muted-foreground">جارٍ التحميل…</div>}>
+    <ClientOnly
+      fallback={
+        <div className="min-h-screen flex items-center justify-center text-muted-foreground">
+          جارٍ التحميل…
+        </div>
+      }
+    >
       <Index />
     </ClientOnly>
   ),
@@ -66,7 +89,11 @@ function Index() {
   }, [all, hizb]);
 
   const slideIds = useMemo(
-    () => ["slide-cover", ...pages.map((_, i) => `slide-content-${i}`), "slide-closing"],
+    () => [
+      "slide-cover",
+      ...pages.map((_, i) => `slide-content-${i}`),
+      "slide-closing",
+    ],
     [pages],
   );
 
@@ -87,14 +114,16 @@ function Index() {
             signal,
             prepareSlide: async (index) => {
               setExportIndex(index);
-              await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+              await new Promise((resolve) =>
+                requestAnimationFrame(() => resolve(null)),
+              );
             },
           });
           return blob;
         } finally {
           setExporting(false);
         }
-      }
+      },
     });
   };
 
@@ -109,7 +138,10 @@ function Index() {
             <label className="text-sm font-medium">اختر الحزب</label>
             <Select
               value={String(hizb)}
-              onValueChange={(v) => { setHizb(Number(v)); setPreviewIndex(0); }}
+              onValueChange={(v) => {
+                setHizb(Number(v));
+                setPreviewIndex(0);
+              }}
             >
               <SelectTrigger className="w-full bg-background" dir="rtl">
                 <SelectValue />
@@ -126,8 +158,16 @@ function Index() {
 
           <section className="space-y-2">
             <div className="text-sm font-medium">التصدير</div>
-            <Button onClick={handleZip} disabled={!all || exporting} className="w-full">
-              {exporting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
+            <Button
+              onClick={handleZip}
+              disabled={!all || exporting}
+              className="w-full"
+            >
+              {exporting ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Download className="h-4 w-4 mr-2" />
+              )}
               {exporting
                 ? `جارٍ التوليد… ${exportProgress}%`
                 : `تنزيل ${slideIds.length} صورة (ZIP)`}
@@ -140,8 +180,13 @@ function Index() {
                 text="حِزْبٌ كُلَّ يَوْم"
                 disabled={!all || sharingAll}
                 getFile={async () => {
-                  const blob = await captureNodeToBlob(`preview-${slideIds[safeIdx]}`, { width: 1080, height: 1080 });
-                  return new File([blob], `hizb-${safeIdx + 1}.png`, { type: "image/png" });
+                  const blob = await captureNodeToBlob(
+                    `preview-${slideIds[safeIdx]}`,
+                    { width: 1080, height: 1080 },
+                  );
+                  return new File([blob], `hizb-${safeIdx + 1}.png`, {
+                    type: "image/png",
+                  });
                 }}
                 getFiles={async () => {
                   setSharingAll(true);
@@ -149,10 +194,13 @@ function Index() {
                     return await exportAllPngFiles({
                       count: slideIds.length,
                       captureId: EXPORT_SLIDE_ID,
-                      filename: (i) => `hizb-${String(hizb).padStart(2, "0")}-${String(i + 1).padStart(2, "0")}.png`,
+                      filename: (i) =>
+                        `hizb-${String(hizb).padStart(2, "0")}-${String(i + 1).padStart(2, "0")}.png`,
                       prepareSlide: async (i) => {
                         setShareIndex(i);
-                        await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+                        await new Promise((resolve) =>
+                          requestAnimationFrame(() => resolve(null)),
+                        );
                       },
                     });
                   } finally {
@@ -178,15 +226,25 @@ function Index() {
             <p className="text-xs font-medium text-foreground">محتوى الحزب</p>
             <div className="space-y-1.5">
               <Label className="text-xs">سطر الرواية</Label>
-              <ArabicField value={s.quran.narration} onChange={(v) => s.setQuran("narration", v)} />
+              <ArabicField
+                value={s.quran.narration}
+                onChange={(v) => s.setQuran("narration", v)}
+              />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">الاستعاذة (الغلاف)</Label>
-              <ArabicField value={s.quran.isticadhah} onChange={(v) => s.setQuran("isticadhah", v)} />
+              <ArabicField
+                value={s.quran.isticadhah}
+                onChange={(v) => s.setQuran("isticadhah", v)}
+              />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">دعاء الختام</Label>
-              <ArabicField multiline value={s.quran.closingDua} onChange={(v) => s.setQuran("closingDua", v)} />
+              <ArabicField
+                multiline
+                value={s.quran.closingDua}
+                onChange={(v) => s.setQuran("closingDua", v)}
+              />
             </div>
           </section>
         </aside>
@@ -194,7 +252,8 @@ function Index() {
         <section className="space-y-4 w-full min-w-0">
           {!all ? (
             <div className="aspect-square w-full max-w-xl mx-auto rounded-md border border-dashed flex items-center justify-center text-muted-foreground">
-              <Loader2 className="h-5 w-5 animate-spin mr-2" />جارٍ تحميل بيانات ورش…
+              <Loader2 className="h-5 w-5 animate-spin mr-2" />
+              جارٍ تحميل بيانات ورش…
             </div>
           ) : (
             <>
@@ -203,10 +262,24 @@ function Index() {
                   معاينة {safeIdx + 1} / {total}
                 </div>
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" disabled={safeIdx === 0}
-                    onClick={() => setPreviewIndex((i) => Math.max(0, i - 1))}>السابق</Button>
-                  <Button size="sm" variant="outline" disabled={safeIdx === total - 1}
-                    onClick={() => setPreviewIndex((i) => Math.min(total - 1, i + 1))}>التالي</Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={safeIdx === 0}
+                    onClick={() => setPreviewIndex((i) => Math.max(0, i - 1))}
+                  >
+                    السابق
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={safeIdx === total - 1}
+                    onClick={() =>
+                      setPreviewIndex((i) => Math.min(total - 1, i + 1))
+                    }
+                  >
+                    التالي
+                  </Button>
                 </div>
               </div>
 
@@ -290,10 +363,19 @@ function Index() {
   );
 }
 
-
 function RenderSlide({
-  index, hizb, pages, slideIds, slideId,
-}: { index: number; hizb: number; pages: ReturnType<typeof paginateHizb>; slideIds: string[]; slideId?: string }) {
+  index,
+  hizb,
+  pages,
+  slideIds,
+  slideId,
+}: {
+  index: number;
+  hizb: number;
+  pages: ReturnType<typeof paginateHizb>;
+  slideIds: string[];
+  slideId?: string;
+}) {
   const id = slideId ?? `preview-${slideIds[index]}`;
   if (index === 0) return <CoverSlide hizb={hizb} slideId={id} />;
   if (index === slideIds.length - 1) return <ClosingSlide slideId={id} />;

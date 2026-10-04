@@ -44,7 +44,10 @@ export function InstallBanner() {
     window.addEventListener("beforeinstallprompt", onPrompt as EventListener);
     window.addEventListener("appinstalled", onInstalled);
     return () => {
-      window.removeEventListener("beforeinstallprompt", onPrompt as EventListener);
+      window.removeEventListener(
+        "beforeinstallprompt",
+        onPrompt as EventListener,
+      );
       window.removeEventListener("appinstalled", onInstalled);
     };
   }, []);

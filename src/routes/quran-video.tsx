@@ -4,15 +4,25 @@ import { ClientOnly } from "@/components/ClientOnly";
 
 // Load the Quran Video producer only in the browser — it uses ffmpeg,
 // mp4-muxer and canvas APIs which are not SSR-safe.
-const QuranVideoApp = lazy(() => import("@/features/quran-video/QuranVideoApp"));
+const QuranVideoApp = lazy(
+  () => import("@/features/quran-video/QuranVideoApp"),
+);
 
 export const Route = createFileRoute("/quran-video")({
   head: () => ({
     meta: [
       { title: "استوديو فيديوهات القرآن · ELQOR4N" },
-      { name: "description", content: "أنشئ فيديوهات قرآنية بالتلاوة والنص المتزامن وصدّرها بصيغة MP4." },
+      {
+        name: "description",
+        content:
+          "أنشئ فيديوهات قرآنية بالتلاوة والنص المتزامن وصدّرها بصيغة MP4.",
+      },
       { property: "og:title", content: "استوديو فيديوهات القرآن · ELQOR4N" },
-      { property: "og:description", content: "أنشئ فيديوهات قرآنية بالتلاوة والنص المتزامن وصدّرها بصيغة MP4." },
+      {
+        property: "og:description",
+        content:
+          "أنشئ فيديوهات قرآنية بالتلاوة والنص المتزامن وصدّرها بصيغة MP4.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -32,7 +42,6 @@ function Fallback() {
 function QuranVideoPage() {
   return (
     <div className="min-h-screen bg-background">
-      
       <DedicationBanner />
       <ClientOnly fallback={<Fallback />}>
         <Suspense fallback={<Fallback />}>
@@ -58,8 +67,9 @@ function DedicationBanner() {
       <figure className="mx-auto flex max-w-2xl items-start gap-3 bg-transparent py-2 text-start">
         <blockquote className="warsh-text text-sm sm:text-base leading-relaxed text-muted-foreground">
           اللَّهُمَّ اغْفِرْ لَهَا وَارْحَمْهَا وَعَافِهَا وَاعْفُ عَنْهَا،
-          وَأَكْرِمْ نُزُلَهَا، وَوَسِّعْ مُدْخَلَهَا، وَاغْسِلْهَا بِالْمَاءِ وَالثَّلْجِ وَالْبَرَدِ،
-          وَنَقِّهَا مِنَ الْخَطَايَا كَمَا يُنَقَّى الثَّوْبُ الْأَبْيَضُ مِنَ الدَّنَسِ.
+          وَأَكْرِمْ نُزُلَهَا، وَوَسِّعْ مُدْخَلَهَا، وَاغْسِلْهَا بِالْمَاءِ
+          وَالثَّلْجِ وَالْبَرَدِ، وَنَقِّهَا مِنَ الْخَطَايَا كَمَا يُنَقَّى
+          الثَّوْبُ الْأَبْيَضُ مِنَ الدَّنَسِ.
           <span className="ms-1 text-[10px] uppercase tracking-widest text-primary/70">
             — دعاء لأم المساهم
           </span>

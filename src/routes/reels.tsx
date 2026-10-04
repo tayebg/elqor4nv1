@@ -5,7 +5,10 @@ export const Route = createFileRoute("/reels")({
   head: () => ({
     meta: [
       { title: "ريلز · ELQOR4N" },
-      { name: "description", content: "أدوات الريلز: علامة مائية على الفيديو، وأغلفة 9:16." },
+      {
+        name: "description",
+        content: "أدوات الريلز: علامة مائية على الفيديو، وأغلفة 9:16.",
+      },
     ],
   }),
   component: ReelsHub,
@@ -36,13 +39,22 @@ function ReelsHub() {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-12 grid gap-6 sm:grid-cols-2">
         {ITEMS.map(({ to, title, arabic, desc, Icon, accent }) => (
           <Link key={to} to={to} className="group">
-            <div className={`h-56 rounded-xl border bg-gradient-to-br p-5 flex flex-col justify-between transition-transform group-hover:-translate-y-1 ${accent}`}>
+            <div
+              className={`h-56 rounded-xl border bg-gradient-to-br p-5 flex flex-col justify-between transition-transform group-hover:-translate-y-1 ${accent}`}
+            >
               <div className="flex items-start justify-between">
                 <Icon className="h-6 w-6 opacity-80" />
-                <span className="warsh-text text-xl opacity-90" style={{ lineHeight: 1 }}>{arabic}</span>
+                <span
+                  className="warsh-text text-xl opacity-90"
+                  style={{ lineHeight: 1 }}
+                >
+                  {arabic}
+                </span>
               </div>
               <div className="space-y-1">
-                <div className="text-lg font-semibold tracking-tight">{title}</div>
+                <div className="text-lg font-semibold tracking-tight">
+                  {title}
+                </div>
                 <div className="text-xs opacity-80">{desc}</div>
               </div>
             </div>
@@ -52,4 +64,3 @@ function ReelsHub() {
     </div>
   );
 }
-

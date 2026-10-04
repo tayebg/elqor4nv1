@@ -15,7 +15,13 @@ export const Route = createFileRoute("/reels-watermark")({
     meta: [{ title: "عَلامَةُ ريلز · ELQOR4N" }],
   }),
   component: () => (
-    <ClientOnly fallback={<div className="min-h-screen flex items-center justify-center text-muted-foreground">جارٍ التحميل…</div>}>
+    <ClientOnly
+      fallback={
+        <div className="min-h-screen flex items-center justify-center text-muted-foreground">
+          جارٍ التحميل…
+        </div>
+      }
+    >
       <ReelsPage />
     </ClientOnly>
   ),
@@ -24,7 +30,13 @@ export const Route = createFileRoute("/reels-watermark")({
 type Position = "tl" | "tr" | "bl" | "br" | "tc" | "bc";
 
 function ReelsPage() {
-  const { logoUrl, username, collaboration, secondaryLogoUrl, secondaryUsername } = useResolvedBranding();
+  const {
+    logoUrl,
+    username,
+    collaboration,
+    secondaryLogoUrl,
+    secondaryUsername,
+  } = useResolvedBranding();
   const [file, setFile] = useState<File | null>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [outUrl, setOutUrl] = useState<string | null>(null);
@@ -33,7 +45,9 @@ function ReelsPage() {
   const [position, setPosition] = useState<Position>("br");
   const [opacity, setOpacity] = useState(0.85);
   const handle = username ? formatHandle(username, "@elqor4n") : "";
-  const secondaryHandle = secondaryUsername ? formatHandle(secondaryUsername, "@fajr_al_tilawa") : "";
+  const secondaryHandle = secondaryUsername
+    ? formatHandle(secondaryUsername, "@fajr_al_tilawa")
+    : "";
 
   // Collaboration mode: restrict to top-center / bottom-center only.
   useEffect(() => {
@@ -60,7 +74,9 @@ function ReelsPage() {
         videoUrl,
         logoUrl,
         handle,
-        secondary: collaboration ? { logoUrl: secondaryLogoUrl, handle: secondaryHandle } : null,
+        secondary: collaboration
+          ? { logoUrl: secondaryLogoUrl, handle: secondaryHandle }
+          : null,
         position,
         opacity,
         onProgress: setProgress,
@@ -78,95 +94,174 @@ function ReelsPage() {
     <div className="min-h-screen bg-background">
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <div className="grid lg:grid-cols-[320px_minmax(0,1fr)] gap-8">
-        <aside className="space-y-5">
-
-          <div>
-            <Label>ملف الفيديو</Label>
-            <label className="mt-2 flex items-center justify-center h-24 rounded-md border-2 border-dashed border-border cursor-pointer hover:bg-muted/30 text-sm text-muted-foreground">
-              <input type="file" accept="video/*" className="hidden" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-              <span className="flex items-center gap-2"><Upload className="h-4 w-4" /> {file ? file.name.slice(0, 24) : "اختر فيديو"}</span>
-            </label>
-          </div>
-          <div className="rounded-md border border-border bg-muted/20 px-3 py-2 text-xs text-muted-foreground space-y-1">
-            <p>العلامة المائية: <span className="font-medium text-foreground" dir="ltr" style={{ unicodeBidi: "isolate" }}>{handle}</span></p>
-            {collaboration && (
-              <p>العلامة الثانية: <span className="font-medium text-foreground" dir="ltr" style={{ unicodeBidi: "isolate" }}>{secondaryHandle}</span></p>
-            )}
-            <p className="pt-1">الشعار والمعرّف والتعاون تُدار في <span className="text-foreground">الإعدادات ← العلامة</span>.</p>
-          </div>
-          <div>
-            <Label>الموضع</Label>
-            <div className="grid grid-cols-2 gap-2 mt-2">
-              {(collaboration
-                ? (["tc", "bc"] as Position[])
-                : (["tl", "tr", "bl", "br"] as Position[])
-              ).map((p) => (
-                <button key={p} onClick={() => setPosition(p)}
-                  className={`px-3 py-2 text-xs rounded-md border ${position === p ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-muted"}`}>
-                  {({
-                    tl: "أعلى يسار",
-                    tr: "أعلى يمين",
-                    bl: "أسفل يسار",
-                    br: "أسفل يمين",
-                    tc: "أعلى الوسط",
-                    bc: "أسفل الوسط",
-                  } as const)[p]}
-                </button>
-              ))}
+          <aside className="space-y-5">
+            <div>
+              <Label>ملف الفيديو</Label>
+              <label className="mt-2 flex items-center justify-center h-24 rounded-md border-2 border-dashed border-border cursor-pointer hover:bg-muted/30 text-sm text-muted-foreground">
+                <input
+                  type="file"
+                  accept="video/*"
+                  className="hidden"
+                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                />
+                <span className="flex items-center gap-2">
+                  <Upload className="h-4 w-4" />{" "}
+                  {file ? file.name.slice(0, 24) : "اختر فيديو"}
+                </span>
+              </label>
             </div>
-            {collaboration && (
-              <p className="text-[11px] text-muted-foreground mt-1.5">
-                وضع التعاون يقتصر على المواضع المركزية.
+            <div className="rounded-md border border-border bg-muted/20 px-3 py-2 text-xs text-muted-foreground space-y-1">
+              <p>
+                العلامة المائية:{" "}
+                <span
+                  className="font-medium text-foreground"
+                  dir="ltr"
+                  style={{ unicodeBidi: "isolate" }}
+                >
+                  {handle}
+                </span>
               </p>
-            )}
-          </div>
-          <div>
-            <Label>الشفافية: {(opacity * 100).toFixed(0)}%</Label>
-            <input type="range" min={0.2} max={1} step={0.05} value={opacity} onChange={(e) => setOpacity(Number(e.target.value))} className="w-full" />
-          </div>
-          <Button className="w-full" disabled={!file || rendering} onClick={render}>
-            {rendering ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> جارٍ التصدير {Math.round(progress * 100)}%</> : <><Play className="h-4 w-4 mr-2" /> تطبيق العلامة</>}
-          </Button>
-          {outUrl && (
-            <div className="space-y-2">
-              <a href={outUrl} download={`reel-${Date.now()}.webm`} className="block">
-                <Button variant="outline" className="w-full"><Download className="h-4 w-4 mr-2" /> تنزيل MP4/WebM</Button>
-              </a>
-              <ShareMenu
+              {collaboration && (
+                <p>
+                  العلامة الثانية:{" "}
+                  <span
+                    className="font-medium text-foreground"
+                    dir="ltr"
+                    style={{ unicodeBidi: "isolate" }}
+                  >
+                    {secondaryHandle}
+                  </span>
+                </p>
+              )}
+              <p className="pt-1">
+                الشعار والمعرّف والتعاون تُدار في{" "}
+                <span className="text-foreground">الإعدادات ← العلامة</span>.
+              </p>
+            </div>
+            <div>
+              <Label>الموضع</Label>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {(collaboration
+                  ? (["tc", "bc"] as Position[])
+                  : (["tl", "tr", "bl", "br"] as Position[])
+                ).map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => setPosition(p)}
+                    className={`px-3 py-2 text-xs rounded-md border ${position === p ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-muted"}`}
+                  >
+                    {
+                      (
+                        {
+                          tl: "أعلى يسار",
+                          tr: "أعلى يمين",
+                          bl: "أسفل يسار",
+                          br: "أسفل يمين",
+                          tc: "أعلى الوسط",
+                          bc: "أسفل الوسط",
+                        } as const
+                      )[p]
+                    }
+                  </button>
+                ))}
+              </div>
+              {collaboration && (
+                <p className="text-[11px] text-muted-foreground mt-1.5">
+                  وضع التعاون يقتصر على المواضع المركزية.
+                </p>
+              )}
+            </div>
+            <div>
+              <Label>الشفافية: {(opacity * 100).toFixed(0)}%</Label>
+              <input
+                type="range"
+                min={0.2}
+                max={1}
+                step={0.05}
+                value={opacity}
+                onChange={(e) => setOpacity(Number(e.target.value))}
                 className="w-full"
-                label="مشاركة الريل"
-                title="ريلز"
-                text={handle}
-                getFile={async () => {
-                  const blob = await fetch(outUrl).then((r) => r.blob());
-                  const ext = blob.type.includes("mp4") ? "mp4" : "webm";
-                  return new File([blob], `reel-${Date.now()}.${ext}`, { type: blob.type });
-                }}
               />
             </div>
-          )}
-          <p className="text-[11px] text-muted-foreground leading-relaxed">
-            التصدير يتم كله في متصفحك باستخدام Canvas + MediaRecorder — لا يُرفع أي شيء إلى الخادم.
-            الترميز يعتمد على المتصفح (WebM على Chromium، MP4 على Safari).
-          </p>
-        </aside>
-
-        <section>
-          <div className="mx-auto max-w-[360px] aspect-video max-h-[80vh] rounded-xl overflow-hidden bg-black border border-border">
-            {outUrl ? (
-              <video key={outUrl} src={outUrl} controls preload="metadata" playsInline className="w-full h-full object-contain bg-black" />
-            ) : videoUrl ? (
-              <video key={videoUrl} src={videoUrl} controls preload="metadata" playsInline className="w-full h-full object-contain bg-black" />
-            ) : (
-              <div className="w-full h-full grid place-items-center text-muted-foreground text-sm">ارفع فيديو</div>
+            <Button
+              className="w-full"
+              disabled={!file || rendering}
+              onClick={render}
+            >
+              {rendering ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> جارٍ التصدير{" "}
+                  {Math.round(progress * 100)}%
+                </>
+              ) : (
+                <>
+                  <Play className="h-4 w-4 mr-2" /> تطبيق العلامة
+                </>
+              )}
+            </Button>
+            {outUrl && (
+              <div className="space-y-2">
+                <a
+                  href={outUrl}
+                  download={`reel-${Date.now()}.webm`}
+                  className="block"
+                >
+                  <Button variant="outline" className="w-full">
+                    <Download className="h-4 w-4 mr-2" /> تنزيل MP4/WebM
+                  </Button>
+                </a>
+                <ShareMenu
+                  className="w-full"
+                  label="مشاركة الريل"
+                  title="ريلز"
+                  text={handle}
+                  getFile={async () => {
+                    const blob = await fetch(outUrl).then((r) => r.blob());
+                    const ext = blob.type.includes("mp4") ? "mp4" : "webm";
+                    return new File([blob], `reel-${Date.now()}.${ext}`, {
+                      type: blob.type,
+                    });
+                  }}
+                />
+              </div>
             )}
-          </div>
-        </section>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              التصدير يتم كله في متصفحك باستخدام Canvas + MediaRecorder — لا
+              يُرفع أي شيء إلى الخادم. الترميز يعتمد على المتصفح (WebM على
+              Chromium، MP4 على Safari).
+            </p>
+          </aside>
 
+          <section>
+            <div className="mx-auto max-w-[360px] aspect-video max-h-[80vh] rounded-xl overflow-hidden bg-black border border-border">
+              {outUrl ? (
+                <video
+                  key={outUrl}
+                  src={outUrl}
+                  controls
+                  preload="metadata"
+                  playsInline
+                  className="w-full h-full object-contain bg-black"
+                />
+              ) : videoUrl ? (
+                <video
+                  key={videoUrl}
+                  src={videoUrl}
+                  controls
+                  preload="metadata"
+                  playsInline
+                  className="w-full h-full object-contain bg-black"
+                />
+              ) : (
+                <div className="w-full h-full grid place-items-center text-muted-foreground text-sm">
+                  ارفع فيديو
+                </div>
+              )}
+            </div>
+          </section>
         </div>
       </main>
     </div>
-
   );
 }
 
@@ -180,7 +275,15 @@ async function renderWithWatermark(opts: {
   opacity: number;
   onProgress: (p: number) => void;
 }): Promise<Blob> {
-  const { videoUrl, logoUrl, handle, secondary, position, opacity, onProgress } = opts;
+  const {
+    videoUrl,
+    logoUrl,
+    handle,
+    secondary,
+    position,
+    opacity,
+    onProgress,
+  } = opts;
 
   const video = document.createElement("video");
   video.src = videoUrl;
@@ -192,7 +295,6 @@ async function renderWithWatermark(opts: {
     video.onloadedmetadata = () => res();
     video.onerror = () => rej(new Error("تعذّر تحميل الفيديو"));
   });
-
 
   const loadImg = (src: string) =>
     new Promise<HTMLImageElement>((res) => {
@@ -215,13 +317,24 @@ async function renderWithWatermark(opts: {
   const stream = canvas.captureStream(30);
   try {
     // @ts-expect-error non-standard but widely supported
-    const audioStream: MediaStream | undefined = video.captureStream?.() ?? video.mozCaptureStream?.();
+    const audioStream: MediaStream | undefined =
+      video.captureStream?.() ?? video.mozCaptureStream?.();
     audioStream?.getAudioTracks().forEach((t) => stream.addTrack(t));
-  } catch { /* no audio */ }
+  } catch {
+    /* no audio */
+  }
 
-  const mime = ["video/mp4", "video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"]
-    .find((m) => MediaRecorder.isTypeSupported(m)) ?? "video/webm";
-  const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 6_000_000 });
+  const mime =
+    [
+      "video/mp4",
+      "video/webm;codecs=vp9,opus",
+      "video/webm;codecs=vp8,opus",
+      "video/webm",
+    ].find((m) => MediaRecorder.isTypeSupported(m)) ?? "video/webm";
+  const rec = new MediaRecorder(stream, {
+    mimeType: mime,
+    videoBitsPerSecond: 6_000_000,
+  });
   const chunks: Blob[] = [];
   rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
 
@@ -248,7 +361,12 @@ async function renderWithWatermark(opts: {
     return w1 + crossGap + Math.round(fontSize * 1.4) + crossGap + w2;
   };
 
-  const drawBrand = (img: HTMLImageElement | null, text: string, x: number, y: number) => {
+  const drawBrand = (
+    img: HTMLImageElement | null,
+    text: string,
+    x: number,
+    y: number,
+  ) => {
     const drewLogo = !!(img && img.complete && img.naturalWidth);
     if (drewLogo) {
       ctx.drawImage(img!, x, y - logoSize / 2, logoSize, logoSize);

@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type PointerEvent,
+} from "react";
 import { Loader2, Share2, Check } from "lucide-react";
 import { toast } from "sonner";
 import { SafeTapButton } from "@/components/SafeTapButton";
@@ -32,7 +38,9 @@ interface Props extends SharePayload {
 function report(outcome: ShareOutcome, platform?: string) {
   switch (outcome.kind) {
     case "shared":
-      toast.success("تمت المشاركة", { description: platform ? `تم الإرسال إلى ${platform}.` : undefined });
+      toast.success("تمت المشاركة", {
+        description: platform ? `تم الإرسال إلى ${platform}.` : undefined,
+      });
       break;
     case "cancelled":
     case "needs-gesture":
@@ -63,8 +71,8 @@ function report(outcome: ShareOutcome, platform?: string) {
  * and destroys that activation, which is what produced
  * "Must be handling a user gesture to perform a share request".
  *
-  * Fix: the files are PRE-WARMED before the tap completes (mouse pointerdown /
-  * focus / hover). By the time `onClick` runs they are usually
+ * Fix: the files are PRE-WARMED before the tap completes (mouse pointerdown /
+ * focus / hover). By the time `onClick` runs they are usually
  * ready, so `shareFilesNow` calls `navigator.share` synchronously. If they are
  * not ready yet, we finish preparing and then ask the user for one fresh tap
  * via a toast action — never a silent failure.
@@ -121,12 +129,15 @@ export function ShareMenu({
 
   /** Start (or reuse) media preparation. Safe to call on every pointer event. */
   const prewarm = useCallback(() => {
-    if (readyFiles.current || pending.current || disabled) return pending.current;
+    if (readyFiles.current || pending.current || disabled)
+      return pending.current;
     setPreparing(true);
     preparingTimer.current = setTimeout(() => {
       setPreparing(false);
       pending.current = null;
-      toast.error("تعذّر تحضير الملف", { description: "المحاولة استغرقت وقتًا طويلًا. حاول مجددًا." });
+      toast.error("تعذّر تحضير الملف", {
+        description: "المحاولة استغرقت وقتًا طويلًا. حاول مجددًا.",
+      });
     }, 20_000);
     const p = resolveShareFiles(payloadRef.current)
       .then((files) => {
@@ -178,7 +189,10 @@ export function ShareMenu({
         askForTap(handleNativeClick);
       })
       .catch((err: unknown) =>
-        report({ kind: "error", message: err instanceof Error ? err.message : "Sharing failed" }),
+        report({
+          kind: "error",
+          message: err instanceof Error ? err.message : "Sharing failed",
+        }),
       )
       .finally(() => setBusy(null));
   };
@@ -189,7 +203,8 @@ export function ShareMenu({
     const files = readyFiles.current;
     if (files) {
       void shareToPlatform(platform, payloadRef.current, files).then((o) => {
-        if (o.kind === "needs-gesture") askForTap(() => handlePlatform(platformId));
+        if (o.kind === "needs-gesture")
+          askForTap(() => handlePlatform(platformId));
         else report(o, platform.label);
       });
       return;
@@ -201,7 +216,8 @@ export function ShareMenu({
         return shareToPlatform(platform, payloadRef.current, f);
       })
       .then((o) => {
-        if (o.kind === "needs-gesture") askForTap(() => handlePlatform(platformId));
+        if (o.kind === "needs-gesture")
+          askForTap(() => handlePlatform(platformId));
         else report(o, platform.label);
       })
       .finally(() => setBusy(null));
@@ -219,7 +235,11 @@ export function ShareMenu({
         {...prewarmProps}
         onClick={handleNativeClick}
       >
-        {spinning ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
+        {spinning ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <Share2 className="h-4 w-4" />
+        )}
         {size !== "icon" && <span>{label}</span>}
       </SafeTapButton>
     );
@@ -266,7 +286,10 @@ export function ShareMenu({
             }}
             className="gap-2.5"
           >
-            <SocialIcon name={p.id} className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <SocialIcon
+              name={p.id}
+              className="h-4 w-4 shrink-0 text-muted-foreground"
+            />
             <span className="flex-1">{p.label}</span>
             {busy === p.id && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
           </DropdownMenuItem>

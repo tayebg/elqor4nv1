@@ -12,7 +12,8 @@ const SKIP = new Set(["المقدمة", "فضل الذكر"]);
 export async function loadHisn(): Promise<HisnChapter[]> {
   if (cache) return cache;
   const res = await fetch("/data/hisn.json");
-  const raw: Record<string, { text: string[]; footnote?: string[] }> = await res.json();
+  const raw: Record<string, { text: string[]; footnote?: string[] }> =
+    await res.json();
   const out: HisnChapter[] = [];
   let idx = 1;
   for (const [title, ch] of Object.entries(raw)) {

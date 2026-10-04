@@ -18,9 +18,18 @@ export function ClosingSlide({ slideId }: Props) {
         {collaboration || !logoUrl ? (
           <div className="h-48" />
         ) : (
-          <img src={logoUrl} alt="الشعار" className="h-48 w-48 object-contain" crossOrigin="anonymous" style={{ filter: "brightness(0) saturate(100%)" }} />
+          <img
+            src={logoUrl}
+            alt="الشعار"
+            className="h-48 w-48 object-contain"
+            crossOrigin="anonymous"
+            style={{ filter: "brightness(0) saturate(100%)" }}
+          />
         )}
-        <div className="warsh-text text-[64px] text-[color:var(--ink)]" style={{ lineHeight: 1.7 }}>
+        <div
+          className="warsh-text text-[64px] text-[color:var(--ink)]"
+          style={{ lineHeight: 1.7 }}
+        >
           {closingDua}
         </div>
         <div className="space-y-6">
@@ -48,4 +57,3 @@ export function ClosingSlide({ slideId }: Props) {
     </SlideFrame>
   );
 }
-

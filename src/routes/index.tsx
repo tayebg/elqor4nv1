@@ -14,10 +14,15 @@ export const Route = createFileRoute("/")({
       { title: "ELQOR4N · منصة المحتوى الإسلامي" },
       {
         name: "description",
-        content: "منصة توليد منشورات وفيديوهات إسلامية: قرآن، حديث، حصن، تغريدات، ريلز.",
+        content:
+          "منصة توليد منشورات وفيديوهات إسلامية: قرآن، حديث، حصن، تغريدات، ريلز.",
       },
       { property: "og:title", content: "ELQOR4N · منصة المحتوى الإسلامي" },
-      { property: "og:description", content: "منصة توليد منشورات وفيديوهات إسلامية: قرآن، حديث، حصن، تغريدات، ريلز." },
+      {
+        property: "og:description",
+        content:
+          "منصة توليد منشورات وفيديوهات إسلامية: قرآن، حديث، حصن، تغريدات، ريلز.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -28,9 +33,21 @@ export const Route = createFileRoute("/")({
 // Official social accounts — the reference layout is a single dark row with
 // icon + username. Instagram gets numbered badges because there are two pages.
 const SOCIALS = [
-  { Icon: TikTokIcon, handle: "@elqor4n", href: "https://www.tiktok.com/@elqor4n" },
-  { Icon: FacebookIcon, handle: "@elqor4n", href: "https://www.facebook.com/elqor4n" },
-  { Icon: InstagramIcon, handle: "@elqor4n", href: "https://www.instagram.com/elqor4n/" },
+  {
+    Icon: TikTokIcon,
+    handle: "@elqor4n",
+    href: "https://www.tiktok.com/@elqor4n",
+  },
+  {
+    Icon: FacebookIcon,
+    handle: "@elqor4n",
+    href: "https://www.facebook.com/elqor4n",
+  },
+  {
+    Icon: InstagramIcon,
+    handle: "@elqor4n",
+    href: "https://www.instagram.com/elqor4n/",
+  },
 ];
 
 function Home() {
@@ -43,7 +60,10 @@ function Home() {
     <div className="h-[calc(100dvh-4rem)] overflow-hidden bg-background">
       <main className="mx-auto flex h-full w-full max-w-3xl flex-col justify-between gap-[clamp(0.5rem,2.2vh,1.25rem)] px-5 py-[clamp(0.75rem,2.5vh,1.5rem)]">
         {/* Combined logo lockup */}
-        <header className="no-callout flex select-none items-center justify-center gap-3" dir="ltr">
+        <header
+          className="no-callout flex select-none items-center justify-center gap-3"
+          dir="ltr"
+        >
           <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-2xl border border-border bg-card">
             <img
               src={appLogoUrl}
@@ -74,8 +94,8 @@ function Home() {
             محتوى إسلامي جميل، بأبسط طريقة.
           </h1>
           <p className="mx-auto max-w-xl text-[clamp(0.72rem,2.6vw,0.85rem)] leading-relaxed text-muted-foreground">
-            مبادرة غير ربحية لصنّاع المحتوى — منشورات القرآن والحديث والحصن والتغريدات
-            والريلز وفيديوهات القرآن بجودة عالية وتناسق ثابت.
+            مبادرة غير ربحية لصنّاع المحتوى — منشورات القرآن والحديث والحصن
+            والتغريدات والريلز وفيديوهات القرآن بجودة عالية وتناسق ثابت.
           </p>
           <div className="grid grid-cols-2 gap-2 pt-1">
             <Link
@@ -97,7 +117,9 @@ function Home() {
         {/* Follow Us — icon-only horizontal row */}
         <section className="rounded-xl border border-border bg-card/70 p-3 shadow-sm">
           <div className="flex items-center justify-between gap-3" dir="rtl">
-            <span className="shrink-0 text-xs font-semibold text-foreground">تابعنا</span>
+            <span className="shrink-0 text-xs font-semibold text-foreground">
+              تابعنا
+            </span>
             <ul className="flex items-center justify-end gap-2" dir="ltr">
               {SOCIALS.map(({ Icon, handle: h, href }) => (
                 <li key={`${href}-${h}`}>
@@ -125,7 +147,8 @@ function Home() {
                 مشروع خير
               </H2>
               <p className="text-[11px] leading-relaxed text-muted-foreground">
-                مبادرة خيرية لخدمة المسلمين. المحتوى المُولَّد مباح للاستخدام والمشاركة.
+                مبادرة خيرية لخدمة المسلمين. المحتوى المُولَّد مباح للاستخدام
+                والمشاركة.
               </p>
             </div>
             <div>
@@ -165,18 +188,34 @@ function Home() {
                   <Mail className="h-3 w-3" /> elqor4n@gmail.com
                 </a>
               </p>
-              <p className="mt-1 text-[10px] text-muted-foreground text-start" dir="rtl">اقتراحاتكم مرحّب بها.</p>
+              <p
+                className="mt-1 text-[10px] text-muted-foreground text-start"
+                dir="rtl"
+              >
+                اقتراحاتكم مرحّب بها.
+              </p>
             </div>
           </div>
         </section>
 
         {/* Thanks */}
-        <footer className="w-full min-w-0 space-y-1 text-center text-muted-foreground" dir="rtl">
+        <footer
+          className="w-full min-w-0 space-y-1 text-center text-muted-foreground"
+          dir="rtl"
+        >
           <div className="flex w-full min-w-0 flex-nowrap items-center justify-center gap-x-2 text-[10px] sm:gap-x-4 sm:text-[11px]">
-            <span className="shrink-0 font-semibold text-foreground">شكر خاص</span>
+            <span className="shrink-0 font-semibold text-foreground">
+              شكر خاص
+            </span>
             {[
-              { handle: "@med_bentouati", href: "https://instagram.com/med_bentouati" },
-              { handle: "@yacine_san8", href: "https://instagram.com/yacine_san8" },
+              {
+                handle: "@med_bentouati",
+                href: "https://instagram.com/med_bentouati",
+              },
+              {
+                handle: "@yacine_san8",
+                href: "https://instagram.com/yacine_san8",
+              },
             ].map(({ handle: h, href }) => (
               <a
                 key={h}
@@ -191,7 +230,10 @@ function Home() {
               </a>
             ))}
           </div>
-          <div dir="ltr" className="font-mono text-[10px] text-muted-foreground/70">
+          <div
+            dir="ltr"
+            className="font-mono text-[10px] text-muted-foreground/70"
+          >
             © 2026
           </div>
         </footer>

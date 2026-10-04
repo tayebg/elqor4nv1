@@ -23,7 +23,9 @@ function NotFoundComponent() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">الصفحة غير موجودة</h2>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">
+          الصفحة غير موجودة
+        </h2>
         <p className="mt-2 text-sm text-muted-foreground">
           الصفحة التي تبحث عنها غير موجودة أو تم نقلها.
         </p>
@@ -78,57 +80,82 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   );
 }
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1" },
-      { name: "theme-color", content: "#0b0b0b" },
-      { name: "apple-mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-title", content: "ELQOR4N" },
-      { name: "mobile-web-app-capable", content: "yes" },
-      { title: "ELQOR4N · منصة المحتوى الإسلامي" },
-      { name: "description", content: "منصة توليد منشورات وفيديوهات إسلامية: قرآن، حديث، حصن، تغريدات، ريلز." },
-      { property: "og:title", content: "ELQOR4N · منصة المحتوى الإسلامي" },
-      { name: "twitter:title", content: "ELQOR4N · منصة المحتوى الإسلامي" },
-      { property: "og:description", content: "منصة توليد منشورات وفيديوهات إسلامية: قرآن، حديث، حصن، تغريدات، ريلز." },
-      { name: "twitter:description", content: "منصة توليد منشورات وفيديوهات إسلامية: قرآن، حديث، حصن، تغريدات، ريلز." },
-      { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:type", content: "website" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/png", href: "/app-icon/app-icon-192.png" },
-      { rel: "apple-touch-icon", href: "/app-icon/apple-touch-icon.png" },
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
+  {
+    head: () => ({
+      meta: [
+        { charSet: "utf-8" },
+        {
+          name: "viewport",
+          content: "width=device-width, initial-scale=1, maximum-scale=1",
+        },
+        { name: "theme-color", content: "#0b0b0b" },
+        { name: "apple-mobile-web-app-capable", content: "yes" },
+        { name: "apple-mobile-web-app-title", content: "ELQOR4N" },
+        { name: "mobile-web-app-capable", content: "yes" },
+        { title: "ELQOR4N · منصة المحتوى الإسلامي" },
+        {
+          name: "description",
+          content:
+            "منصة توليد منشورات وفيديوهات إسلامية: قرآن، حديث، حصن، تغريدات، ريلز.",
+        },
+        { property: "og:title", content: "ELQOR4N · منصة المحتوى الإسلامي" },
+        { name: "twitter:title", content: "ELQOR4N · منصة المحتوى الإسلامي" },
+        {
+          property: "og:description",
+          content:
+            "منصة توليد منشورات وفيديوهات إسلامية: قرآن، حديث، حصن، تغريدات، ريلز.",
+        },
+        {
+          name: "twitter:description",
+          content:
+            "منصة توليد منشورات وفيديوهات إسلامية: قرآن، حديث، حصن، تغريدات، ريلز.",
+        },
+        { name: "twitter:card", content: "summary_large_image" },
+        { property: "og:type", content: "website" },
+      ],
+      links: [
+        { rel: "stylesheet", href: appCss },
+        { rel: "icon", type: "image/png", href: "/app-icon/app-icon-192.png" },
+        { rel: "apple-touch-icon", href: "/app-icon/apple-touch-icon.png" },
 
-      { rel: "manifest", href: "/manifest.webmanifest" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap",
-      },
-    ],
-  }),
-  shellComponent: RootShell,
-  component: RootComponent,
-  notFoundComponent: NotFoundComponent,
-  errorComponent: ErrorComponent,
-});
+        { rel: "manifest", href: "/manifest.webmanifest" },
+        { rel: "preconnect", href: "https://fonts.googleapis.com" },
+        {
+          rel: "preconnect",
+          href: "https://fonts.gstatic.com",
+          crossOrigin: "anonymous",
+        },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap",
+        },
+      ],
+    }),
+    shellComponent: RootShell,
+    component: RootComponent,
+    notFoundComponent: NotFoundComponent,
+    errorComponent: ErrorComponent,
+  },
+);
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="ar" dir="rtl">
       <head>
         <HeadContent />
-        <script dangerouslySetInnerHTML={{ __html: `
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
           try {
             var t = localStorage.getItem('elqor4n:theme');
             if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
               document.documentElement.classList.add('dark');
             }
           } catch(e) {}
-        ` }} />
+        `,
+          }}
+        />
       </head>
       <body>
         {children}

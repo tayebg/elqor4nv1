@@ -13,11 +13,7 @@
  * difference is how many taps it takes.
  */
 
-export type SharePlatformId =
-  | "instagram"
-  | "tiktok"
-  | "facebook"
-  | "youtube";
+export type SharePlatformId = "instagram" | "tiktok" | "facebook" | "youtube";
 
 export interface SharePlatform {
   id: SharePlatformId;
@@ -88,11 +84,16 @@ function canShareFiles(files: File[]) {
 }
 
 export function nativeFileShareSupported() {
-  if (typeof navigator === "undefined" || typeof navigator.share !== "function") return false;
+  if (typeof navigator === "undefined" || typeof navigator.share !== "function")
+    return false;
   try {
-    const probe = new File([new Blob(["x"], { type: "image/png" })], "probe.png", {
-      type: "image/png",
-    });
+    const probe = new File(
+      [new Blob(["x"], { type: "image/png" })],
+      "probe.png",
+      {
+        type: "image/png",
+      },
+    );
     return canShareFiles([probe]);
   } catch {
     return false;
@@ -147,12 +148,17 @@ export function shareFilesNow(
   title: string,
   text: string,
 ): Promise<ShareOutcome> {
-  if (typeof navigator === "undefined" || typeof navigator.share !== "function") {
+  if (
+    typeof navigator === "undefined" ||
+    typeof navigator.share !== "function"
+  ) {
     if (files[0]) saveFile(files[0]);
     return Promise.resolve<ShareOutcome>({ kind: "downloaded-and-opened" });
   }
   const data =
-    files.length > 0 && canShareFiles(files) ? { files, title, text } : { title, text };
+    files.length > 0 && canShareFiles(files)
+      ? { files, title, text }
+      : { title, text };
   // No `await` before this call — the click's transient activation is intact.
   return navigator
     .share(data)
@@ -164,12 +170,17 @@ export function shareFilesNow(
         saveFile(files[0]);
         return { kind: "downloaded-and-opened" };
       }
-      return { kind: "error", message: err instanceof Error ? err.message : "Sharing failed" };
+      return {
+        kind: "error",
+        message: err instanceof Error ? err.message : "Sharing failed",
+      };
     });
 }
 
 /** Resolve the best file list a payload can produce (async — never in a gesture). */
-export async function resolveShareFiles(payload: SharePayload): Promise<File[]> {
+export async function resolveShareFiles(
+  payload: SharePayload,
+): Promise<File[]> {
   if (payload.getFiles) {
     const files = await payload.getFiles();
     if (files.length > 0) return files;
@@ -179,18 +190,20 @@ export async function resolveShareFiles(payload: SharePayload): Promise<File[]> 
 }
 
 /** Open the OS share sheet (all platforms at once). */
-export async function shareNative(payload: SharePayload): Promise<ShareOutcome> {
+export async function shareNative(
+  payload: SharePayload,
+): Promise<ShareOutcome> {
   try {
     const files = await resolveShareFiles(payload);
     return await shareFilesNow(files, payload.title, payload.text);
   } catch (err) {
     if (isAbortError(err)) return { kind: "cancelled" };
-    return { kind: "error", message: err instanceof Error ? err.message : "Sharing failed" };
+    return {
+      kind: "error",
+      message: err instanceof Error ? err.message : "Sharing failed",
+    };
   }
 }
-
-
-
 
 /**
  * Share to one specific platform.
@@ -225,14 +238,20 @@ export async function shareToPlatform(
       url: typeof window !== "undefined" ? window.location.origin : undefined,
     });
     window.open(href, "_blank", "noopener,noreferrer");
-    return platform.acceptsLink ? { kind: "link-opened" } : { kind: "downloaded-and-opened" };
+    return platform.acceptsLink
+      ? { kind: "link-opened" }
+      : { kind: "downloaded-and-opened" };
   } catch (err) {
     if (isAbortError(err)) return { kind: "cancelled" };
-    return { kind: "error", message: err instanceof Error ? err.message : "Sharing failed" };
+    return {
+      kind: "error",
+      message: err instanceof Error ? err.message : "Sharing failed",
+    };
   }
 }
 
-
 export async function blobToFile(blob: Blob, filename: string) {
-  return new File([blob], filename, { type: blob.type || "application/octet-stream" });
+  return new File([blob], filename, {
+    type: blob.type || "application/octet-stream",
+  });
 }

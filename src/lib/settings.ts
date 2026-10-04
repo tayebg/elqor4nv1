@@ -12,7 +12,6 @@ const fajrLogo = { url: fajrLogoUrl };
 /** Bundled default mark for the collaboration (second) brand. */
 export const DEFAULT_SECONDARY_LOGO = fajrLogoUrl;
 
-
 /**
  * Settings architecture:
  * - `shared`: logo + username used across ALL generators by default.
@@ -142,10 +141,16 @@ interface Store extends Shared, PerGenerator {
   signInProfile: (user: CurrentUser) => void;
   signOutProfile: () => void;
   setQuran: <K extends keyof QuranSettings>(k: K, v: QuranSettings[K]) => void;
-  setNawawi: <K extends keyof NawawiSettings>(k: K, v: NawawiSettings[K]) => void;
+  setNawawi: <K extends keyof NawawiSettings>(
+    k: K,
+    v: NawawiSettings[K],
+  ) => void;
   setHisn: <K extends keyof HisnSettings>(k: K, v: HisnSettings[K]) => void;
   setTweet: <K extends keyof TweetSettings>(k: K, v: TweetSettings[K]) => void;
-  setReelCover: <K extends keyof ReelCoverSettings>(k: K, v: ReelCoverSettings[K]) => void;
+  setReelCover: <K extends keyof ReelCoverSettings>(
+    k: K,
+    v: ReelCoverSettings[K],
+  ) => void;
   pageState: PageState;
   setPageState: <K extends keyof PageState>(k: K, v: PageState[K]) => void;
   clearAllData: () => void;
@@ -161,7 +166,8 @@ const DEFAULT_NAWAWI: NawawiSettings = {
   closingDua: "صلَّى اللهُ على نبيِّنا محمَّدٍ وعلى آلهِ وصَحبِه وسلَّم",
 };
 const DEFAULT_HISN: HisnSettings = {
-  closingDua: "اللَّهُمَّ أَعِنَّا عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
+  closingDua:
+    "اللَّهُمَّ أَعِنَّا عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
 };
 const DEFAULT_TWEET: TweetSettings = {
   displayName: "القرآن",
@@ -181,7 +187,8 @@ const DEFAULT_PAGE_STATE: PageState = {
   selectedHizb: 1,
   selectedHadith: 1,
   selectedHisnChapter: 1,
-  tweetText: "قَالَ رَسُولُ اللَّهِ ﷺ:\n«إِنَّ اللَّهَ لَا يَنْظُرُ إِلَى صُوَرِكُمْ وَأَمْوَالِكُمْ، وَلَكِنْ يَنْظُرُ إِلَى قُلُوبِكُمْ وَأَعْمَالِكُمْ»",
+  tweetText:
+    "قَالَ رَسُولُ اللَّهِ ﷺ:\n«إِنَّ اللَّهَ لَا يَنْظُرُ إِلَى صُوَرِكُمْ وَأَمْوَالِكُمْ، وَلَكِنْ يَنْظُرُ إِلَى قُلُوبِكُمْ وَأَعْمَالِكُمْ»",
   reelCoverTitle: "مِنْ أَحَبِّ الْأَعْمَالِ إِلَى اللَّهِ",
   reelCoverSubtitle: "",
   videoState: {
@@ -251,13 +258,19 @@ export const useSettings = create<Store>()(
       reelCover: DEFAULT_REEL_COVER,
       pageState: DEFAULT_PAGE_STATE,
       setLogo: (url) => set((s) => persistToProfile(s, { logoUrl: url })),
-      resetLogo: () => set((s) => persistToProfile(s, { logoUrl: defaultLogo.url })),
+      resetLogo: () =>
+        set((s) => persistToProfile(s, { logoUrl: defaultLogo.url })),
       setUsername: (u) => set((s) => persistToProfile(s, { username: u })),
-      setSecondaryLogo: (url) => set((s) => persistToProfile(s, { secondaryLogoUrl: url })),
-      setSecondaryUsername: (u) => set((s) => persistToProfile(s, { secondaryUsername: u })),
-      setBrandDisplay: (d) => set((s) => persistToProfile(s, { brandDisplay: d })),
-      setSecondaryDisplay: (d) => set((s) => persistToProfile(s, { secondaryDisplay: d })),
-      setCollaboration: (enabled) => set((s) => persistToProfile(s, { collaboration: enabled })),
+      setSecondaryLogo: (url) =>
+        set((s) => persistToProfile(s, { secondaryLogoUrl: url })),
+      setSecondaryUsername: (u) =>
+        set((s) => persistToProfile(s, { secondaryUsername: u })),
+      setBrandDisplay: (d) =>
+        set((s) => persistToProfile(s, { brandDisplay: d })),
+      setSecondaryDisplay: (d) =>
+        set((s) => persistToProfile(s, { secondaryDisplay: d })),
+      setCollaboration: (enabled) =>
+        set((s) => persistToProfile(s, { collaboration: enabled })),
       signInProfile: (user) => {
         const state = get();
         const existing = state.profiles[user.email];
@@ -311,28 +324,33 @@ export const useSettings = create<Store>()(
       setNawawi: (k, v) => set((s) => ({ nawawi: { ...s.nawawi, [k]: v } })),
       setHisn: (k, v) => set((s) => ({ hisn: { ...s.hisn, [k]: v } })),
       setTweet: (k, v) => set((s) => ({ tweet: { ...s.tweet, [k]: v } })),
-      setReelCover: (k, v) => set((s) => ({ reelCover: { ...s.reelCover, [k]: v } })),
-      setPageState: (k, v) => set((s) => ({ pageState: { ...s.pageState, [k]: v } })),
+      setReelCover: (k, v) =>
+        set((s) => ({ reelCover: { ...s.reelCover, [k]: v } })),
+      setPageState: (k, v) =>
+        set((s) => ({ pageState: { ...s.pageState, [k]: v } })),
       clearAllData: () => {
         localStorage.clear();
         sessionStorage.clear();
-        
+
         // Clear Cache Storage
-        if ('caches' in window) {
+        if ("caches" in window) {
           caches.keys().then((names) => {
-            for (let name of names) caches.delete(name);
+            for (const name of names) caches.delete(name);
           });
         }
-        
+
         // Clear IndexedDB
-        if ('indexedDB' in window && indexedDB.databases) {
-          indexedDB.databases().then((dbs) => {
-            for (let db of dbs) {
-              if (db.name) indexedDB.deleteDatabase(db.name);
-            }
-          }).catch(() => {}); // ignore errors in older browsers
+        if ("indexedDB" in window && indexedDB.databases) {
+          indexedDB
+            .databases()
+            .then((dbs) => {
+              for (const db of dbs) {
+                if (db.name) indexedDB.deleteDatabase(db.name);
+              }
+            })
+            .catch(() => {}); // ignore errors in older browsers
         }
-        
+
         // Reload after a short delay to allow async deletions to start
         setTimeout(() => {
           window.location.href = "/";
@@ -343,7 +361,8 @@ export const useSettings = create<Store>()(
       name: "elqor4n-settings",
       version: 10,
       migrate: (persisted: unknown, version) => {
-        if (!persisted || typeof persisted !== "object") return persisted as never;
+        if (!persisted || typeof persisted !== "object")
+          return persisted as never;
         const p = persisted as Record<string, unknown>;
         // v6 → v7: brand marks moved from remote asset URLs (which 404 after a
         // deploy) to bundled imports. Any stored URL that still points at the
@@ -352,24 +371,31 @@ export const useSettings = create<Store>()(
           typeof v !== "string" || v === "" || v.startsWith("/__l5e/");
         // v7 -> v8: per-block display mode (logo / name / both).
         const withDisplay = (o: Record<string, unknown>) => {
-          if (o.brandDisplay !== "logo" && o.brandDisplay !== "name") o.brandDisplay = "both";
-          if (o.secondaryDisplay !== "logo" && o.secondaryDisplay !== "name") o.secondaryDisplay = "both";
+          if (o.brandDisplay !== "logo" && o.brandDisplay !== "name")
+            o.brandDisplay = "both";
+          if (o.secondaryDisplay !== "logo" && o.secondaryDisplay !== "name")
+            o.secondaryDisplay = "both";
         };
         withDisplay(p);
         if (version >= 5 && version < 10) {
           if (isStale(p.logoUrl)) p.logoUrl = defaultLogo.url;
           if (isStale(p.secondaryLogoUrl)) p.secondaryLogoUrl = fajrLogo.url;
-          const profiles = p.profiles as Record<string, Record<string, unknown>> | undefined;
+          const profiles = p.profiles as
+            Record<string, Record<string, unknown>> | undefined;
           if (profiles) {
             for (const key of Object.keys(profiles)) {
               const prof = profiles[key];
               if (isStale(prof.logoUrl)) prof.logoUrl = defaultLogo.url;
-              if (isStale(prof.secondaryLogoUrl)) prof.secondaryLogoUrl = fajrLogo.url;
+              if (isStale(prof.secondaryLogoUrl))
+                prof.secondaryLogoUrl = fajrLogo.url;
               withDisplay(prof);
             }
           }
           if (version < 10) {
-            p.pageState = { ...DEFAULT_PAGE_STATE, ...(p.pageState as Partial<PageState> || {}) };
+            p.pageState = {
+              ...DEFAULT_PAGE_STATE,
+              ...((p.pageState as Partial<PageState>) || {}),
+            };
           }
           return p as never;
         }
@@ -403,7 +429,10 @@ export const useSettings = create<Store>()(
 );
 
 /** Merge partial branding into shared state AND, if signed in, into the profile. */
-function persistToProfile(state: Store, patch: Partial<BrandingProfile>): Partial<Store> {
+function persistToProfile(
+  state: Store,
+  patch: Partial<BrandingProfile>,
+): Partial<Store> {
   const next: Partial<Store> = { ...patch };
   const user = state.currentUser;
   if (user) {
@@ -416,7 +445,10 @@ function persistToProfile(state: Store, patch: Partial<BrandingProfile>): Partia
       secondaryUsername: state.secondaryUsername,
       secondaryDisplay: state.secondaryDisplay,
     };
-    next.profiles = { ...state.profiles, [user.email]: { ...current, ...patch } };
+    next.profiles = {
+      ...state.profiles,
+      [user.email]: { ...current, ...patch },
+    };
   }
   return next;
 }
@@ -438,12 +470,16 @@ export function useResolvedBranding() {
     const hasLogo = !!(logo && logo.trim());
     const hasName = !!(name && name.replace(/@/g, "").trim());
     let showLogo = display !== "name" && hasLogo;
-    let showName = display !== "logo" && hasName;
+    const showName = display !== "logo" && hasName;
     if (!showLogo && !showName) showLogo = true;
     return { logoUrl: showLogo ? logo : "", username: showName ? name : "" };
   };
   const primary = pick(s.brandDisplay, s.logoUrl, s.username);
-  const secondary = pick(s.secondaryDisplay, s.secondaryLogoUrl, s.secondaryUsername);
+  const secondary = pick(
+    s.secondaryDisplay,
+    s.secondaryLogoUrl,
+    s.secondaryUsername,
+  );
   return {
     logoUrl: primary.logoUrl,
     username: primary.username,
@@ -475,7 +511,10 @@ export function useBranding() {
  * Legacy stored values in the shape `handle@` are transparently upgraded
  * to `@handle`.
  */
-export function formatHandle(input: string | null | undefined, fallback = "@elqor4n"): string {
+export function formatHandle(
+  input: string | null | undefined,
+  fallback = "@elqor4n",
+): string {
   const normalize = (v: string) => {
     const s = v.replace(/^@+/, "").replace(/@+$/, "");
     return s ? `@${s}` : "";
@@ -496,9 +535,13 @@ export function formatHandle(input: string | null | undefined, fallback = "@elqo
  */
 import { useEffect, useState } from "react";
 export function useSettingsHydrated(): boolean {
-  const [hydrated, setHydrated] = useState(() => useSettings.persist.hasHydrated());
+  const [hydrated, setHydrated] = useState(() =>
+    useSettings.persist.hasHydrated(),
+  );
   useEffect(() => {
-    const unsubFinish = useSettings.persist.onFinishHydration(() => setHydrated(true));
+    const unsubFinish = useSettings.persist.onFinishHydration(() =>
+      setHydrated(true),
+    );
     if (useSettings.persist.hasHydrated()) setHydrated(true);
     return () => {
       unsubFinish();

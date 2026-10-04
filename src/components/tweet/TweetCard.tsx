@@ -30,8 +30,16 @@ const THEMES = {
 } as const;
 
 export function TweetCard({
-  id, text, displayName, handle, theme, showTimestamp, avatarUrl, collabBrand = "primary",
-  textZoom = 100, imageUrl,
+  id,
+  text,
+  displayName,
+  handle,
+  theme,
+  showTimestamp,
+  avatarUrl,
+  collabBrand = "primary",
+  textZoom = 100,
+  imageUrl,
 }: Props) {
   const t = THEMES[theme];
   const collaboration = useSettings((s) => s.collaboration);
@@ -42,7 +50,9 @@ export function TweetCard({
 
   // Collaboration now picks ONE brand instead of stacking both.
   const useSecondary = collaboration && collabBrand === "secondary";
-  const shownAvatar = useSecondary ? (secondaryLogoUrl || fajrLogoUrl) : avatarUrl;
+  const shownAvatar = useSecondary
+    ? secondaryLogoUrl || fajrLogoUrl
+    : avatarUrl;
   const shownHandle = useSecondary
     ? formatHandle(secondaryUsername, "fajr_al_tilawa")
     : formatHandle(handle, "elqor4n");
@@ -51,7 +61,13 @@ export function TweetCard({
   const display = useSecondary ? secondaryDisplay : brandDisplay;
   const showAvatar = display !== "name";
   const showHandle = display !== "logo";
-  const timestamp = "١٠:٢٤ ص · " + new Date().toLocaleDateString("ar-SA", { year: "numeric", month: "short", day: "numeric" });
+  const timestamp =
+    "١٠:٢٤ ص · " +
+    new Date().toLocaleDateString("ar-SA", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
   return (
     <div
       id={id}
@@ -70,54 +86,91 @@ export function TweetCard({
     >
       <div style={{ width: "100%" }}>
         {/* Header — title on top, @handle directly underneath */}
-        <div style={{ display: "flex", alignItems: "center", gap: 24, marginBottom: 40 }}>
-          {showAvatar && <div
-            style={{
-              width: 120,
-              height: 120,
-              borderRadius: 9999,
-              overflow: "hidden",
-              backgroundColor: theme === "light" ? "#f1f5f9" : "#1e293b",
-              flexShrink: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              // Subtle outline so light-on-white logos (Fajr) stay legible.
-              boxShadow:
-                theme === "light" && useSecondary
-                  ? "inset 0 0 0 1px rgba(15,23,42,0.12), 0 1px 2px rgba(15,23,42,0.08)"
-                  : undefined,
-            }}
-          >
-            <img
-              src={shownAvatar}
-              crossOrigin="anonymous"
-              alt=""
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 24,
+            marginBottom: 40,
+          }}
+        >
+          {showAvatar && (
+            <div
               style={{
-                maxWidth: "80%",
-                maxHeight: "80%",
-                objectFit: "contain",
-                filter: useSecondary
-                  ? theme === "light"
-                    ? "drop-shadow(0 1px 1px rgba(15,23,42,0.35)) drop-shadow(0 0 1px rgba(15,23,42,0.35))"
-                    : undefined
-                  : theme === "light"
-                    ? "brightness(0)"
-                    : "brightness(0) invert(1)",
+                width: 120,
+                height: 120,
+                borderRadius: 9999,
+                overflow: "hidden",
+                backgroundColor: theme === "light" ? "#f1f5f9" : "#1e293b",
+                flexShrink: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                // Subtle outline so light-on-white logos (Fajr) stay legible.
+                boxShadow:
+                  theme === "light" && useSecondary
+                    ? "inset 0 0 0 1px rgba(15,23,42,0.12), 0 1px 2px rgba(15,23,42,0.08)"
+                    : undefined,
               }}
-            />
-          </div>}
+            >
+              <img
+                src={shownAvatar}
+                crossOrigin="anonymous"
+                alt=""
+                style={{
+                  maxWidth: "80%",
+                  maxHeight: "80%",
+                  objectFit: "contain",
+                  filter: useSecondary
+                    ? theme === "light"
+                      ? "drop-shadow(0 1px 1px rgba(15,23,42,0.35)) drop-shadow(0 0 1px rgba(15,23,42,0.35))"
+                      : undefined
+                    : theme === "light"
+                      ? "brightness(0)"
+                      : "brightness(0) invert(1)",
+                }}
+              />
+            </div>
+          )}
           {/* alignItems:flex-start keeps the @handle glued to the same
               (right, in RTL) edge as the display name above it. */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 42, fontWeight: 700, lineHeight: 1.15 }}>
-              <span dir={useSecondary ? "rtl" : undefined} className={useSecondary ? "warsh-text" : undefined}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              flex: 1,
+              minWidth: 0,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                fontSize: 42,
+                fontWeight: 700,
+                lineHeight: 1.15,
+              }}
+            >
+              <span
+                dir={useSecondary ? "rtl" : undefined}
+                className={useSecondary ? "warsh-text" : undefined}
+              >
                 {displayName}
               </span>
               <VerifiedBadge size={40} />
             </div>
             {showHandle && (
-              <div dir="ltr" style={{ fontSize: 30, color: t.sub, marginTop: 6, unicodeBidi: "isolate" }}>
+              <div
+                dir="ltr"
+                style={{
+                  fontSize: 30,
+                  color: t.sub,
+                  marginTop: 6,
+                  unicodeBidi: "isolate",
+                }}
+              >
                 {shownHandle}
               </div>
             )}
@@ -128,7 +181,7 @@ export function TweetCard({
         <div
           className="warsh-text"
           style={{
-            fontSize: Math.round(62 * (textZoom ?? 100) / 100),
+            fontSize: Math.round((62 * (textZoom ?? 100)) / 100),
             lineHeight: 1.55,
             whiteSpace: "pre-wrap",
             wordBreak: "break-word",
@@ -139,22 +192,24 @@ export function TweetCard({
         </div>
 
         {imageUrl && (
-          <div style={{
-            marginTop: 30,
-            borderRadius: 24,
-            overflow: 'hidden',
-            border: `1px solid ${t.border}`,
-            maxHeight: 500,
-          }}>
+          <div
+            style={{
+              marginTop: 30,
+              borderRadius: 24,
+              overflow: "hidden",
+              border: `1px solid ${t.border}`,
+              maxHeight: 500,
+            }}
+          >
             <img
               src={imageUrl}
               crossOrigin="anonymous"
               alt=""
               style={{
-                width: '100%',
+                width: "100%",
                 maxHeight: 500,
-                objectFit: 'cover',
-                display: 'block',
+                objectFit: "cover",
+                display: "block",
               }}
             />
           </div>
@@ -200,4 +255,3 @@ function VerifiedBadge({ size = 40 }: { size?: number }) {
     </svg>
   );
 }
-

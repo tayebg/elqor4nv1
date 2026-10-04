@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { fetchChapters, fetchReciters, fetchVerses, fetchTimedVerses } from "../services/quranApi";
+import {
+  fetchChapters,
+  fetchReciters,
+  fetchVerses,
+  fetchTimedVerses,
+} from "../services/quranApi";
 
 let cachedChapters = null;
 let cachedReciters = null;
@@ -12,7 +17,7 @@ export function useQuranData() {
 
   useEffect(() => {
     if (cachedChapters && cachedReciters) return;
-    
+
     let cancelled = false;
 
     async function loadData() {
@@ -20,7 +25,6 @@ export function useQuranData() {
       setError(null);
 
       try {
-        
         const [chaptersData, recitersData] = await Promise.all([
           fetchChapters("ar"),
           fetchReciters("ar"),
@@ -29,7 +33,7 @@ export function useQuranData() {
         if (!cancelled) {
           cachedChapters = chaptersData;
           setChapters(chaptersData);
-          
+
           const seen = new Map();
           const uniqueReciters = recitersData.filter((r) => {
             const name = r.reciter_name || r.translated_name?.name || "";
@@ -53,7 +57,9 @@ export function useQuranData() {
     }
 
     loadData();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return { chapters, reciters, loading, error };
@@ -86,7 +92,6 @@ export function useVerses(chapterId, fromAyah, toAyah) {
         }
 
         if (!cancelled) {
-          
           const filtered = (data.verses || []).filter((v) => {
             const ayahNum = v.verse_number;
             return ayahNum >= fromAyah && ayahNum <= toAyah;
@@ -106,7 +111,9 @@ export function useVerses(chapterId, fromAyah, toAyah) {
     }
 
     loadVerses();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [chapterId, fromAyah, toAyah]);
 
   return { verses, loading, error };
@@ -127,7 +134,7 @@ export function useTimedVerses(reciterId, chapterId, fromAyah, toAyah) {
     async function loadTimedVerses() {
       setLoading(true);
       setError(null);
-      
+
       setData({ verses: [], audioUrl: "" });
 
       try {
@@ -140,7 +147,7 @@ export function useTimedVerses(reciterId, chapterId, fromAyah, toAyah) {
             reciterId,
             chapterId,
             fromAyah,
-            toAyah
+            toAyah,
           );
           timedVersesCache.set(cacheKey, result);
         }
@@ -161,7 +168,9 @@ export function useTimedVerses(reciterId, chapterId, fromAyah, toAyah) {
     }
 
     loadTimedVerses();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [reciterId, chapterId, fromAyah, toAyah]);
 
   return { timedVerses: data.verses, audioUrl: data.audioUrl, loading, error };

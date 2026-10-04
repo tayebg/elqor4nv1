@@ -6,7 +6,6 @@ import { AutoFitText } from "@/components/AutoFitText";
 import { useBrandHandles } from "@/components/BrandGroup";
 import { Fragment } from "react";
 
-
 interface Props {
   hizb: number;
   page: ContentPage;
@@ -34,7 +33,10 @@ function renderAyahText(item: AyahRender) {
           <Fragment key={i}>
             {p}
             {i < parts.length - 1 && (
-              <span className="text-[color:var(--gold)] mx-2" style={labelSpanStyle}>
+              <span
+                className="text-[color:var(--gold)] mx-2"
+                style={labelSpanStyle}
+              >
                 ﴿ {endLabel} ﴾
               </span>
             )}
@@ -58,10 +60,15 @@ function renderAyahText(item: AyahRender) {
   return <>{text}</>;
 }
 
-export function ContentSlide({ hizb, page, pageNumber, totalPages, slideId }: Props) {
+export function ContentSlide({
+  hizb,
+  page,
+  pageNumber,
+  totalPages,
+  slideId,
+}: Props) {
   const fitKey = `${hizb}-${pageNumber}-${page.items.map((r) => r.ayah.id).join(",")}`;
   const { line: footerHandles } = useBrandHandles();
-
 
   return (
     <SlideFrame id={slideId}>
@@ -83,10 +90,7 @@ export function ContentSlide({ hizb, page, pageNumber, totalPages, slideId }: Pr
             {page.items.map((item) => (
               <Fragment key={item.ayah.id}>
                 {item.startsSurah !== undefined && (
-                  <div
-                    className="text-center my-4"
-                    style={{ lineHeight: 1.5 }}
-                  >
+                  <div className="text-center my-4" style={{ lineHeight: 1.5 }}>
                     <div
                       className="text-[color:var(--emerald)]"
                       style={{ fontSize: "1.05em", fontWeight: 700 }}
@@ -111,9 +115,14 @@ export function ContentSlide({ hizb, page, pageNumber, totalPages, slideId }: Pr
       </div>
 
       <footer className="absolute bottom-12 left-0 right-0 text-center text-[24px] text-[color:var(--ink)]/50 tracking-[0.3em]">
-        <span dir="ltr" style={{ unicodeBidi: "isolate", display: "inline-block" }}>{footerHandles}</span> · حِزْبٌ كُلَّ يَوْم
+        <span
+          dir="ltr"
+          style={{ unicodeBidi: "isolate", display: "inline-block" }}
+        >
+          {footerHandles}
+        </span>{" "}
+        · حِزْبٌ كُلَّ يَوْم
       </footer>
-
     </SlideFrame>
   );
 }

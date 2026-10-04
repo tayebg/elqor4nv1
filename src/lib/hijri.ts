@@ -3,9 +3,18 @@
 // Latin digits for compact/formatter callers.
 
 const AR_MONTHS_LONG = [
-  "مُحَرَّم", "صَفَر", "رَبِيع الْأَوَّل", "رَبِيع الثَّانِي",
-  "جُمَادَى الْأُولَى", "جُمَادَى الْآخِرَة", "رَجَب", "شَعْبَان",
-  "رَمَضَان", "شَوَّال", "ذُو الْقَعْدَة", "ذُو الْحِجَّة",
+  "مُحَرَّم",
+  "صَفَر",
+  "رَبِيع الْأَوَّل",
+  "رَبِيع الثَّانِي",
+  "جُمَادَى الْأُولَى",
+  "جُمَادَى الْآخِرَة",
+  "رَجَب",
+  "شَعْبَان",
+  "رَمَضَان",
+  "شَوَّال",
+  "ذُو الْقَعْدَة",
+  "ذُو الْحِجَّة",
 ];
 
 export interface HijriParts {
@@ -19,10 +28,13 @@ export function getHijri(date: Date = new Date()): HijriParts {
   // 'en-u-ca-islamic-umalqura' gives us numeric parts we can parse safely,
   // avoiding locale-specific digit shaping.
   const fmt = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
-    day: "numeric", month: "numeric", year: "numeric",
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
   });
   const parts = fmt.formatToParts(date);
-  const get = (t: string) => Number(parts.find((p) => p.type === t)?.value ?? 0);
+  const get = (t: string) =>
+    Number(parts.find((p) => p.type === t)?.value ?? 0);
   const day = get("day");
   const month = get("month");
   const year = get("year");

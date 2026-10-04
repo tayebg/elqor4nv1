@@ -68,7 +68,11 @@ export async function exportAllPngZip({
   for (let i = 0; i < count; i++) {
     if (signal?.aborted) throw new Error("Aborted");
     await prepareSlide(i);
-    const blob = await captureNodeToBlob(captureId, { width, height, backgroundColor });
+    const blob = await captureNodeToBlob(captureId, {
+      width,
+      height,
+      backgroundColor,
+    });
     folder.file(
       `hizb-${String(hizb).padStart(2, "0")}-${String(i + 1).padStart(2, "0")}.png`,
       blob,
@@ -81,7 +85,7 @@ export async function exportAllPngZip({
     { type: "blob", compression: "STORE" },
     (metadata) => {
       if (signal?.aborted) throw new Error("Aborted");
-      onProgress?.(85 + Math.round(metadata.percent * 0.15))
+      onProgress?.(85 + Math.round(metadata.percent * 0.15));
     },
   );
   return {
@@ -114,7 +118,11 @@ export async function exportAllPngFiles({
   const files: File[] = [];
   for (let i = 0; i < count; i++) {
     await prepareSlide(i);
-    const blob = await captureNodeToBlob(captureId, { width, height, backgroundColor });
+    const blob = await captureNodeToBlob(captureId, {
+      width,
+      height,
+      backgroundColor,
+    });
     files.push(
       new File(
         [blob],
@@ -127,4 +135,3 @@ export async function exportAllPngFiles({
   }
   return files;
 }
-

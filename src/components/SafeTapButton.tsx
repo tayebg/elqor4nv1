@@ -30,16 +30,19 @@ export const SafeTapButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
     } | null>(null);
     const suppressNextClick = React.useRef(false);
 
-    const markMovement = React.useCallback((event: React.PointerEvent<HTMLButtonElement>) => {
-      const start = startRef.current;
-      if (!start || start.id !== event.pointerId) return;
-      const dx = Math.abs(event.clientX - start.x);
-      const dy = Math.abs(event.clientY - start.y);
-      if (dx > MOVE_THRESHOLD_PX || dy > MOVE_THRESHOLD_PX) {
-        start.moved = true;
-        suppressNextClick.current = true;
-      }
-    }, []);
+    const markMovement = React.useCallback(
+      (event: React.PointerEvent<HTMLButtonElement>) => {
+        const start = startRef.current;
+        if (!start || start.id !== event.pointerId) return;
+        const dx = Math.abs(event.clientX - start.x);
+        const dy = Math.abs(event.clientY - start.y);
+        if (dx > MOVE_THRESHOLD_PX || dy > MOVE_THRESHOLD_PX) {
+          start.moved = true;
+          suppressNextClick.current = true;
+        }
+      },
+      [],
+    );
 
     return (
       <Button
@@ -70,7 +73,9 @@ export const SafeTapButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
           onPointerCancel?.(event);
         }}
         onClick={(event) => {
-          const moved = Boolean(startRef.current?.moved || suppressNextClick.current);
+          const moved = Boolean(
+            startRef.current?.moved || suppressNextClick.current,
+          );
           startRef.current = null;
           suppressNextClick.current = false;
           if (moved) {

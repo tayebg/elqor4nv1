@@ -45,16 +45,26 @@ export function CoverSlide({ hizb, slideId }: Props) {
             <AutoFitText min={72} max={140} deps={`hizb-title-${hizb}`}>
               <div
                 className="warsh-text text-[color:var(--ink)]"
-                style={{ lineHeight: 1.15, whiteSpace: "nowrap", textAlign: "center" }}
+                style={{
+                  lineHeight: 1.15,
+                  whiteSpace: "nowrap",
+                  textAlign: "center",
+                }}
               >
                 {hizbTitleAr(hizb)}
               </div>
             </AutoFitText>
           </div>
-          <div className="text-[36px] text-[color:var(--ink)]/70 warsh-text" style={{ lineHeight: 1.6 }}>
+          <div
+            className="text-[36px] text-[color:var(--ink)]/70 warsh-text"
+            style={{ lineHeight: 1.6 }}
+          >
             {narration}
           </div>
-          <div className="warsh-text text-[44px] text-[color:var(--gold)]" style={{ lineHeight: 1.5 }}>
+          <div
+            className="warsh-text text-[44px] text-[color:var(--gold)]"
+            style={{ lineHeight: 1.5 }}
+          >
             {isticadhah}
           </div>
         </div>
@@ -78,5 +88,3 @@ export function CoverSlide({ hizb, slideId }: Props) {
     </SlideFrame>
   );
 }
-
-

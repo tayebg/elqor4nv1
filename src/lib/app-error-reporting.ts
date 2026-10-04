@@ -4,7 +4,6 @@ export function reportAppError(
   context?: Record<string, unknown>,
 ): void {
   if (typeof console !== "undefined") {
-    // eslint-disable-next-line no-console
     console.error("[app-error]", error, context);
   }
 }

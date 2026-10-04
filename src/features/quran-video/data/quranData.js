@@ -1,4 +1,3 @@
-
 export const surahs = [
   { id: 1, name: "الفاتحة", ayahCount: 7 },
   { id: 2, name: "البقرة", ayahCount: 286 },

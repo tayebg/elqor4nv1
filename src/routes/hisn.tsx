@@ -5,7 +5,12 @@ import { loadHisn, type HisnChapter } from "@/lib/hisn";
 import { paginateHadith } from "@/lib/nawawi";
 import { HisnItemSlide, HisnClosingSlide } from "@/components/slides/HisnSlide";
 import { Button } from "@/components/ui/button";
-import { exportAllPngZip, exportAllPngFiles, triggerDownloadUrl, captureNodeToBlob } from "@/lib/export";
+import {
+  exportAllPngZip,
+  exportAllPngFiles,
+  triggerDownloadUrl,
+  captureNodeToBlob,
+} from "@/lib/export";
 import { ShareMenu } from "@/components/ShareMenu";
 import { Loader2, Download } from "lucide-react";
 import { ClientOnly } from "@/components/ClientOnly";
@@ -13,7 +18,13 @@ import { ScaledSlide } from "@/components/ScaledSlide";
 import { useSettings } from "@/lib/settings";
 import { ArabicField } from "@/components/ArabicField";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { startDownload } from "@/lib/download-manager";
 
 const EXPORT_ID = "slide-export-hisn";
@@ -23,15 +34,27 @@ export const Route = createFileRoute("/hisn")({
   head: () => ({
     meta: [
       { title: "ELQOR4N · حِصْنُ الْيَوْم" },
-      { name: "description", content: "توليد كاروسيلات أذكار حصن المسلم لإنستغرام." },
+      {
+        name: "description",
+        content: "توليد كاروسيلات أذكار حصن المسلم لإنستغرام.",
+      },
       { property: "og:title", content: "ELQOR4N · حِصْنُ الْيَوْم" },
-      { property: "og:description", content: "توليد كاروسيلات أذكار حصن المسلم لإنستغرام." },
+      {
+        property: "og:description",
+        content: "توليد كاروسيلات أذكار حصن المسلم لإنستغرام.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
   }),
   component: () => (
-    <ClientOnly fallback={<div className="min-h-screen flex items-center justify-center text-muted-foreground">جارٍ التحميل…</div>}>
+    <ClientOnly
+      fallback={
+        <div className="min-h-screen flex items-center justify-center text-muted-foreground">
+          جارٍ التحميل…
+        </div>
+      }
+    >
       <HisnPage />
     </ClientOnly>
   ),
@@ -54,7 +77,9 @@ function HisnPage() {
     s.setPageState("selectedHisnChapter", i);
   };
 
-  useEffect(() => { loadHisn().then(setAll); }, []);
+  useEffect(() => {
+    loadHisn().then(setAll);
+  }, []);
 
   const chapter = all?.find((c) => c.index === chIdx);
   const slideIds = useMemo(() => {
@@ -69,7 +94,7 @@ function HisnPage() {
     }[] = [];
 
     chapter.items.forEach((item, itemIndex) => {
-      const cleanText = item.text.replace(/[\(\)\[\]\{\}\*_\-]/g, '').trim();
+      const cleanText = item.text.replace(/[\(\)\[\]\{\}\*_\-]/g, "").trim();
       const pages = paginateHadith(cleanText, 450);
       pages.forEach((pageText, pageIdx) => {
         slides.push({
@@ -114,7 +139,7 @@ function HisnPage() {
         } finally {
           setExporting(false);
         }
-      }
+      },
     });
   };
 
@@ -126,7 +151,10 @@ function HisnPage() {
             <label className="text-sm font-medium">اختر الباب</label>
             <Select
               value={String(chIdx)}
-              onValueChange={(v) => { setChIdx(Number(v)); setPreviewIdx(0); }}
+              onValueChange={(v) => {
+                setChIdx(Number(v));
+                setPreviewIdx(0);
+              }}
               disabled={!all}
             >
               <SelectTrigger className="w-full bg-background" dir="rtl">
@@ -157,8 +185,14 @@ function HisnPage() {
               className="w-full"
               variant={exporting ? "destructive" : "default"}
             >
-              {exporting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
-              {exporting ? `إلغاء التحميل (${exportProgress}%)` : `تنزيل ${total} صورة (ZIP)`}
+              {exporting ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Download className="h-4 w-4 mr-2" />
+              )}
+              {exporting
+                ? `إلغاء التحميل (${exportProgress}%)`
+                : `تنزيل ${total} صورة (ZIP)`}
             </Button>
             {SHOW_CAROUSEL_SHARE && (
               <ShareMenu
@@ -169,8 +203,15 @@ function HisnPage() {
                 disabled={!chapter || sharingAll}
                 getFile={async () => {
                   const slide = slideIds[safeIdx];
-                  const blob = await captureNodeToBlob(`preview-${slide.id}`, { width: 1080, height: 1080 });
-                  return new File([blob], `hisn-${String(chIdx).padStart(3, "0")}-${safeIdx + 1}.png`, { type: "image/png" });
+                  const blob = await captureNodeToBlob(`preview-${slide.id}`, {
+                    width: 1080,
+                    height: 1080,
+                  });
+                  return new File(
+                    [blob],
+                    `hisn-${String(chIdx).padStart(3, "0")}-${safeIdx + 1}.png`,
+                    { type: "image/png" },
+                  );
                 }}
                 getFiles={async () => {
                   setSharingAll(true);
@@ -178,10 +219,13 @@ function HisnPage() {
                     return await exportAllPngFiles({
                       count: slideIds.length,
                       captureId: EXPORT_ID,
-                      filename: (i) => `hisn-${String(chIdx).padStart(3, "0")}-${String(i + 1).padStart(2, "0")}.png`,
+                      filename: (i) =>
+                        `hisn-${String(chIdx).padStart(3, "0")}-${String(i + 1).padStart(2, "0")}.png`,
                       prepareSlide: async (i) => {
                         setShareIndex(i);
-                        await new Promise((r) => requestAnimationFrame(() => r(null)));
+                        await new Promise((r) =>
+                          requestAnimationFrame(() => r(null)),
+                        );
                       },
                     });
                   } finally {
@@ -191,7 +235,9 @@ function HisnPage() {
               />
             )}
 
-            <p className="text-xs text-muted-foreground">1080×1080 — مناسبة لكاروسيل إنستغرام.</p>
+            <p className="text-xs text-muted-foreground">
+              1080×1080 — مناسبة لكاروسيل إنستغرام.
+            </p>
           </section>
 
           {chapter && (
@@ -205,7 +251,11 @@ function HisnPage() {
             <p className="text-xs font-medium text-foreground">محتوى الحصن</p>
             <div className="space-y-1.5">
               <Label className="text-xs">دعاء الختام</Label>
-              <ArabicField multiline value={s.hisn.closingDua} onChange={(v) => s.setHisn("closingDua", v)} />
+              <ArabicField
+                multiline
+                value={s.hisn.closingDua}
+                onChange={(v) => s.setHisn("closingDua", v)}
+              />
             </div>
           </section>
         </aside>
@@ -213,28 +263,52 @@ function HisnPage() {
         <section className="space-y-4 w-full min-w-0">
           {!all || !chapter ? (
             <div className="aspect-square w-full max-w-xl mx-auto rounded-md border border-dashed flex items-center justify-center text-muted-foreground">
-              <Loader2 className="h-5 w-5 animate-spin mr-2" />جارٍ التحميل…
+              <Loader2 className="h-5 w-5 animate-spin mr-2" />
+              جارٍ التحميل…
             </div>
           ) : (
             <>
               <div className="flex items-center justify-between">
-                <div className="text-sm text-muted-foreground">معاينة {safeIdx + 1} / {total}</div>
+                <div className="text-sm text-muted-foreground">
+                  معاينة {safeIdx + 1} / {total}
+                </div>
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" disabled={safeIdx === 0}
-                    onClick={() => setPreviewIdx((i) => Math.max(0, i - 1))}>السابق</Button>
-                  <Button size="sm" variant="outline" disabled={safeIdx === total - 1}
-                    onClick={() => setPreviewIdx((i) => Math.min(total - 1, i + 1))}>التالي</Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={safeIdx === 0}
+                    onClick={() => setPreviewIdx((i) => Math.max(0, i - 1))}
+                  >
+                    السابق
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={safeIdx === total - 1}
+                    onClick={() =>
+                      setPreviewIdx((i) => Math.min(total - 1, i + 1))
+                    }
+                  >
+                    التالي
+                  </Button>
                 </div>
               </div>
               <div className="w-full max-w-xl mx-auto">
                 <ScaledSlide>
-                  <RenderSlide idx={safeIdx} chapter={chapter} slideIds={slideIds} />
+                  <RenderSlide
+                    idx={safeIdx}
+                    chapter={chapter}
+                    slideIds={slideIds}
+                  />
                 </ScaledSlide>
               </div>
               <div className="flex gap-2 overflow-x-auto py-2">
                 {slideIds.map((_, i) => (
-                  <button key={i} onClick={() => setPreviewIdx(i)}
-                    className={`shrink-0 w-14 h-14 rounded border text-xs ${i === safeIdx ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:bg-muted"}`}>
+                  <button
+                    key={i}
+                    onClick={() => setPreviewIdx(i)}
+                    className={`shrink-0 w-14 h-14 rounded border text-xs ${i === safeIdx ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:bg-muted"}`}
+                  >
                     {i + 1}
                   </button>
                 ))}
@@ -244,18 +318,48 @@ function HisnPage() {
         </section>
       </main>
 
-      {exporting && chapter &&
+      {exporting &&
+        chapter &&
         createPortal(
-          <div aria-hidden style={{ position: "fixed", top: 0, left: -2000, width: 1080, pointerEvents: "none" }}>
-            <RenderSlide idx={exportIdx} chapter={chapter} slideIds={slideIds} slideId={EXPORT_ID} />
+          <div
+            aria-hidden
+            style={{
+              position: "fixed",
+              top: 0,
+              left: -2000,
+              width: 1080,
+              pointerEvents: "none",
+            }}
+          >
+            <RenderSlide
+              idx={exportIdx}
+              chapter={chapter}
+              slideIds={slideIds}
+              slideId={EXPORT_ID}
+            />
           </div>,
           document.body,
         )}
 
-      {sharingAll && chapter &&
+      {sharingAll &&
+        chapter &&
         createPortal(
-          <div aria-hidden style={{ position: "fixed", top: 0, left: -2000, width: 1080, pointerEvents: "none" }}>
-            <RenderSlide idx={shareIndex} chapter={chapter} slideIds={slideIds} slideId={EXPORT_ID} />
+          <div
+            aria-hidden
+            style={{
+              position: "fixed",
+              top: 0,
+              left: -2000,
+              width: 1080,
+              pointerEvents: "none",
+            }}
+          >
+            <RenderSlide
+              idx={shareIndex}
+              chapter={chapter}
+              slideIds={slideIds}
+              slideId={EXPORT_ID}
+            />
           </div>,
           document.body,
         )}
@@ -263,18 +367,25 @@ function HisnPage() {
   );
 }
 
-
 function RenderSlide({
-  idx, chapter, slideIds, slideId,
-}: { idx: number; chapter: HisnChapter; slideIds: any[]; slideId?: string }) {
+  idx,
+  chapter,
+  slideIds,
+  slideId,
+}: {
+  idx: number;
+  chapter: HisnChapter;
+  slideIds: any[];
+  slideId?: string;
+}) {
   const slide = slideIds[idx];
   const id = slideId ?? `preview-${slide.id}`;
   if (slide.type === "closing") return <HisnClosingSlide slideId={id} />;
   return (
-    <HisnItemSlide 
-      chapter={chapter} 
-      itemIndex={slide.itemIndex!} 
-      slideId={id} 
+    <HisnItemSlide
+      chapter={chapter}
+      itemIndex={slide.itemIndex!}
+      slideId={id}
       pageText={slide.pageText!}
       pageNumber={slide.pageNumber!}
       totalPages={slide.totalPages!}

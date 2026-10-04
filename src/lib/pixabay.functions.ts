@@ -2,10 +2,14 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 export const searchPixabay = createServerFn({ method: "GET" })
-  .inputValidator((data) => z.object({
-    q: z.string().min(1).max(100),
-    type: z.enum(["image", "video"]).default("image"),
-  }).parse(data))
+  .inputValidator((data) =>
+    z
+      .object({
+        q: z.string().min(1).max(100),
+        type: z.enum(["image", "video"]).default("image"),
+      })
+      .parse(data),
+  )
   .handler(async ({ data }) => {
     const key = "56886671-d3e4b31305a0871d17a18eb6b";
 
@@ -15,7 +19,10 @@ export const searchPixabay = createServerFn({ method: "GET" })
       try {
         const t = await fetch(
           `https://api.mymemory.translated.net/get?q=${encodeURIComponent(q)}&langpair=ar|en`,
-        ).then((r) => r.json() as Promise<{ responseData?: { translatedText?: string } }>);
+        ).then(
+          (r) =>
+            r.json() as Promise<{ responseData?: { translatedText?: string } }>,
+        );
         const tr = t?.responseData?.translatedText;
         if (tr && tr.toLowerCase() !== "no translation found") q = tr;
       } catch {
@@ -24,7 +31,9 @@ export const searchPixabay = createServerFn({ method: "GET" })
     }
 
     const isVideo = data.type === "video";
-    const endpoint = isVideo ? "https://pixabay.com/api/videos/" : "https://pixabay.com/api/";
+    const endpoint = isVideo
+      ? "https://pixabay.com/api/videos/"
+      : "https://pixabay.com/api/";
     const url = isVideo
       ? `${endpoint}?key=${key}&q=${encodeURIComponent(q)}&safesearch=true&per_page=24`
       : `${endpoint}?key=${key}&q=${encodeURIComponent(q)}&image_type=photo&safesearch=true&orientation=all&per_page=24`;
@@ -40,29 +49,61 @@ export const searchPixabay = createServerFn({ method: "GET" })
         duration?: number;
         tags: string;
         videos?: {
-          tiny?: { url: string; width: number; height: number; size: number; thumbnail?: string };
-          small?: { url: string; width: number; height: number; size: number; thumbnail?: string };
-          medium?: { url: string; width: number; height: number; size: number; thumbnail?: string };
-          large?: { url: string; width: number; height: number; size: number; thumbnail?: string };
+          tiny?: {
+            url: string;
+            width: number;
+            height: number;
+            size: number;
+            thumbnail?: string;
+          };
+          small?: {
+            url: string;
+            width: number;
+            height: number;
+            size: number;
+            thumbnail?: string;
+          };
+          medium?: {
+            url: string;
+            width: number;
+            height: number;
+            size: number;
+            thumbnail?: string;
+          };
+          large?: {
+            url: string;
+            width: number;
+            height: number;
+            size: number;
+            thumbnail?: string;
+          };
         };
       }>;
     };
     if (isVideo) {
       return (json.hits ?? []).flatMap((video) => {
-        const selected = video.videos?.medium ?? video.videos?.small ?? video.videos?.large ?? video.videos?.tiny;
+        const selected =
+          video.videos?.medium ??
+          video.videos?.small ??
+          video.videos?.large ??
+          video.videos?.tiny;
         if (!selected?.url) return [];
         const preview =
           selected.thumbnail ??
-          (video.picture_id ? `https://i.vimeocdn.com/video/${video.picture_id}_295x166.jpg` : "");
-        return [{
-          id: video.id,
-          preview,
-          medium: video.videos?.small?.url ?? selected.url,
-          large: selected.url,
-          tags: video.tags,
-          type: "video" as const,
-          duration: video.duration ?? null,
-        }];
+          (video.picture_id
+            ? `https://i.vimeocdn.com/video/${video.picture_id}_295x166.jpg`
+            : "");
+        return [
+          {
+            id: video.id,
+            preview,
+            medium: video.videos?.small?.url ?? selected.url,
+            large: selected.url,
+            tags: video.tags,
+            type: "video" as const,
+            duration: video.duration ?? null,
+          },
+        ];
       });
     }
     return (json.hits ?? []).map((img) => ({
