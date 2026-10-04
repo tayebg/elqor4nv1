@@ -148,6 +148,7 @@ interface Store extends Shared, PerGenerator {
   setReelCover: <K extends keyof ReelCoverSettings>(k: K, v: ReelCoverSettings[K]) => void;
   pageState: PageState;
   setPageState: <K extends keyof PageState>(k: K, v: PageState[K]) => void;
+  clearAllData: () => void;
 }
 
 const DEFAULT_QURAN: QuranSettings = {
@@ -312,6 +313,31 @@ export const useSettings = create<Store>()(
       setTweet: (k, v) => set((s) => ({ tweet: { ...s.tweet, [k]: v } })),
       setReelCover: (k, v) => set((s) => ({ reelCover: { ...s.reelCover, [k]: v } })),
       setPageState: (k, v) => set((s) => ({ pageState: { ...s.pageState, [k]: v } })),
+      clearAllData: () => {
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Clear Cache Storage
+        if ('caches' in window) {
+          caches.keys().then((names) => {
+            for (let name of names) caches.delete(name);
+          });
+        }
+        
+        // Clear IndexedDB
+        if ('indexedDB' in window && indexedDB.databases) {
+          indexedDB.databases().then((dbs) => {
+            for (let db of dbs) {
+              if (db.name) indexedDB.deleteDatabase(db.name);
+            }
+          }).catch(() => {}); // ignore errors in older browsers
+        }
+        
+        // Reload after a short delay to allow async deletions to start
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 100);
+      },
     }),
     {
       name: "elqor4n-settings",

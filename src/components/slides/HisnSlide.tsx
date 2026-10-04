@@ -193,7 +193,7 @@ export function HisnItemSlide({ chapter, itemIndex, slideId, pageText, pageNumbe
             {isFirst && (
               <div
                 className="warsh-text text-center mb-8"
-                style={{ color: "#e6c878", fontSize: "0.85em", fontWeight: 700 }}
+                style={{ color: "#eaf0ff", fontSize: "0.85em", fontWeight: 700 }}
               >
                 — {titleText} —
               </div>
@@ -204,7 +204,7 @@ export function HisnItemSlide({ chapter, itemIndex, slideId, pageText, pageNumbe
             {showFootnote && (
               <div
                 className="warsh-text text-center mt-8"
-                style={{ color: "#eaf0ff", fontSize: "0.78em" }}
+                style={{ color: "#e6c878", fontSize: "0.78em" }}
               >
                 [{footnoteLabel}{item.footnote}]
               </div>

@@ -407,7 +407,7 @@ export function useVideoExport() {
           console.log("🛑 [Export] تم الإلغاء بواسطة المستخدم");
           setStatusText("تم إلغاء التحميل بنجاح");
           setProgress(0);
-          return null;
+          throw err;
         }
         console.error("❌ [Export] خطأ:", err);
         setStatusText("❌ فشل التصدير");

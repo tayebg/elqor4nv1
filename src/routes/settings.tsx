@@ -389,6 +389,13 @@ function SettingsPage() {
               <ThemeToggle />
               <span className="text-sm text-muted-foreground">اضغط للتبديل بين الفاتح / الداكن.</span>
             </div>
+            <div className="pt-4 border-t border-border mt-4">
+              <Button variant="destructive" onClick={() => {
+                if (confirm("هل أنت متأكد من مسح جميع البيانات؟ سيؤدي ذلك إلى إعادة التطبيق لحالته الأصلية.")) {
+                  s.clearAllData();
+                }
+              }}>مسح جميع البيانات</Button>
+            </div>
           </Section>
         )}
       </main>

@@ -134,6 +134,10 @@ export default function PreviewPanel({
       })()
     : 0;
 
+  const totalDurationMs = hasTimedData
+    ? timedVerses[timedVerses.length - 1].timestampTo - timedVerses[0].timestampFrom
+    : 0;
+
   const renderOptionsRef = useRef({});
   renderOptionsRef.current = {
     bgIsVideo,
@@ -251,6 +255,11 @@ export default function PreviewPanel({
           {hasTimedData && (
             <Badge variant="outline" className="font-mono text-[10px]">
               {displayIdx + 1}/{timedVerses.length}
+            </Badge>
+          )}
+          {hasTimedData && (
+            <Badge variant="outline" className="font-mono text-[10px]">
+              {formatTime(totalDurationMs)}
             </Badge>
           )}
           <Badge variant="outline" className="font-mono text-[10px]">

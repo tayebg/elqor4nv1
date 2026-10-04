@@ -70,7 +70,7 @@ function HisnPage() {
 
     chapter.items.forEach((item, itemIndex) => {
       const cleanText = item.text.replace(/[\(\)\[\]\{\}\*_\-]/g, '').trim();
-      const pages = paginateHadith(cleanText);
+      const pages = paginateHadith(cleanText, 450);
       pages.forEach((pageText, pageIdx) => {
         slides.push({
           type: "item",

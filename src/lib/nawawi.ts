@@ -51,22 +51,42 @@ export async function loadNawawi(): Promise<NawawiHadith[]> {
   return cache;
 }
 
-/** Split a hadith body into N slide pages. Soft target ~600 chars/page. */
-export function paginateHadith(body: string): string[] {
-  const TARGET = 650;
-  if (body.length <= TARGET) return [body];
-  // Split on sentence-ish boundaries (period, "،", quotation closers).
-  const sentences = body.split(/(?<=["\u201D”\.])\s+/);
+/** Split a hadith body into N slide pages. */
+export function paginateHadith(body: string, targetLength: number = 650): string[] {
+  if (body.length <= targetLength) return [body];
+  // Split on sentence-ish boundaries (period, Arabic comma, exclamation, question, quotation closers).
+  const sentences = body.split(/(?<=[\"\u201D”\.،!؟])\s+/);
   const pages: string[] = [];
   let cur = "";
-  for (const s of sentences) {
-    if (cur.length + s.length + 1 > TARGET && cur) {
+
+  const pushCur = () => {
+    if (!cur) return;
+    if (cur.length > targetLength * 1.2) {
+      const words = cur.split(/\s+/);
+      let temp = "";
+      for (const w of words) {
+        if (temp.length + w.length + 1 > targetLength && temp) {
+          pages.push(temp.trim());
+          temp = w;
+        } else {
+          temp = temp ? `${temp} ${w}` : w;
+        }
+      }
+      if (temp) pages.push(temp.trim());
+    } else {
       pages.push(cur.trim());
+    }
+    cur = "";
+  };
+
+  for (const s of sentences) {
+    if (cur.length + s.length + 1 > targetLength && cur) {
+      pushCur();
       cur = s;
     } else {
       cur = cur ? `${cur} ${s}` : s;
     }
   }
-  if (cur) pages.push(cur.trim());
+  pushCur();
   return pages;
 }

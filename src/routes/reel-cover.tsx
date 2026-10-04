@@ -103,17 +103,17 @@ function ReelCoverPage() {
             </div>
             <div className="space-y-2">
               <Label className="text-xs">لون التمييز</Label>
-              <div className="relative h-10 w-full overflow-hidden rounded-md border border-input shadow-sm flex items-center justify-between px-3 bg-background hover:bg-accent transition-colors cursor-pointer">
-                <div className="flex items-center gap-2">
-                  <div className="h-5 w-5 rounded-full border shadow-sm shrink-0" style={{ backgroundColor: s.reelCover.accent }} />
-                  <span className="text-sm font-medium">تغيير اللون</span>
-                </div>
+              <div className="flex items-center gap-2 rounded-md border border-input bg-background px-2.5 py-2 w-full">
                 <input
                   type="color"
                   value={s.reelCover.accent}
                   onChange={(e) => s.setReelCover("accent", e.target.value)}
-                  className="absolute opacity-0 inset-0 w-full h-full cursor-pointer"
+                  className="h-6 w-6 shrink-0 cursor-pointer rounded border-0 bg-transparent p-0"
+                  aria-label="لون التمييز"
                 />
+                <span className="min-w-0 truncate font-mono text-[11px] text-muted-foreground" dir="ltr">
+                  {s.reelCover.accent.toUpperCase()}
+                </span>
               </div>
             </div>
             <label className="flex items-center gap-2 text-xs">
